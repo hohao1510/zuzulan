@@ -65,6 +65,12 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        
+        /* Hiệu ứng ảnh thumb đang chọn */
+        .thumb-selected {
+            border-color: #5dade2;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body class="text-gray-700 flex flex-col min-h-screen">
@@ -148,14 +154,21 @@
         </div>
     </footer>
 
-    <!-- MODAL POPUP (Ẩn mặc định) -->
+    <!-- MODAL POPUP (Cập nhật hiển thị nhiều ảnh) -->
     <div id="product-modal" class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row relative transform transition-transform duration-300 scale-95">
             <button onclick="app.closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold z-10">&times;</button>
             
-            <!-- Modal Image -->
-            <div class="w-full md:w-1/2 bg-gray-100 flex items-center justify-center p-4 h-64 md:h-auto">
-                <img id="modal-img" src="" class="max-h-full max-w-full object-contain shadow-lg rounded-lg">
+            <!-- Modal Image Section -->
+            <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-4">
+                <!-- Ảnh chính lớn -->
+                <div class="flex-grow flex items-center justify-center mb-4 h-64 md:h-80">
+                    <img id="modal-img" src="" class="max-h-full max-w-full object-contain shadow-lg rounded-lg transition-all duration-300">
+                </div>
+                <!-- Danh sách ảnh nhỏ (Thumbnails) -->
+                <div id="modal-thumbnails" class="flex gap-2 justify-center overflow-x-auto py-2">
+                    <!-- JS sẽ điền ảnh nhỏ vào đây -->
+                </div>
             </div>
             
             <!-- Modal Content -->
@@ -189,16 +202,81 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // --- 1. DATA STORAGE (Dữ liệu nguồn - Sửa trực tiếp tại đây) ---
+        // Lưu ý: Đã thêm trường 'images' chứa danh sách các ảnh khác nhau của sản phẩm
         const storeData = {
             products: [
-                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", img: "product2.jpg", desc: "Áo len sọc phong cách Hàn Quốc, giữ ấm tốt, chất liệu len cừu mềm mại." },
-                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", img: "product3.jpg", desc: "Quần caro ống rộng thời thượng, hack dáng cực đỉnh, vải thô đũi thoáng mát." },
-                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", img: "product4.jpg", desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, mũ lông tháo rời tiện lợi." },
-                { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", img: "product5.jpg", desc: "Váy đầm công chúa lộng lẫy, đính kim sa lấp lánh cho bé đi dự tiệc." },
-                { id: 5, name: "Bộ Đồ Thun Lạnh Bé Trai", price: 110000, category: "kids", img: "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Đồ+Bé+Trai", desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi, co giãn 4 chiều." },
-                { id: 6, name: "Áo Sơ Mi Nam Công Sở", price: 250000, category: "adult", img: "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=Sơ+Mi+Nam", desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit lịch lãm." },
-                { id: 7, name: "Áo Hoodie Teen", price: 195000, category: "adult", img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn, hình in sắc nét." },
-                { id: 8, name: "Set Dạ Tweed Mẹ & Bé", price: 450000, category: "adult", img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", desc: "Set dạ Tweed sang chảnh diện tết, thiết kế tiểu thư đài các." }
+                { 
+                    id: 1, 
+                    name: "Áo Len Sọc (1831#)", 
+                    price: 150000, 
+                    category: "kids", 
+                    img: "product2.jpg", // Ảnh đại diện
+                    images: ["product2.jpg", "https://via.placeholder.com/400x400/eee/333?text=Goc+Nghieng", "https://via.placeholder.com/400x400/eee/333?text=Can+Canh"], // Danh sách ảnh chi tiết
+                    desc: "Áo len sọc phong cách Hàn Quốc, giữ ấm tốt, chất liệu len cừu mềm mại." 
+                },
+                { 
+                    id: 2, 
+                    name: "Quần Caro Ống Rộng", 
+                    price: 180000, 
+                    category: "adult", 
+                    img: "product3.jpg",
+                    images: ["product3.jpg", "https://via.placeholder.com/400x400/eee/333?text=Mau+Do", "https://via.placeholder.com/400x400/eee/333?text=Mau+Xanh"],
+                    desc: "Quần caro ống rộng thời thượng, hack dáng cực đỉnh, vải thô đũi thoáng mát." 
+                },
+                { 
+                    id: 3, 
+                    name: "Áo Khoác Phao Mùa Đông", 
+                    price: 350000, 
+                    category: "winter", 
+                    img: "product4.jpg", 
+                    images: ["product4.jpg", "https://via.placeholder.com/400x400/eee/333?text=Mat+Sau", "https://via.placeholder.com/400x400/eee/333?text=Ben+Trong"],
+                    desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, mũ lông tháo rời tiện lợi." 
+                },
+                { 
+                    id: 4, 
+                    name: "Váy Công Chúa Elsa", 
+                    price: 220000, 
+                    category: "kids", 
+                    img: "product5.jpg", 
+                    images: ["product5.jpg", "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Xoe+Rong"],
+                    desc: "Váy đầm công chúa lộng lẫy, đính kim sa lấp lánh cho bé đi dự tiệc." 
+                },
+                { 
+                    id: 5, 
+                    name: "Bộ Đồ Thun Lạnh Bé Trai", 
+                    price: 110000, 
+                    category: "kids", 
+                    img: "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Đồ+Bé+Trai", 
+                    images: ["https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Mat+Truoc", "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Mat+Sau"],
+                    desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi, co giãn 4 chiều." 
+                },
+                { 
+                    id: 6, 
+                    name: "Áo Sơ Mi Nam Công Sở", 
+                    price: 250000, 
+                    category: "adult", 
+                    img: "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=Sơ+Mi+Nam", 
+                    images: ["https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=Mau+Trang", "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=Co+Ao"],
+                    desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit lịch lãm." 
+                },
+                { 
+                    id: 7, 
+                    name: "Áo Hoodie Teen", 
+                    price: 195000, 
+                    category: "adult", 
+                    img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", 
+                    images: ["https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie"],
+                    desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn, hình in sắc nét." 
+                },
+                { 
+                    id: 8, 
+                    name: "Set Dạ Tweed Mẹ & Bé", 
+                    price: 450000, 
+                    category: "adult", 
+                    img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", 
+                    images: ["https://via.placeholder.com/400x400/fff3e0/ff9800?text=Me+Be", "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Chat+Vai"],
+                    desc: "Set dạ Tweed sang chảnh diện tết, thiết kế tiểu thư đài các." 
+                }
             ],
             cart: JSON.parse(localStorage.getItem("zuzulan_cart")) || []
         };
@@ -386,9 +464,9 @@
             renderCart() {
                 if (storeData.cart.length === 0) {
                     this.container.innerHTML = `
-                        <div class="flex flex-col items-center justify-center py-20">
+                        <div class="flex flex-col items-center justify-center py-20 animate-fade-in">
                             <div class="text-6xl mb-4">🛒</div>
-                            <h2 class="text-2xl font-bold text-secondary mb-2 brand-font">Giỏ hàng trống</h2>
+                            <h2 class="text-2xl font-bold text-secondary mb-2">Giỏ hàng trống</h2>
                             <p class="text-gray-500 mb-8">Hãy chọn những món đồ xinh xắn cho bé và gia đình nhé!</p>
                             <button onclick="app.navigate('shop')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow transition">
                                 Quay lại cửa hàng
@@ -426,7 +504,7 @@
                 }).join('');
 
                 this.container.innerHTML = `
-                    <div class="max-w-4xl mx-auto">
+                    <div class="animate-fade-in max-w-4xl mx-auto">
                         <h2 class="text-3xl font-bold text-secondary brand-font mb-8 text-center">Giỏ Hàng Của Bạn</h2>
                         <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
                             <div class="overflow-x-auto">
@@ -459,7 +537,7 @@
             // --- VIEW: CHECKOUT (Thanh toán) ---
             renderCheckout() {
                 this.container.innerHTML = `
-                    <div class="max-w-2xl mx-auto">
+                    <div class="animate-fade-in max-w-2xl mx-auto">
                         <h2 class="text-3xl font-bold text-secondary brand-font mb-8 text-center">Thông Tin Giao Hàng</h2>
                         <form onsubmit="app.processCheckout(event)" class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 space-y-6">
                             <div>
@@ -491,21 +569,57 @@
             },
 
             // --- ACTIONS ---
+            // Cập nhật hàm openModal để xử lý hiển thị ảnh và thumbnails
             openModal(id) {
                 const p = storeData.products.find(x => x.id === id);
                 if(!p) return;
                 
-                document.getElementById('modal-img').src = p.img;
+                // Mặc định ảnh chính
+                const mainImg = document.getElementById('modal-img');
+                mainImg.src = p.img;
+                
+                // Tiêu đề, giá, mô tả
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
                 
+                // Xử lý Thumbnails
+                const thumbnailsContainer = document.getElementById('modal-thumbnails');
+                thumbnailsContainer.innerHTML = ''; // Xóa ảnh cũ
+                
+                // Dùng danh sách 'images' nếu có, nếu không thì dùng ảnh chính
+                const images = (p.images && p.images.length > 0) ? p.images : [p.img];
+                
+                images.forEach((imgSrc, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = imgSrc;
+                    thumb.classList.add('w-16', 'h-16', 'object-cover', 'rounded', 'border-2', 'border-transparent', 'cursor-pointer', 'hover:border-primary', 'transition');
+                    
+                    // Ảnh đầu tiên active
+                    if (index === 0) thumb.classList.add('thumb-selected');
+                    
+                    // Sự kiện click vào thumbnail
+                    thumb.onclick = function() {
+                        // Đổi ảnh chính
+                        mainImg.src = imgSrc;
+                        
+                        // Cập nhật style active cho thumbnails
+                        document.querySelectorAll('#modal-thumbnails img').forEach(t => {
+                            t.classList.remove('thumb-selected', 'border-primary');
+                            t.classList.add('border-transparent');
+                        });
+                        this.classList.add('thumb-selected', 'border-primary');
+                        this.classList.remove('border-transparent');
+                    };
+                    
+                    thumbnailsContainer.appendChild(thumb);
+                });
+
                 const btn = document.getElementById('modal-add-btn');
                 btn.onclick = () => { this.addToCart(p.id); this.closeModal(); };
 
                 const modal = document.getElementById('product-modal');
                 modal.classList.remove('hidden');
-                // Timeout nhỏ để CSS transition hoạt động mượt mà
                 setTimeout(() => {
                     modal.classList.remove('opacity-0');
                     modal.querySelector('div').classList.remove('scale-95');
