@@ -8,21 +8,21 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Chart.js cho biểu đồ -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Google Fonts: Playfair Display & Nunito -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <!-- Cấu hình Tailwind & Custom Styles -->
+    <!-- Cấu hình Tailwind -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#5dade2', /* Xanh dương nhạt chủ đạo */
+                        primary: '#5dade2',
                         primaryDark: '#2e86c1',
                         secondary: '#34495e',
                         bgLight: '#fcfdfe',
@@ -38,51 +38,26 @@
     </script>
 
     <style>
-        /* CSS Tùy chỉnh */
-        body {
-            background-color: #fcfdfe;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        h1, h2, h3, .brand-font {
-            font-family: 'Playfair Display', serif;
-        }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            height: 300px;
-            max-height: 400px;
-        }
-
-        /* Ẩn thanh cuộn cho modal */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        body { font-family: 'Nunito', sans-serif; background-color: #fcfdfe; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 300px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .thumb-selected { border-color: #5dade2; transform: scale(1.05); }
         
-        /* Hiệu ứng ảnh thumb đang chọn */
-        .thumb-selected {
-            border-color: #5dade2;
-            transform: scale(1.05);
-        }
+        /* Hiệu ứng mờ dần cho thông báo Toast */
+        #toast { transition: opacity 0.3s ease-in-out; }
     </style>
 </head>
-<body class="text-gray-700 flex flex-col min-h-screen">
+<body class="text-gray-700 flex flex-col min-h-screen relative">
 
-    <!-- TOP BAR: MARQUEE -->
+    <!-- TOP BAR -->
     <div class="bg-primary text-white py-2 font-bold text-lg overflow-hidden">
         <marquee direction="left" scrollamount="12">
             Shop quần áo Zuzulan chào quý khách, chúc quý khách mua sắm vui vẻ
         </marquee>
     </div>
 
-    <!-- HEADER & NAVIGATION -->
+    <!-- HEADER -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <!-- Logo -->
@@ -90,19 +65,19 @@
                 <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-primary">
                     <img src="logo.jpg" alt="ZuzuLan" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
                 </div>
-                <div class="text-2xl font-bold text-primary brand-font uppercase tracking-wider hidden sm:block">
+                <div class="text-2xl font-bold text-primary font-serif uppercase tracking-wider hidden sm:block">
                     ZuzuLan
                 </div>
             </div>
 
-            <!-- Desktop Nav -->
+            <!-- Menu -->
             <nav class="hidden md:flex gap-8">
                 <button onclick="app.navigate('home')" class="nav-link text-lg font-bold text-secondary hover:text-primary transition">Bảng Tin</button>
                 <button onclick="app.navigate('shop')" class="nav-link text-lg font-bold text-secondary hover:text-primary transition">Cửa Hàng</button>
                 <button onclick="app.navigate('cart')" class="nav-link text-lg font-bold text-secondary hover:text-primary transition">Giỏ Hàng</button>
             </nav>
 
-            <!-- Cart & Mobile Menu Button -->
+            <!-- Cart Icon -->
             <div class="flex items-center gap-4">
                 <div class="relative cursor-pointer" onclick="app.navigate('cart')">
                     <span class="text-3xl">🛒</span>
@@ -122,9 +97,9 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT AREA -->
+    <!-- MAIN CONTENT -->
     <main id="app-container" class="flex-grow container mx-auto px-4 py-8">
-        <!-- Content will be injected here by JS -->
+        <!-- JS sẽ điền nội dung vào đây -->
     </main>
 
     <!-- FOOTER -->
@@ -132,572 +107,236 @@
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
                 <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Về ZuzuLan</h3>
-                <p class="text-gray-300 text-sm leading-relaxed">
-                    Nơi hội tụ những phong cách thời trang mới nhất dành cho bạn và gia đình. Chất lượng là ưu tiên hàng đầu của chúng tôi.
-                </p>
+                <p class="text-gray-300 text-sm leading-relaxed">Nơi hội tụ những phong cách thời trang mới nhất dành cho bé và gia đình.</p>
             </div>
             <div>
                 <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Liên Hệ</h3>
-                <ul class="text-gray-300 text-sm space-y-2">
-                    <li>📍 Xóm 1, Cống Lao, Nam Thanh, Nam Đàn, NA</li>
-                    <li>📞 096 3456 108</li>
-                    <li>✉️ support@zuzulan.vn</li>
-                </ul>
+                <p class="text-gray-300 text-sm">📍 Xóm 1, Cống Lao, Nam Thanh, Nam Đàn, NA</p>
+                <p class="text-gray-300 text-sm">📞 096 3456 108</p>
             </div>
             <div>
                 <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Thống Kê</h3>
-                <p class="text-gray-300 text-sm">Đang phục vụ hàng ngàn khách hàng trên toàn quốc.</p>
+                <p class="text-gray-300 text-sm">Đang phục vụ hàng ngàn khách hàng.</p>
             </div>
         </div>
-        <div class="text-center text-gray-500 text-xs mt-10 pt-4 border-t border-gray-700">
-            © 2025 Shop ZuzuLan. Designed for Interactive Experience.
-        </div>
+        <div class="text-center text-gray-500 text-xs mt-10 pt-4 border-t border-gray-700">© 2025 Shop ZuzuLan.</div>
     </footer>
 
-    <!-- MODAL POPUP (Cập nhật hiển thị nhiều ảnh) -->
+    <!-- MODAL POPUP -->
     <div id="product-modal" class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row relative transform transition-transform duration-300 scale-95">
             <button onclick="app.closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold z-10">&times;</button>
-            
-            <!-- Modal Image Section -->
             <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-4">
-                <!-- Ảnh chính lớn -->
                 <div class="flex-grow flex items-center justify-center mb-4 h-64 md:h-80">
                     <img id="modal-img" src="" class="max-h-full max-w-full object-contain shadow-lg rounded-lg transition-all duration-300">
                 </div>
-                <!-- Danh sách ảnh nhỏ (Thumbnails) -->
-                <div id="modal-thumbnails" class="flex gap-2 justify-center overflow-x-auto py-2">
-                    <!-- JS sẽ điền ảnh nhỏ vào đây -->
-                </div>
+                <div id="modal-thumbnails" class="flex gap-2 justify-center overflow-x-auto py-2"></div>
             </div>
-            
-            <!-- Modal Content -->
             <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto no-scrollbar">
-                <h2 id="modal-title" class="text-3xl font-bold text-secondary brand-font mb-2"></h2>
+                <h2 id="modal-title" class="text-3xl font-bold text-secondary font-serif mb-2"></h2>
                 <div class="text-primary font-bold text-2xl mb-4" id="modal-price"></div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Mô tả sản phẩm:</h4>
-                    <p id="modal-desc" class="text-gray-600 italic leading-relaxed"></p>
-                </div>
-
-                <div class="mb-8">
-                    <h4 class="font-bold text-gray-800 mb-2">Cam kết chất lượng:</h4>
-                    <ul class="list-disc list-inside text-gray-600 text-sm space-y-1">
-                        <li>Vải cotton/lụa/nỉ cao cấp, an toàn cho da.</li>
-                        <li>Đường may tỉ mỉ, chuẩn form dáng.</li>
-                        <li>Đổi trả miễn phí trong vòng 7 ngày.</li>
-                    </ul>
-                </div>
-
-                <div class="mt-auto">
-                    <button id="modal-add-btn" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-                        Thêm vào giỏ hàng ngay
-                    </button>
-                </div>
+                <div class="mb-6"><h4 class="font-bold text-gray-800 mb-2">Mô tả:</h4><p id="modal-desc" class="text-gray-600 italic"></p></div>
+                <div class="mt-auto"><button id="modal-add-btn" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-full shadow-lg transition transform hover:-translate-y-1">Thêm vào giỏ hàng ngay</button></div>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- TOAST NOTIFICATION (THÔNG BÁO TỰ TẮT) - ĐÂY LÀ PHẦN MỚI THÊM -->
+    <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-xl opacity-0 pointer-events-none z-[200] flex items-center gap-2">
+        <span class="text-xl">✅</span>
+        <span id="toast-message">Đã thêm vào giỏ hàng</span>
+    </div>
+
+    <!-- SCRIPT -->
     <script>
-        // --- 1. DATA STORAGE (Dữ liệu nguồn - Sửa trực tiếp tại đây) ---
-        // Lưu ý: Đã thêm trường 'images' chứa danh sách các ảnh khác nhau của sản phẩm
+        // DỮ LIỆU SẢN PHẨM
         const storeData = {
             products: [
-                { 
-                    id: 1, 
-                    name: "Áo Len Sọc (1831#)", 
-                    price: 150000, 
-                    category: "kids", 
-                    img: "product2.jpg", // Ảnh đại diện
-                    images: ["product2.jpg", "https://via.placeholder.com/400x400/eee/333?text=Goc+Nghieng", "https://via.placeholder.com/400x400/eee/333?text=Can+Canh"], // Danh sách ảnh chi tiết
-                    desc: "Áo len sọc phong cách Hàn Quốc, giữ ấm tốt, chất liệu len cừu mềm mại." 
-                },
-                { 
-                    id: 2, 
-                    name: "Quần Caro Ống Rộng", 
-                    price: 180000, 
-                    category: "adult", 
-                    img: "product3.jpg",
-                    images: ["product3.jpg", "https://via.placeholder.com/400x400/eee/333?text=Mau+Do", "https://via.placeholder.com/400x400/eee/333?text=Mau+Xanh"],
-                    desc: "Quần caro ống rộng thời thượng, hack dáng cực đỉnh, vải thô đũi thoáng mát." 
-                },
-                { 
-                    id: 3, 
-                    name: "Áo Khoác Phao Mùa Đông", 
-                    price: 350000, 
-                    category: "winter", 
-                    img: "product4.jpg", 
-                    images: ["product4.jpg", "https://via.placeholder.com/400x400/eee/333?text=Mat+Sau", "https://via.placeholder.com/400x400/eee/333?text=Ben+Trong"],
-                    desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, mũ lông tháo rời tiện lợi." 
-                },
-                { 
-                    id: 4, 
-                    name: "Váy Công Chúa Elsa", 
-                    price: 220000, 
-                    category: "kids", 
-                    img: "product5.jpg", 
-                    images: ["product5.jpg", "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Xoe+Rong"],
-                    desc: "Váy đầm công chúa lộng lẫy, đính kim sa lấp lánh cho bé đi dự tiệc." 
-                },
-                { 
-                    id: 5, 
-                    name: "Bộ Đồ Thun Lạnh Bé Trai", 
-                    price: 110000, 
-                    category: "kids", 
-                    img: "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Đồ+Bé+Trai", 
-                    images: ["https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Mat+Truoc", "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Mat+Sau"],
-                    desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi, co giãn 4 chiều." 
-                },
-                { 
-                    id: 6, 
-                    name: "Áo Sơ Mi Nam Công Sở", 
-                    price: 250000, 
-                    category: "adult", 
-                    img: "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=Sơ+Mi+Nam", 
-                    images: ["https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=Mau+Trang", "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=Co+Ao"],
-                    desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit lịch lãm." 
-                },
-                { 
-                    id: 7, 
-                    name: "Áo Hoodie Teen", 
-                    price: 195000, 
-                    category: "adult", 
-                    img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", 
-                    images: ["https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie"],
-                    desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn, hình in sắc nét." 
-                },
-                { 
-                    id: 8, 
-                    name: "Set Dạ Tweed Mẹ & Bé", 
-                    price: 450000, 
-                    category: "adult", 
-                    img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", 
-                    images: ["https://via.placeholder.com/400x400/fff3e0/ff9800?text=Me+Be", "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Chat+Vai"],
-                    desc: "Set dạ Tweed sang chảnh diện tết, thiết kế tiểu thư đài các." 
-                }
+                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", img: "product2.jpg", images: ["product2.jpg", "https://via.placeholder.com/400x400/eee/333?text=Goc+Nghieng"], desc: "Áo len sọc phong cách Hàn Quốc, chất len mềm mịn." },
+                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", img: "product3.jpg", images: ["product3.jpg"], desc: "Quần caro ống rộng thời thượng, vải thô đũi thoáng mát." },
+                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", img: "product4.jpg", images: ["product4.jpg"], desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, ấm áp." },
+                { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", img: "product5.jpg", images: ["product5.jpg"], desc: "Váy đầm công chúa lộng lẫy cho bé đi dự tiệc." },
+                { id: 5, name: "Bộ Đồ Thun Lạnh Bé Trai", price: 110000, category: "kids", img: "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Do+Be+Trai", images: ["https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Truoc", "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Sau"], desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi." },
+                { id: 6, name: "Áo Sơ Mi Nam Công Sở", price: 250000, category: "adult", img: "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=So+Mi+Nam", images: ["https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=Mau+Trang"], desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit." },
+                { id: 7, name: "Áo Hoodie Teen", price: 195000, category: "adult", img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", images: ["https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie"], desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn." },
+                { id: 8, name: "Set Dạ Tweed Mẹ & Bé", price: 450000, category: "adult", img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", images: ["https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Me+Be"], desc: "Set dạ Tweed sang chảnh diện tết." }
             ],
             cart: JSON.parse(localStorage.getItem("zuzulan_cart")) || []
         };
 
-        // --- 2. CORE APPLICATION LOGIC ---
         const app = {
             container: document.getElementById('app-container'),
             
             init() {
                 this.updateCartCount();
-                this.navigate('home'); // Mặc định vào trang Dashboard/Home
+                this.navigate('home');
             },
 
-            // Navigation Router
-            navigate(view) {
-                this.container.innerHTML = ''; // Clear content
+            // --- HÀM MỚI: HIỂN THỊ THÔNG BÁO TOAST ---
+            showToast(message) {
+                const toast = document.getElementById('toast');
+                const toastMsg = document.getElementById('toast-message');
                 
-                document.getElementById('mobile-menu').classList.add('hidden'); // Đóng menu mobile
+                toastMsg.innerText = message;
+                toast.classList.remove('opacity-0');
+                toast.classList.add('opacity-100', 'translate-y-0');
+                
+                // Tự động tắt sau 1.5 giây
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100', 'translate-y-0');
+                    toast.classList.add('opacity-0');
+                }, 1500);
+            },
 
+            navigate(view) {
+                this.container.innerHTML = '';
+                document.getElementById('mobile-menu').classList.add('hidden');
                 switch(view) {
-                    case 'home':
-                        this.renderDashboard();
-                        break;
-                    case 'shop':
-                        this.renderShop();
-                        break;
-                    case 'cart':
-                        this.renderCart();
-                        break;
-                    case 'checkout':
-                        this.renderCheckout();
-                        break;
+                    case 'home': this.renderDashboard(); break;
+                    case 'shop': this.renderShop(); break;
+                    case 'cart': this.renderCart(); break;
+                    case 'checkout': this.renderCheckout(); break;
                 }
                 window.scrollTo(0, 0);
             },
 
-            // --- VIEW: DASHBOARD (Trang chủ phân tích) ---
             renderDashboard() {
-                const totalProducts = storeData.products.length;
                 const catCounts = { kids: 0, adult: 0, winter: 0 };
                 storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
 
-                const html = `
-                    <div class="space-y-12">
-                        <!-- Hero Section -->
+                this.container.innerHTML = `
+                    <div class="space-y-12 animate-fade-in">
                         <div class="text-center py-12 bg-gradient-to-r from-blue-50 to-blue-100 rounded-3xl shadow-sm">
-                            <h1 class="text-4xl md:text-5xl font-bold text-primaryDark mb-4 brand-font italic">Shop ZuzuLan</h1>
-                            <p class="text-xl text-secondary mb-8 brand-font italic max-w-2xl mx-auto">"Phong cách của bạn, niềm vui của chúng tôi."</p>
-                            <button onclick="app.navigate('shop')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105">
-                                Khám Phá Ngay
-                            </button>
+                            <h1 class="text-4xl md:text-5xl font-bold text-primaryDark mb-4 font-serif italic">Shop ZuzuLan</h1>
+                            <p class="text-xl text-secondary mb-8 italic">"Phong cách của bạn, niềm vui của chúng tôi."</p>
+                            <button onclick="app.navigate('shop')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105">Khám Phá Ngay</button>
                         </div>
-
-                        <!-- Analysis Charts Section (Visual Data) -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                                <h3 class="text-xl font-bold text-secondary mb-4 brand-font">Phân Bố Danh Mục</h3>
-                                <div class="chart-container">
-                                    <canvas id="categoryChart"></canvas>
-                                </div>
+                                <h3 class="text-xl font-bold text-secondary mb-4">Phân Bố Danh Mục</h3>
+                                <div class="chart-container"><canvas id="categoryChart"></canvas></div>
                             </div>
                             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center">
-                                <h3 class="text-xl font-bold text-secondary mb-4 brand-font">Thống Kê Nhanh</h3>
+                                <h3 class="text-xl font-bold text-secondary mb-4">Thống Kê Nhanh</h3>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <div class="bg-blue-50 p-4 rounded-lg text-center">
-                                        <div class="text-3xl font-bold text-primary">${totalProducts}</div>
-                                        <div class="text-sm text-gray-600">Tổng Sản Phẩm</div>
-                                    </div>
-                                    <div class="bg-pink-50 p-4 rounded-lg text-center">
-                                        <div class="text-3xl font-bold text-accent">3</div>
-                                        <div class="text-sm text-gray-600">Danh Mục Chính</div>
-                                    </div>
+                                    <div class="bg-blue-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-primary">${storeData.products.length}</div><div class="text-sm text-gray-600">Sản Phẩm</div></div>
+                                    <div class="bg-pink-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-accent">3</div><div class="text-sm text-gray-600">Danh Mục</div></div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Featured Products Teaser -->
                         <div>
-                            <div class="flex justify-between items-end mb-6">
-                                <h2 class="text-3xl font-bold text-secondary brand-font">Sản Phẩm Mới</h2>
-                                <button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                                ${storeData.products.slice(0, 4).map(p => this.createProductCard(p)).join('')}
-                            </div>
+                            <div class="flex justify-between items-end mb-6"><h2 class="text-3xl font-bold text-secondary font-serif">Sản Phẩm Mới</h2><button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button></div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => this.createProductCard(p)).join('')}</div>
                         </div>
-                    </div>
-                `;
-                this.container.innerHTML = html;
-
-                // Initialize Chart
-                const ctx = document.getElementById('categoryChart').getContext('2d');
-                new Chart(ctx, {
+                    </div>`;
+                
+                new Chart(document.getElementById('categoryChart').getContext('2d'), {
                     type: 'doughnut',
-                    data: {
-                        labels: ['Trẻ Em', 'Người Lớn', 'Mùa Đông'],
-                        datasets: [{
-                            data: [catCounts.kids, catCounts.adult, catCounts.winter],
-                            backgroundColor: ['#5dade2', '#34495e', '#a0aec0'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom' }
-                        }
-                    }
+                    data: { labels: ['Trẻ Em', 'Người Lớn', 'Mùa Đông'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.winter], backgroundColor: ['#5dade2', '#34495e', '#a0aec0'], borderWidth: 0 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
                 });
             },
 
-            // --- VIEW: SHOP (Cửa hàng) ---
             renderShop() {
-                const html = `
-                    <div class="space-y-8">
-                        <div class="text-center">
-                            <h2 class="text-3xl font-bold text-secondary brand-font mb-2">Cửa Hàng</h2>
-                            <p class="text-gray-500 italic">Tìm kiếm phong cách yêu thích của bạn</p>
-                        </div>
-
-                        <!-- Filter & Search Bar -->
+                this.container.innerHTML = `
+                    <div class="space-y-8 animate-fade-in">
+                        <div class="text-center"><h2 class="text-3xl font-bold text-secondary font-serif mb-2">Cửa Hàng</h2></div>
                         <div class="flex flex-col md:flex-row justify-center gap-4">
-                            <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm quần áo..." 
-                                class="w-full md:w-80 px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 transition shadow-sm"
-                                oninput="app.filterProducts()">
-                            
-                            <select id="categoryFilter" 
-                                class="w-full md:w-60 px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:border-primary bg-white shadow-sm cursor-pointer"
-                                onchange="app.filterProducts()">
-                                <option value="all">Tất cả danh mục</option>
-                                <option value="kids">Thời trang Trẻ em</option>
-                                <option value="adult">Thời trang Người lớn</option>
-                                <option value="winter">Đồ Mùa Đông</option>
+                            <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm..." class="w-full md:w-80 px-4 py-3 border rounded-full focus:outline-none focus:border-primary shadow-sm" oninput="app.filterProducts()">
+                            <select id="categoryFilter" class="w-full md:w-60 px-4 py-3 border rounded-full focus:outline-none focus:border-primary shadow-sm" onchange="app.filterProducts()">
+                                <option value="all">Tất cả danh mục</option><option value="kids">Trẻ em</option><option value="adult">Người lớn</option><option value="winter">Mùa Đông</option>
                             </select>
                         </div>
-
-                        <!-- Product Grid Area -->
-                        <div id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            ${storeData.products.map(p => this.createProductCard(p)).join('')}
-                        </div>
-                    </div>
-                `;
-                this.container.innerHTML = html;
+                        <div id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">${storeData.products.map(p => this.createProductCard(p)).join('')}</div>
+                    </div>`;
             },
 
-            // Helper: Create HTML for a single product card
             createProductCard(p) {
                 return `
-                    <div class="product-card bg-white rounded-xl overflow-hidden shadow border border-gray-50 flex flex-col h-full group">
+                    <div class="bg-white rounded-xl overflow-hidden shadow border flex flex-col h-full group hover:shadow-xl transition duration-300">
                         <div class="relative overflow-hidden cursor-pointer h-64 bg-gray-100" onclick="app.openModal(${p.id})">
-                            <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.src='https://via.placeholder.com/300x300?text=IMG'">
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                            <img src="${p.img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.src='https://via.placeholder.com/300x300?text=IMG'">
                         </div>
                         <div class="p-5 flex flex-col flex-grow text-center">
                             <h3 class="text-lg font-bold text-secondary mb-2 line-clamp-2 h-14 overflow-hidden">${p.name}</h3>
                             <div class="text-accent font-bold text-xl mb-4">${p.price.toLocaleString('vi-VN')}₫</div>
-                            <button onclick="app.addToCart(${p.id})" class="mt-auto w-full border-2 border-primary text-primary font-bold py-2 rounded-full hover:bg-primary hover:text-white transition duration-300 uppercase text-sm tracking-wide">
-                                Thêm vào giỏ
-                            </button>
+                            <button onclick="app.addToCart(${p.id})" class="mt-auto w-full border-2 border-primary text-primary font-bold py-2 rounded-full hover:bg-primary hover:text-white transition uppercase text-xs tracking-wider">Thêm vào giỏ</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             },
 
             filterProducts() {
                 const search = document.getElementById('searchInput').value.toLowerCase();
                 const cat = document.getElementById('categoryFilter').value;
-                const grid = document.getElementById('shop-grid');
-
-                const filtered = storeData.products.filter(p => {
-                    const matchSearch = p.name.toLowerCase().includes(search);
-                    const matchCat = cat === 'all' || p.category === cat;
-                    return matchSearch && matchCat;
-                });
-
-                if (filtered.length === 0) {
-                    grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">Không tìm thấy sản phẩm nào phù hợp.</div>`;
-                } else {
-                    grid.innerHTML = filtered.map(p => this.createProductCard(p)).join('');
-                }
+                const filtered = storeData.products.filter(p => p.name.toLowerCase().includes(search) && (cat === 'all' || p.category === cat));
+                document.getElementById('shop-grid').innerHTML = filtered.length ? filtered.map(p => this.createProductCard(p)).join('') : `<div class="col-span-full text-center py-10 text-gray-500">Không tìm thấy sản phẩm.</div>`;
             },
 
-            // --- VIEW: CART (Giỏ hàng) ---
             renderCart() {
-                if (storeData.cart.length === 0) {
-                    this.container.innerHTML = `
-                        <div class="flex flex-col items-center justify-center py-20 animate-fade-in">
-                            <div class="text-6xl mb-4">🛒</div>
-                            <h2 class="text-2xl font-bold text-secondary mb-2">Giỏ hàng trống</h2>
-                            <p class="text-gray-500 mb-8">Hãy chọn những món đồ xinh xắn cho bạn và gia đình nhé!</p>
-                            <button onclick="app.navigate('shop')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow transition">
-                                Quay lại cửa hàng
-                            </button>
-                        </div>
-                    `;
+                if (!storeData.cart.length) {
+                    this.container.innerHTML = `<div class="flex flex-col items-center justify-center py-20"><div class="text-6xl mb-4">🛒</div><h2 class="text-2xl font-bold text-secondary mb-4">Giỏ hàng trống</h2><button onclick="app.navigate('shop')" class="bg-primary text-white font-bold py-2 px-6 rounded-full shadow">Mua sắm ngay</button></div>`;
                     return;
                 }
-
                 let total = 0;
-                const itemsHtml = storeData.cart.map(item => {
+                const rows = storeData.cart.map(item => {
                     total += item.price * item.qty;
-                    return `
-                        <tr class="border-b border-gray-50 hover:bg-blue-50 transition">
-                            <td class="py-4 px-2">
-                                <div class="flex items-center gap-4">
-                                    <img src="${item.img}" class="w-16 h-16 rounded-md object-cover shadow-sm hidden sm:block" onerror="this.src='https://via.placeholder.com/60'">
-                                    <span class="font-bold text-secondary">${item.name}</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-2 text-gray-600">${item.price.toLocaleString('vi-VN')}₫</td>
-                            <td class="py-4 px-2">
-                                <div class="flex items-center gap-2">
-                                    <button onclick="app.changeQty(${item.id}, -1)" class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100 flex items-center justify-center font-bold">-</button>
-                                    <span class="font-bold w-6 text-center">${item.qty}</span>
-                                    <button onclick="app.changeQty(${item.id}, 1)" class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100 flex items-center justify-center font-bold">+</button>
-                                </div>
-                            </td>
-                            <td class="py-4 px-2 font-bold text-accent">${(item.price * item.qty).toLocaleString('vi-VN')}₫</td>
-                            <td class="py-4 px-2 text-right">
-                                <button onclick="app.removeItem(${item.id})" class="text-red-400 hover:text-red-600 font-bold text-xl">&times;</button>
-                            </td>
-                        </tr>
-                    `;
+                    return `<tr class="border-b hover:bg-blue-50"><td class="py-4 px-2 flex items-center gap-3"><img src="${item.img}" class="w-12 h-12 rounded object-cover hidden sm:block" onerror="this.src='https://via.placeholder.com/60'"><span class="font-bold text-sm">${item.name}</span></td><td class="py-4 px-2 text-sm">${item.price.toLocaleString('vi-VN')}₫</td><td class="py-4 px-2 flex items-center gap-1"><button onclick="app.changeQty(${item.id}, -1)" class="w-6 h-6 rounded bg-gray-200 font-bold">-</button><span class="w-6 text-center text-sm font-bold">${item.qty}</span><button onclick="app.changeQty(${item.id}, 1)" class="w-6 h-6 rounded bg-gray-200 font-bold">+</button></td><td class="py-4 px-2 font-bold text-accent text-sm">${(item.price*item.qty).toLocaleString('vi-VN')}₫</td><td class="py-4 px-2"><button onclick="app.removeItem(${item.id})" class="text-red-500 font-bold">&times;</button></td></tr>`;
                 }).join('');
-
-                this.container.innerHTML = `
-                    <div class="animate-fade-in max-w-4xl mx-auto">
-                        <h2 class="text-3xl font-bold text-secondary brand-font mb-8 text-center">Giỏ Hàng Của Bạn</h2>
-                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left">
-                                    <thead class="bg-blue-50 text-secondary uppercase text-sm">
-                                        <tr>
-                                            <th class="py-4 px-4">Sản phẩm</th>
-                                            <th class="py-4 px-2">Đơn giá</th>
-                                            <th class="py-4 px-2">Số lượng</th>
-                                            <th class="py-4 px-2">Thành tiền</th>
-                                            <th class="py-4 px-2"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-100">
-                                        ${itemsHtml}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="p-6 bg-gray-50 flex flex-col md:flex-row justify-end items-center gap-6">
-                                <div class="text-xl">Tổng cộng: <span class="font-bold text-accent text-2xl ml-2">${total.toLocaleString('vi-VN')}₫</span></div>
-                                <button onclick="app.navigate('checkout')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-10 rounded-full shadow-lg transition transform hover:-translate-y-1 w-full md:w-auto">
-                                    Tiến Hành Thanh Toán
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                this.container.innerHTML = `<div class="max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-secondary mb-6 text-center">Giỏ Hàng</h2><div class="bg-white rounded-xl shadow overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-blue-50 text-secondary text-xs uppercase"><tr><th class="py-3 px-2">Sản phẩm</th><th class="py-3 px-2">Giá</th><th class="py-3 px-2">SL</th><th class="py-3 px-2">Tổng</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><div class="p-6 bg-gray-50 flex flex-col sm:flex-row justify-end items-center gap-4"><div class="text-lg">Tổng: <span class="font-bold text-accent text-xl">${total.toLocaleString('vi-VN')}₫</span></div><button onclick="app.navigate('checkout')" class="bg-primary text-white font-bold py-2 px-8 rounded-full shadow w-full sm:w-auto">Thanh Toán</button></div></div></div>`;
             },
 
-            // --- VIEW: CHECKOUT (Thanh toán) ---
             renderCheckout() {
-                this.container.innerHTML = `
-                    <div class="animate-fade-in max-w-2xl mx-auto">
-                        <h2 class="text-3xl font-bold text-secondary brand-font mb-8 text-center">Thông Tin Giao Hàng</h2>
-                        <form onsubmit="app.processCheckout(event)" class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 space-y-6">
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Họ và tên</label>
-                                <input type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" placeholder="Nguyễn Văn A">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Số điện thoại</label>
-                                <input type="tel" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" placeholder="0912...">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Địa chỉ nhận hàng</label>
-                                <textarea rows="3" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" placeholder="Số nhà, đường, xã/phường..."></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Ghi chú (Tùy chọn)</label>
-                                <textarea rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition" placeholder="Giao giờ hành chính..."></textarea>
-                            </div>
-                            
-                            <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-lg shadow-lg text-lg transition transform hover:-translate-y-1 mt-4">
-                                Xác Nhận Đặt Hàng
-                            </button>
-                            <button type="button" onclick="app.navigate('cart')" class="w-full text-center text-gray-500 hover:text-primary mt-4 underline text-sm">
-                                Quay lại giỏ hàng
-                            </button>
-                        </form>
-                    </div>
-                `;
+                this.container.innerHTML = `<div class="max-w-xl mx-auto"><h2 class="text-2xl font-bold text-secondary mb-6 text-center">Thông Tin Giao Hàng</h2><form onsubmit="app.processCheckout(event)" class="bg-white p-6 rounded-xl shadow border space-y-4"><div><label class="block font-bold text-sm mb-1">Họ tên</label><input type="text" required class="w-full border p-2 rounded"></div><div><label class="block font-bold text-sm mb-1">SĐT</label><input type="tel" required class="w-full border p-2 rounded"></div><div><label class="block font-bold text-sm mb-1">Địa chỉ</label><textarea rows="2" required class="w-full border p-2 rounded"></textarea></div><button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded shadow mt-4">Xác Nhận</button><button type="button" onclick="app.navigate('cart')" class="w-full text-center text-sm text-gray-500 underline mt-2">Quay lại</button></form></div>`;
             },
 
-            // --- ACTIONS ---
-            // Cập nhật hàm openModal để xử lý hiển thị ảnh và thumbnails
             openModal(id) {
                 const p = storeData.products.find(x => x.id === id);
-                if(!p) return;
-                
-                // Mặc định ảnh chính
-                const mainImg = document.getElementById('modal-img');
-                mainImg.src = p.img;
-                
-                // Tiêu đề, giá, mô tả
+                if (!p) return;
+                document.getElementById('modal-img').src = p.img;
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
-                
-                // Xử lý Thumbnails
-                const thumbnailsContainer = document.getElementById('modal-thumbnails');
-                thumbnailsContainer.innerHTML = ''; // Xóa ảnh cũ
-                
-                // Dùng danh sách 'images' nếu có, nếu không thì dùng ảnh chính
-                const images = (p.images && p.images.length > 0) ? p.images : [p.img];
-                
-                images.forEach((imgSrc, index) => {
-                    const thumb = document.createElement('img');
-                    thumb.src = imgSrc;
-                    thumb.classList.add('w-16', 'h-16', 'object-cover', 'rounded', 'border-2', 'border-transparent', 'cursor-pointer', 'hover:border-primary', 'transition');
-                    
-                    // Ảnh đầu tiên active
-                    if (index === 0) thumb.classList.add('thumb-selected');
-                    
-                    // Sự kiện click vào thumbnail
-                    thumb.onclick = function() {
-                        // Đổi ảnh chính
-                        mainImg.src = imgSrc;
-                        
-                        // Cập nhật style active cho thumbnails
-                        document.querySelectorAll('#modal-thumbnails img').forEach(t => {
-                            t.classList.remove('thumb-selected', 'border-primary');
-                            t.classList.add('border-transparent');
-                        });
+                const thumbs = document.getElementById('modal-thumbnails');
+                thumbs.innerHTML = '';
+                (p.images || [p.img]).forEach((src, idx) => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer transition ${idx===0?'thumb-selected border-primary':'border-transparent'}`;
+                    img.onclick = function() {
+                        document.getElementById('modal-img').src = src;
+                        thumbs.querySelectorAll('img').forEach(i => { i.classList.remove('thumb-selected', 'border-primary'); i.classList.add('border-transparent'); });
                         this.classList.add('thumb-selected', 'border-primary');
                         this.classList.remove('border-transparent');
-                    };
-                    
-                    thumbnailsContainer.appendChild(thumb);
+                    }
+                    thumbs.appendChild(img);
                 });
-
-                const btn = document.getElementById('modal-add-btn');
-                btn.onclick = () => { this.addToCart(p.id); this.closeModal(); };
-
-                const modal = document.getElementById('product-modal');
-                modal.classList.remove('hidden');
-                setTimeout(() => {
-                    modal.classList.remove('opacity-0');
-                    modal.querySelector('div').classList.remove('scale-95');
-                    modal.querySelector('div').classList.add('scale-100');
-                }, 10);
+                document.getElementById('modal-add-btn').onclick = () => { this.addToCart(p.id); this.closeModal(); };
+                const m = document.getElementById('product-modal'); m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); m.querySelector('div').classList.replace('scale-95', 'scale-100'); }, 10);
             },
+            closeModal() { const m = document.getElementById('product-modal'); m.classList.add('opacity-0'); m.querySelector('div').classList.replace('scale-100', 'scale-95'); setTimeout(() => m.classList.add('hidden'), 300); },
 
-            closeModal() {
-                const modal = document.getElementById('product-modal');
-                modal.classList.add('opacity-0');
-                modal.querySelector('div').classList.add('scale-95');
-                modal.querySelector('div').classList.remove('scale-100');
-                
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                }, 300);
-            },
-
+            // --- SỬA Ở ĐÂY: DÙNG showToast THAY VÌ alert ---
             addToCart(id) {
                 const p = storeData.products.find(x => x.id === id);
                 const item = storeData.cart.find(x => x.id === id);
-                if(item) {
-                    item.qty++;
-                } else {
-                    storeData.cart.push({...p, qty: 1});
-                }
-                this.saveCart();
-                this.updateCartCount();
-                alert(`Đã thêm "${p.name}" vào giỏ hàng!`);
+                if (item) item.qty++; else storeData.cart.push({ ...p, qty: 1 });
+                this.saveCart(); this.updateCartCount();
+                
+                // Gọi hàm hiển thị thông báo tự tắt
+                this.showToast(`Đã thêm "${p.name}" vào giỏ hàng!`); 
             },
 
-            changeQty(id, delta) {
+            changeQty(id, d) {
                 const item = storeData.cart.find(x => x.id === id);
-                if(item) {
-                    item.qty += delta;
-                    if(item.qty <= 0) {
-                        if(confirm("Xóa sản phẩm này khỏi giỏ?")) {
-                            storeData.cart = storeData.cart.filter(x => x.id !== id);
-                        } else {
-                            item.qty = 1;
-                        }
-                    }
-                }
-                this.saveCart();
-                this.renderCart(); // Re-render cart view
-                this.updateCartCount();
+                if (item) { item.qty += d; if (item.qty <= 0) if (confirm("Xóa?")) storeData.cart = storeData.cart.filter(x => x.id !== id); else item.qty = 1; }
+                this.saveCart(); this.renderCart(); this.updateCartCount();
             },
-
-            removeItem(id) {
-                if(confirm("Bạn chắc chắn muốn xóa?")) {
-                    storeData.cart = storeData.cart.filter(x => x.id !== id);
-                    this.saveCart();
-                    this.renderCart();
-                    this.updateCartCount();
-                }
-            },
-
-            processCheckout(e) {
-                e.preventDefault();
-                alert("Đặt hàng thành công! Cảm ơn quý khách đã ủng hộ ZuzuLan.");
-                storeData.cart = [];
-                this.saveCart();
-                this.updateCartCount();
-                this.navigate('home');
-            },
-
-            saveCart() {
-                localStorage.setItem("zuzulan_cart", JSON.stringify(storeData.cart));
-            },
-
-            updateCartCount() {
-                const count = storeData.cart.reduce((sum, item) => sum + item.qty, 0);
-                const el = document.getElementById('cart-count');
-                if(el) el.innerText = count;
-            }
+            removeItem(id) { if (confirm("Xóa?")) { storeData.cart = storeData.cart.filter(x => x.id !== id); this.saveCart(); this.renderCart(); this.updateCartCount(); } },
+            processCheckout(e) { e.preventDefault(); alert("Đặt hàng thành công!"); storeData.cart = []; this.saveCart(); this.updateCartCount(); this.navigate('home'); },
+            saveCart() { localStorage.setItem("zuzulan_cart", JSON.stringify(storeData.cart)); },
+            updateCartCount() { document.getElementById('cart-count').innerText = storeData.cart.reduce((s, i) => s + i.qty, 0); }
         };
 
-        // Khởi chạy ứng dụng
         window.onload = () => app.init();
     </script>
 </body>
