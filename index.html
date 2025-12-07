@@ -1,133 +1,590 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ZuzuLan Shop</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop ZuzuLan - Thời trang mọi lứa tuổi</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js cho biểu đồ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts: Playfair Display & Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-<!-- PapaParse: đọc CSV từ Google Sheets -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <!-- Cấu hình Tailwind & Custom Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5dade2', /* Xanh dương nhạt chủ đạo */
+                        primaryDark: '#2e86c1',
+                        secondary: '#34495e',
+                        bgLight: '#fcfdfe',
+                        accent: '#ff6b6b',
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
+    <style>
+        /* CSS Tùy chỉnh */
+        body {
+            background-color: #fcfdfe;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        /* Ẩn thanh cuộn cho modal */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 </head>
-<body>
+<body class="text-gray-700 flex flex-col min-h-screen">
 
-<header>
-  <div class="top-row">
-    <div class="logo">
-      <img src="images/logo.jpg">
-      <div class="brand">ZuzuLan</div>
+    <!-- TOP BAR: MARQUEE -->
+    <div class="bg-primary text-white py-2 font-bold text-lg overflow-hidden">
+        <marquee direction="left" scrollamount="12">
+            Shop quần áo Zuzulan chào quý khách, chúc quý khách mua sắm vui vẻ
+        </marquee>
     </div>
-    <div class="header-actions">
-      <div class="icon-btn">🛒</div>
-    </div>
-  </div>
 
-  <div class="search-wrap">
-    <div class="search">
-      <span>🔎</span>
-      <input id="searchInput" placeholder="Tìm sản phẩm..." oninput="applyFilter()">
-    </div>
-  </div>
-</header>
+    <!-- HEADER & NAVIGATION -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="app.navigate('home')">
+                <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-primary">
+                    <img src="images/logo.jpg" alt="ZuzuLan" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
+                </div>
+                <div class="text-2xl font-bold text-primary brand-font uppercase tracking-wider hidden sm:block">
+                    ZuzuLan
+                </div>
+            </div>
 
-<!-- Categories -->
-<div class="cats">
-  <div class="cat" onclick="setCat('all')">Tất cả</div>
-  <div class="cat" onclick="setCat('kids')">Trẻ em</div>
-  <div class="cat" onclick="setCat('adult')">Người lớn</div>
-  <div class="cat" onclick="setCat('winter')">Đồ đông</div>
-</div>
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex gap-8">
+                <button onclick="app.navigate('home')" class="nav-link text-lg font-bold text-secondary hover:text-primary transition">Bảng Tin</button>
+                <button onclick="app.navigate('shop')" class="nav-link text-lg font-bold text-secondary hover:text-primary transition">Cửa Hàng</button>
+                <button onclick="app.navigate('cart')" class="nav-link text-lg font-bold text-secondary hover:text-primary transition">Giỏ Hàng</button>
+            </nav>
 
-<!-- Product grid -->
-<div class="grid" id="productGrid"></div>
-
-<script>
-/* ===========================================
-      1. Load sản phẩm từ Google Sheets
-=========================================== */
-
-// ⚠️ THAY ID GOOGLE SHEETS CỦA BẠN VÀO ĐÂY
-const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/export?format=csv";
-
-let products = [];
-let currentCategory = "all";
-
-fetch(SHEET_URL)
-  .then(res => res.text())
-  .then(csv => {
-    let data = Papa.parse(csv, {header: true}).data;
-
-    // chuyển dữ liệu thành object
-    products = data.map(p => ({
-      id: Number(p.id),
-      name: p.name,
-      price: Number(p.price),
-      cat: p.cat,
-      img: "images/" + p.img,     // tự gắn thư mục images/
-      desc: p.desc
-    }));
-
-    render(products);
-  });
-
-/* ===========================================
-        2. Render sản phẩm
-=========================================== */
-function render(list){
-  let grid = document.getElementById("productGrid");
-  grid.innerHTML = "";
-
-  list.forEach(p => {
-    let card = `
-      <div class="card">
-        <img src="${p.img}" loading="lazy">
-        <div class="card-body">
-          <div class="p-title">${p.name}</div>
-          <div class="p-price">${p.price.toLocaleString("vi-VN")}₫</div>
+            <!-- Cart & Mobile Menu Button -->
+            <div class="flex items-center gap-4">
+                <div class="relative cursor-pointer" onclick="app.navigate('cart')">
+                    <span class="text-3xl">🛒</span>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-accent text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">0</span>
+                </div>
+                <button class="md:hidden text-2xl text-primary" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">☰</button>
+            </div>
         </div>
-      </div>
-    `;
-    grid.innerHTML += card;
-  });
-}
 
-/* ===========================================
-        3. Lọc theo danh mục
-=========================================== */
-function setCat(cat){
-  currentCategory = cat;
-  applyFilter();
-}
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 p-4 shadow-lg absolute w-full z-40">
+            <div class="flex flex-col gap-3">
+                <button onclick="app.navigate('home')" class="text-left font-bold text-secondary py-2">Bảng Tin</button>
+                <button onclick="app.navigate('shop')" class="text-left font-bold text-secondary py-2">Cửa Hàng</button>
+                <button onclick="app.navigate('cart')" class="text-left font-bold text-secondary py-2">Giỏ Hàng</button>
+            </div>
+        </div>
+    </header>
 
-function applyFilter(){
-  let q = document.getElementById("searchInput").value.toLowerCase();
+    <!-- MAIN CONTENT AREA -->
+    <main id="app-container" class="flex-grow container mx-auto px-4 py-8">
+        <!-- Content will be injected here by JS -->
+    </main>
 
-  let filtered = products.filter(p =>
-    (currentCategory === "all" || p.cat === currentCategory) &&
-    (p.name.toLowerCase().includes(q) ||
-     p.desc.toLowerCase().includes(q))
-  );
+    <!-- FOOTER -->
+    <footer class="bg-gray-800 text-white py-10 mt-auto">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Về ZuzuLan</h3>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    Nơi hội tụ những phong cách thời trang mới nhất dành cho bé và gia đình. Chất lượng là ưu tiên hàng đầu của chúng tôi.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Liên Hệ</h3>
+                <ul class="text-gray-300 text-sm space-y-2">
+                    <li>📍 Xóm 1, Cống Lao, Nam Thanh, Nam Đàn, NA</li>
+                    <li>📞 096 3456 108</li>
+                    <li>✉️ support@zuzulan.vn</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Thống Kê</h3>
+                <p class="text-gray-300 text-sm">Đang phục vụ hàng ngàn khách hàng trên toàn quốc.</p>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 text-xs mt-10 pt-4 border-t border-gray-700">
+            © 2025 Shop ZuzuLan. Designed for Interactive Experience.
+        </div>
+    </footer>
 
-  render(filtered);
-}
+    <!-- MODAL POPUP (Ẩn mặc định) -->
+    <div id="product-modal" class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row relative transform transition-transform duration-300 scale-95">
+            <button onclick="app.closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold z-10">&times;</button>
+            
+            <!-- Modal Image -->
+            <div class="w-full md:w-1/2 bg-gray-100 flex items-center justify-center p-4 h-64 md:h-auto">
+                <img id="modal-img" src="" class="max-h-full max-w-full object-contain shadow-lg rounded-lg">
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto no-scrollbar">
+                <h2 id="modal-title" class="text-3xl font-bold text-secondary brand-font mb-2"></h2>
+                <div class="text-primary font-bold text-2xl mb-4" id="modal-price"></div>
+                
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-800 mb-2">Mô tả sản phẩm:</h4>
+                    <p id="modal-desc" class="text-gray-600 italic leading-relaxed"></p>
+                </div>
 
-/* ===========================================
-        4. Toast nhỏ (thông báo)
-=========================================== */
-function toast(msg){
-  let t = document.createElement("div");
-  t.className = "toast";
-  t.innerText = msg;
-  document.body.appendChild(t);
+                <div class="mb-8">
+                    <h4 class="font-bold text-gray-800 mb-2">Cam kết chất lượng:</h4>
+                    <ul class="list-disc list-inside text-gray-600 text-sm space-y-1">
+                        <li>Vải cotton/lụa/nỉ cao cấp, an toàn cho da.</li>
+                        <li>Đường may tỉ mỉ, chuẩn form dáng.</li>
+                        <li>Đổi trả miễn phí trong vòng 7 ngày.</li>
+                    </ul>
+                </div>
 
-  setTimeout(()=>{ t.style.opacity=0 },1000);
-  setTimeout(()=>{ t.remove() },1400);
-}
+                <div class="mt-auto">
+                    <button id="modal-add-btn" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
+                        Thêm vào giỏ hàng ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-</script>
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. DATA STORAGE (Dữ liệu nguồn - Sửa trực tiếp tại đây) ---
+        const storeData = {
+            products: [
+                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", img: "images/product2.jpg", desc: "Áo len sọc phong cách Hàn Quốc, giữ ấm tốt, chất liệu len cừu mềm mại." },
+                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", img: "images/product3.jpg", desc: "Quần caro ống rộng thời thượng, hack dáng cực đỉnh, vải thô đũi thoáng mát." },
+                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", img: "images/product4.jpg", desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, mũ lông tháo rời tiện lợi." },
+                { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", img: "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Váy+Elsa", desc: "Váy đầm công chúa lộng lẫy, đính kim sa lấp lánh cho bé đi dự tiệc." },
+                { id: 5, name: "Bộ Đồ Thun Lạnh Bé Trai", price: 110000, category: "kids", img: "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Đồ+Bé+Trai", desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi, co giãn 4 chiều." },
+                { id: 6, name: "Áo Sơ Mi Nam Công Sở", price: 250000, category: "adult", img: "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=Sơ+Mi+Nam", desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit lịch lãm." },
+                { id: 7, name: "Áo Hoodie Teen", price: 195000, category: "adult", img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn, hình in sắc nét." },
+                { id: 8, name: "Set Dạ Tweed Mẹ & Bé", price: 450000, category: "adult", img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", desc: "Set dạ Tweed sang chảnh diện tết, thiết kế tiểu thư đài các." }
+            ],
+            cart: JSON.parse(localStorage.getItem("zuzulan_cart")) || []
+        };
 
+        // --- 2. CORE APPLICATION LOGIC ---
+        const app = {
+            container: document.getElementById('app-container'),
+            
+            init() {
+                this.updateCartCount();
+                this.navigate('home'); // Mặc định vào trang Dashboard/Home
+            },
+
+            // Navigation Router
+            navigate(view) {
+                this.container.innerHTML = ''; // Clear content
+                
+                document.getElementById('mobile-menu').classList.add('hidden'); // Đóng menu mobile
+
+                switch(view) {
+                    case 'home':
+                        this.renderDashboard();
+                        break;
+                    case 'shop':
+                        this.renderShop();
+                        break;
+                    case 'cart':
+                        this.renderCart();
+                        break;
+                    case 'checkout':
+                        this.renderCheckout();
+                        break;
+                }
+                window.scrollTo(0, 0);
+            },
+
+            // --- VIEW: DASHBOARD (Trang chủ phân tích) ---
+            renderDashboard() {
+                const totalProducts = storeData.products.length;
+                const catCounts = { kids: 0, adult: 0, winter: 0 };
+                storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
+
+                const html = `
+                    <div class="space-y-12">
+                        <!-- Hero Section -->
+                        <div class="text-center py-12 bg-gradient-to-r from-blue-50 to-blue-100 rounded-3xl shadow-sm">
+                            <h1 class="text-4xl md:text-5xl font-bold text-primaryDark mb-4 brand-font italic">Shop ZuzuLan</h1>
+                            <p class="text-xl text-secondary mb-8 brand-font italic max-w-2xl mx-auto">"Phong cách của bạn, niềm vui của chúng tôi."</p>
+                            <button onclick="app.navigate('shop')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105">
+                                Khám Phá Ngay
+                            </button>
+                        </div>
+
+                        <!-- Analysis Charts Section (Visual Data) -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                                <h3 class="text-xl font-bold text-secondary mb-4 brand-font">Phân Bố Danh Mục</h3>
+                                <div class="chart-container">
+                                    <canvas id="categoryChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center">
+                                <h3 class="text-xl font-bold text-secondary mb-4 brand-font">Thống Kê Nhanh</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg text-center">
+                                        <div class="text-3xl font-bold text-primary">${totalProducts}</div>
+                                        <div class="text-sm text-gray-600">Tổng Sản Phẩm</div>
+                                    </div>
+                                    <div class="bg-pink-50 p-4 rounded-lg text-center">
+                                        <div class="text-3xl font-bold text-accent">3</div>
+                                        <div class="text-sm text-gray-600">Danh Mục Chính</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Featured Products Teaser -->
+                        <div>
+                            <div class="flex justify-between items-end mb-6">
+                                <h2 class="text-3xl font-bold text-secondary brand-font">Sản Phẩm Mới</h2>
+                                <button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                                ${storeData.products.slice(0, 4).map(p => this.createProductCard(p)).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                this.container.innerHTML = html;
+
+                // Initialize Chart
+                const ctx = document.getElementById('categoryChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Trẻ Em', 'Người Lớn', 'Mùa Đông'],
+                        datasets: [{
+                            data: [catCounts.kids, catCounts.adult, catCounts.winter],
+                            backgroundColor: ['#5dade2', '#34495e', '#a0aec0'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            },
+
+            // --- VIEW: SHOP (Cửa hàng) ---
+            renderShop() {
+                const html = `
+                    <div class="space-y-8">
+                        <div class="text-center">
+                            <h2 class="text-3xl font-bold text-secondary brand-font mb-2">Cửa Hàng</h2>
+                            <p class="text-gray-500 italic">Tìm kiếm phong cách yêu thích của bạn</p>
+                        </div>
+
+                        <!-- Filter & Search Bar -->
+                        <div class="flex flex-col md:flex-row justify-center gap-4">
+                            <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm quần áo..." 
+                                class="w-full md:w-80 px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 transition shadow-sm"
+                                oninput="app.filterProducts()">
+                            
+                            <select id="categoryFilter" 
+                                class="w-full md:w-60 px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:border-primary bg-white shadow-sm cursor-pointer"
+                                onchange="app.filterProducts()">
+                                <option value="all">Tất cả danh mục</option>
+                                <option value="kids">Thời trang Trẻ em</option>
+                                <option value="adult">Thời trang Người lớn</option>
+                                <option value="winter">Đồ Mùa Đông</option>
+                            </select>
+                        </div>
+
+                        <!-- Product Grid Area -->
+                        <div id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            ${storeData.products.map(p => this.createProductCard(p)).join('')}
+                        </div>
+                    </div>
+                `;
+                this.container.innerHTML = html;
+            },
+
+            // Helper: Create HTML for a single product card
+            createProductCard(p) {
+                return `
+                    <div class="product-card bg-white rounded-xl overflow-hidden shadow border border-gray-50 flex flex-col h-full group">
+                        <div class="relative overflow-hidden cursor-pointer h-64 bg-gray-100" onclick="app.openModal(${p.id})">
+                            <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.src='https://via.placeholder.com/300x300?text=IMG'">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-grow text-center">
+                            <h3 class="text-lg font-bold text-secondary mb-2 line-clamp-2 h-14 overflow-hidden">${p.name}</h3>
+                            <div class="text-accent font-bold text-xl mb-4">${p.price.toLocaleString('vi-VN')}₫</div>
+                            <button onclick="app.addToCart(${p.id})" class="mt-auto w-full border-2 border-primary text-primary font-bold py-2 rounded-full hover:bg-primary hover:text-white transition duration-300 uppercase text-sm tracking-wide">
+                                Thêm vào giỏ
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            filterProducts() {
+                const search = document.getElementById('searchInput').value.toLowerCase();
+                const cat = document.getElementById('categoryFilter').value;
+                const grid = document.getElementById('shop-grid');
+
+                const filtered = storeData.products.filter(p => {
+                    const matchSearch = p.name.toLowerCase().includes(search);
+                    const matchCat = cat === 'all' || p.category === cat;
+                    return matchSearch && matchCat;
+                });
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">Không tìm thấy sản phẩm nào phù hợp.</div>`;
+                } else {
+                    grid.innerHTML = filtered.map(p => this.createProductCard(p)).join('');
+                }
+            },
+
+            // --- VIEW: CART (Giỏ hàng) ---
+            renderCart() {
+                if (storeData.cart.length === 0) {
+                    this.container.innerHTML = `
+                        <div class="flex flex-col items-center justify-center py-20">
+                            <div class="text-6xl mb-4">🛒</div>
+                            <h2 class="text-2xl font-bold text-secondary mb-2 brand-font">Giỏ hàng trống</h2>
+                            <p class="text-gray-500 mb-8">Hãy chọn những món đồ xinh xắn cho bé và gia đình nhé!</p>
+                            <button onclick="app.navigate('shop')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow transition">
+                                Quay lại cửa hàng
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let total = 0;
+                const itemsHtml = storeData.cart.map(item => {
+                    total += item.price * item.qty;
+                    return `
+                        <tr class="border-b border-gray-50 hover:bg-blue-50 transition">
+                            <td class="py-4 px-2">
+                                <div class="flex items-center gap-4">
+                                    <img src="${item.img}" class="w-16 h-16 rounded-md object-cover shadow-sm hidden sm:block" onerror="this.src='https://via.placeholder.com/60'">
+                                    <span class="font-bold text-secondary">${item.name}</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-2 text-gray-600">${item.price.toLocaleString('vi-VN')}₫</td>
+                            <td class="py-4 px-2">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="app.changeQty(${item.id}, -1)" class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100 flex items-center justify-center font-bold">-</button>
+                                    <span class="font-bold w-6 text-center">${item.qty}</span>
+                                    <button onclick="app.changeQty(${item.id}, 1)" class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100 flex items-center justify-center font-bold">+</button>
+                                </div>
+                            </td>
+                            <td class="py-4 px-2 font-bold text-accent">${(item.price * item.qty).toLocaleString('vi-VN')}₫</td>
+                            <td class="py-4 px-2 text-right">
+                                <button onclick="app.removeItem(${item.id})" class="text-red-400 hover:text-red-600 font-bold text-xl">&times;</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                this.container.innerHTML = `
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-3xl font-bold text-secondary brand-font mb-8 text-center">Giỏ Hàng Của Bạn</h2>
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left">
+                                    <thead class="bg-blue-50 text-secondary uppercase text-sm">
+                                        <tr>
+                                            <th class="py-4 px-4">Sản phẩm</th>
+                                            <th class="py-4 px-2">Đơn giá</th>
+                                            <th class="py-4 px-2">Số lượng</th>
+                                            <th class="py-4 px-2">Thành tiền</th>
+                                            <th class="py-4 px-2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                                        ${itemsHtml}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="p-6 bg-gray-50 flex flex-col md:flex-row justify-end items-center gap-6">
+                                <div class="text-xl">Tổng cộng: <span class="font-bold text-accent text-2xl ml-2">${total.toLocaleString('vi-VN')}₫</span></div>
+                                <button onclick="app.navigate('checkout')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-10 rounded-full shadow-lg transition transform hover:-translate-y-1 w-full md:w-auto">
+                                    Tiến Hành Thanh Toán
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            // --- VIEW: CHECKOUT (Thanh toán) ---
+            renderCheckout() {
+                this.container.innerHTML = `
+                    <div class="max-w-2xl mx-auto">
+                        <h2 class="text-3xl font-bold text-secondary brand-font mb-8 text-center">Thông Tin Giao Hàng</h2>
+                        <form onsubmit="app.processCheckout(event)" class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 space-y-6">
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Họ và tên</label>
+                                <input type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" placeholder="Nguyễn Văn A">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Số điện thoại</label>
+                                <input type="tel" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" placeholder="0912...">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Địa chỉ nhận hàng</label>
+                                <textarea rows="3" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" placeholder="Số nhà, đường, xã/phường..."></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Ghi chú (Tùy chọn)</label>
+                                <textarea rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition" placeholder="Giao giờ hành chính..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-lg shadow-lg text-lg transition transform hover:-translate-y-1 mt-4">
+                                Xác Nhận Đặt Hàng
+                            </button>
+                            <button type="button" onclick="app.navigate('cart')" class="w-full text-center text-gray-500 hover:text-primary mt-4 underline text-sm">
+                                Quay lại giỏ hàng
+                            </button>
+                        </form>
+                    </div>
+                `;
+            },
+
+            // --- ACTIONS ---
+            openModal(id) {
+                const p = storeData.products.find(x => x.id === id);
+                if(!p) return;
+                
+                document.getElementById('modal-img').src = p.img;
+                document.getElementById('modal-title').innerText = p.name;
+                document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
+                document.getElementById('modal-desc').innerText = p.desc;
+                
+                const btn = document.getElementById('modal-add-btn');
+                btn.onclick = () => { this.addToCart(p.id); this.closeModal(); };
+
+                const modal = document.getElementById('product-modal');
+                modal.classList.remove('hidden');
+                // Timeout nhỏ để CSS transition hoạt động mượt mà
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.querySelector('div').classList.remove('scale-95');
+                    modal.querySelector('div').classList.add('scale-100');
+                }, 10);
+            },
+
+            closeModal() {
+                const modal = document.getElementById('product-modal');
+                modal.classList.add('opacity-0');
+                modal.querySelector('div').classList.add('scale-95');
+                modal.querySelector('div').classList.remove('scale-100');
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            },
+
+            addToCart(id) {
+                const p = storeData.products.find(x => x.id === id);
+                const item = storeData.cart.find(x => x.id === id);
+                if(item) {
+                    item.qty++;
+                } else {
+                    storeData.cart.push({...p, qty: 1});
+                }
+                this.saveCart();
+                this.updateCartCount();
+                alert(`Đã thêm "${p.name}" vào giỏ hàng!`);
+            },
+
+            changeQty(id, delta) {
+                const item = storeData.cart.find(x => x.id === id);
+                if(item) {
+                    item.qty += delta;
+                    if(item.qty <= 0) {
+                        if(confirm("Xóa sản phẩm này khỏi giỏ?")) {
+                            storeData.cart = storeData.cart.filter(x => x.id !== id);
+                        } else {
+                            item.qty = 1;
+                        }
+                    }
+                }
+                this.saveCart();
+                this.renderCart(); // Re-render cart view
+                this.updateCartCount();
+            },
+
+            removeItem(id) {
+                if(confirm("Bạn chắc chắn muốn xóa?")) {
+                    storeData.cart = storeData.cart.filter(x => x.id !== id);
+                    this.saveCart();
+                    this.renderCart();
+                    this.updateCartCount();
+                }
+            },
+
+            processCheckout(e) {
+                e.preventDefault();
+                alert("Đặt hàng thành công! Cảm ơn quý khách đã ủng hộ ZuzuLan.");
+                storeData.cart = [];
+                this.saveCart();
+                this.updateCartCount();
+                this.navigate('home');
+            },
+
+            saveCart() {
+                localStorage.setItem("zuzulan_cart", JSON.stringify(storeData.cart));
+            },
+
+            updateCartCount() {
+                const count = storeData.cart.reduce((sum, item) => sum + item.qty, 0);
+                const el = document.getElementById('cart-count');
+                if(el) el.innerText = count;
+            }
+        };
+
+        // Khởi chạy ứng dụng
+        window.onload = () => app.init();
+    </script>
 </body>
 </html>
