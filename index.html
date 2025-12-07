@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZuzuLan Shop</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<!-- PapaParse: đọc CSV từ Google Sheets -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+</head>
+<body>
+
+<header>
+  <div class="top-row">
+    <div class="logo">
+      <img src="images/logo.jpg">
+      <div class="brand">ZuzuLan</div>
+    </div>
+    <div class="header-actions">
+      <div class="icon-btn">🛒</div>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search">
+      <span>🔎</span>
+      <input id="searchInput" placeholder="Tìm sản phẩm..." oninput="applyFilter()">
+    </div>
+  </div>
+</header>
+
+<!-- Categories -->
+<div class="cats">
+  <div class="cat" onclick="setCat('all')">Tất cả</div>
+  <div class="cat" onclick="setCat('kids')">Trẻ em</div>
+  <div class="cat" onclick="setCat('adult')">Người lớn</div>
+  <div class="cat" onclick="setCat('winter')">Đồ đông</div>
+</div>
+
+<!-- Product grid -->
+<div class="grid" id="productGrid"></div>
+
+<script>
+/* ===========================================
+      1. Load sản phẩm từ Google Sheets
+=========================================== */
+
+// ⚠️ THAY ID GOOGLE SHEETS CỦA BẠN VÀO ĐÂY
+const SHEET_URL =
+  "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/export?format=csv";
+
+let products = [];
+let currentCategory = "all";
+
+fetch(SHEET_URL)
+  .then(res => res.text())
+  .then(csv => {
+    let data = Papa.parse(csv, {header: true}).data;
+
+    // chuyển dữ liệu thành object
+    products = data.map(p => ({
+      id: Number(p.id),
+      name: p.name,
+      price: Number(p.price),
+      cat: p.cat,
+      img: "images/" + p.img,     // tự gắn thư mục images/
+      desc: p.desc
+    }));
+
+    render(products);
+  });
+
+/* ===========================================
+        2. Render sản phẩm
+=========================================== */
+function render(list){
+  let grid = document.getElementById("productGrid");
+  grid.innerHTML = "";
+
+  list.forEach(p => {
+    let card = `
+      <div class="card">
+        <img src="${p.img}" loading="lazy">
+        <div class="card-body">
+          <div class="p-title">${p.name}</div>
+          <div class="p-price">${p.price.toLocaleString("vi-VN")}₫</div>
+        </div>
+      </div>
+    `;
+    grid.innerHTML += card;
+  });
+}
+
+/* ===========================================
+        3. Lọc theo danh mục
+=========================================== */
+function setCat(cat){
+  currentCategory = cat;
+  applyFilter();
+}
+
+function applyFilter(){
+  let q = document.getElementById("searchInput").value.toLowerCase();
+
+  let filtered = products.filter(p =>
+    (currentCategory === "all" || p.cat === currentCategory) &&
+    (p.name.toLowerCase().includes(q) ||
+     p.desc.toLowerCase().includes(q))
+  );
+
+  render(filtered);
+}
+
+/* ===========================================
+        4. Toast nhỏ (thông báo)
+=========================================== */
+function toast(msg){
+  let t = document.createElement("div");
+  t.className = "toast";
+  t.innerText = msg;
+  document.body.appendChild(t);
+
+  setTimeout(()=>{ t.style.opacity=0 },1000);
+  setTimeout(()=>{ t.remove() },1400);
+}
+
+</script>
+
+</body>
+</html>

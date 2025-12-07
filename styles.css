@@ -1,0 +1,45 @@
+:root{
+  --primary:#9bd3ec;
+  --primary-dark:#59a9d0;
+  --accent:#ff6b6b;
+  --muted:#8b98a6;
+  --bg:#fbfcfd;
+  --card:#ffffff;
+  --radius:14px;
+  --shadow: 0 8px 24px rgba(14,40,55,0.06);
+  font-family: "Nunito",system-ui,Arial;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#0b1520}
+
+/* Header */
+header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #eee}
+.top-row{display:flex;align-items:center;gap:12px;padding:10px 14px;}
+.logo img{height:44px;border-radius:8px}
+.brand{font-weight:800;color:var(--primary-dark);font-size:1.1rem}
+.header-actions{margin-left:auto;display:flex;gap:12px}
+.icon-btn{width:40px;height:40px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+
+/* Search */
+.search-wrap{padding:12px 14px;}
+.search{background:#fff;border-radius:12px;padding:10px;display:flex;gap:10px;border:1px solid #eee}
+.search input{border:0;outline:none;width:100%}
+
+/* Categories */
+.cats{display:flex;gap:8px;overflow:auto;padding:14px 6px;}
+.cat{min-width:100px;background:#fff;padding:12px;border-radius:12px;box-shadow:var(--shadow);text-align:center;font-weight:700;color:var(--primary-dark)}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:12px}
+.card{background:#fff;border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.card img{width:100%;height:160px;object-fit:cover}
+.card-body{padding:10px}
+.p-title{font-size:14px;font-weight:700;height:32px;overflow:hidden;color:var(--primary-dark)}
+.p-price{color:var(--accent);font-weight:900;margin-top:4px}
+
+/* Toast */
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:80px;padding:10px 14px;background:rgba(0,0,0,0.8);
+  color:#fff;border-radius:12px;z-index:9999;opacity:1;transition:.3s;
+}
