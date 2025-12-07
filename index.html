@@ -76,7 +76,8 @@
             <!-- Logo -->
             <div class="flex items-center gap-3 cursor-pointer" onclick="app.navigate('home')">
                 <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-primary">
-                    <img src="images/logo.jpg" alt="ZuzuLan" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
+                    <!-- SỬA ĐƯỜNG DẪN ẢNH LOGO -->
+                    <img src="logo.jpg" alt="ZuzuLan" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
                 </div>
                 <div class="text-2xl font-bold text-primary font-serif uppercase tracking-wider hidden sm:block">
                     ZuzuLan
@@ -158,7 +159,7 @@
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION (Sửa màu nền thành xanh lá để dễ nhìn) -->
+    <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-full shadow-2xl opacity-0 pointer-events-none z-[200] flex items-center gap-3 border-2 border-white">
         <span class="text-xl bg-white rounded-full w-6 h-6 flex items-center justify-center text-green-600 text-xs">✓</span>
         <span id="toast-message" class="font-bold">Đã thêm vào giỏ hàng</span>
@@ -166,12 +167,12 @@
 
     <!-- SCRIPT -->
     <script>
-        // DỮ LIỆU SẢN PHẨM (Có danh sách ảnh chi tiết trong 'images')
+        // DỮ LIỆU SẢN PHẨM (ĐÃ SỬA ĐƯỜNG DẪN ẢNH ĐỂ CÙNG THƯ MỤC)
         const storeData = {
             products: [
-                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", img: "images/product2.jpg", images: ["images/product2.jpg", "https://via.placeholder.com/400x400/eee/333?text=Anh+Sau", "https://via.placeholder.com/400x400/eee/333?text=Chi+Tiet"], desc: "Áo len sọc phong cách Hàn Quốc, chất len mềm mịn." },
-                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", img: "images/product3.jpg", images: ["images/product3.jpg", "https://via.placeholder.com/400x400/eee/333?text=Mau+Khac"], desc: "Quần caro ống rộng thời thượng, vải thô đũi thoáng mát." },
-                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", img: "images/product4.jpg", images: ["images/product4.jpg", "https://via.placeholder.com/400x400/eee/333?text=Ben+Trong"], desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, ấm áp." },
+                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", img: "product2.jpg", images: ["product2.jpg", "https://via.placeholder.com/400x400/eee/333?text=Anh+Sau", "https://via.placeholder.com/400x400/eee/333?text=Chi+Tiet"], desc: "Áo len sọc phong cách Hàn Quốc, chất len mềm mịn." },
+                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", img: "product3.jpg", images: ["product3.jpg", "https://via.placeholder.com/400x400/eee/333?text=Mau+Khac"], desc: "Quần caro ống rộng thời thượng, vải thô đũi thoáng mát." },
+                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", img: "product4.jpg", images: ["product4.jpg", "https://via.placeholder.com/400x400/eee/333?text=Ben+Trong"], desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, ấm áp." },
                 { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", img: "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Váy+Elsa", images: ["https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Váy+Elsa", "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Mat+Sau"], desc: "Váy đầm công chúa lộng lẫy cho bé đi dự tiệc." },
                 { id: 5, name: "Bộ Đồ Thun Lạnh Bé Trai", price: 110000, category: "kids", img: "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Do+Be+Trai", images: ["https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Do+Be+Trai", "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Hinh+In"], desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi." },
                 { id: 6, name: "Áo Sơ Mi Nam Công Sở", price: 250000, category: "adult", img: "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=So+Mi+Nam", images: ["https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=So+Mi+Nam"], desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit." },
@@ -189,12 +190,10 @@
                 this.navigate('home');
             },
 
-            // Hàm hiện thông báo (màu xanh lá)
             showToast(message, isError = false) {
                 const toast = document.getElementById('toast');
                 const toastMsg = document.getElementById('toast-message');
                 
-                // Đổi màu nếu là lỗi (đỏ) hoặc thành công (xanh)
                 if(isError) {
                     toast.classList.remove('bg-green-600');
                     toast.classList.add('bg-red-600');
