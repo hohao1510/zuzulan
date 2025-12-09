@@ -59,7 +59,7 @@
         /* CSS NÚT SIZE */
         .size-btn {
             border: 1px solid #ddd;
-            padding: 8px 16px; /* Giảm padding một chút để gọn hơn trên mobile */
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
@@ -104,13 +104,12 @@
             z-index: 10;
         }
 
-        /* Chỉnh font chữ danh mục vừa phải, không quá to */
         .category-text {
-            font-size: 1.125rem !important; /* text-lg (~18px), phù hợp mobile hơn */
+            font-size: 1.125rem !important;
         }
         @media (min-width: 768px) {
             .category-text {
-                font-size: 1.5rem !important; /* text-2xl (~24px) trên máy tính */
+                font-size: 1.5rem !important;
             }
         }
 
@@ -144,6 +143,24 @@
             background-color: #fcfcfc;
             padding-left: 25px;
         }
+        
+        /* Style cho lựa chọn phương thức mua hàng */
+        .method-option {
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .method-option:hover {
+            border-color: #5dade2;
+            background-color: #f0f9ff;
+        }
+        .method-option.selected {
+            border-color: #5dade2;
+            background-color: #f0f9ff;
+            box-shadow: 0 4px 6px -1px rgba(93, 173, 226, 0.2);
+        }
 
     </style>
 </head>
@@ -159,7 +176,6 @@
     <!-- HEADER -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 grid grid-cols-3 items-center">
-            
             <!-- Trái: Menu -->
             <div class="justify-self-start">
                 <button class="text-3xl text-primary focus:outline-none hover:text-primaryDark transition" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
@@ -172,7 +188,6 @@
                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-primary group-hover:border-primaryDark transition p-1 bg-white">
                     <img src="logo.png" alt="ZuzuLan" class="w-full h-full object-contain rounded-full" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
                 </div>
-                <!-- Ẩn tên trên mobile rất nhỏ, hiện trên mobile vừa và lớn -->
                 <div class="text-2xl sm:text-4xl font-bold text-primary font-serif uppercase tracking-wider hidden xs:block group-hover:text-primaryDark transition">
                     ZuzuLan
                 </div>
@@ -231,23 +246,16 @@
                 <div class="flex-grow flex items-center justify-center mb-4 h-64 md:h-80 bg-white rounded-lg shadow-inner p-2">
                     <img id="modal-img" src="" class="max-h-full max-w-full object-contain transition-all duration-300">
                 </div>
-                <div class="flex gap-3 justify-center overflow-x-auto py-2 px-2" id="modal-thumbnails">
-                    <!-- JS sẽ tạo ảnh nhỏ vào đây -->
-                </div>
+                <div class="flex gap-3 justify-center overflow-x-auto py-2 px-2" id="modal-thumbnails"></div>
             </div>
             <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto no-scrollbar">
                 <h2 id="modal-title" class="text-3xl font-bold text-secondary font-serif mb-2"></h2>
                 <div class="text-primary font-bold text-2xl mb-4" id="modal-price"></div>
-                
-                <!-- KHU VỰC CHỌN SIZE -->
                 <div class="mb-6">
                     <h4 class="font-bold text-gray-800 mb-2">Kích thước:</h4>
-                    <div id="modal-sizes" class="flex flex-wrap gap-2">
-                        <!-- JS sẽ tạo nút size vào đây -->
-                    </div>
+                    <div id="modal-sizes" class="flex flex-wrap gap-2"></div>
                     <p id="size-error" class="text-red-500 text-sm mt-2 hidden animate-bounce">⚠️ Vui lòng chọn kích thước!</p>
                 </div>
-
                 <div class="mb-6"><h4 class="font-bold text-gray-800 mb-2">Mô tả:</h4><p id="modal-desc" class="text-gray-600 italic"></p></div>
                 <div class="mt-auto"><button id="modal-add-btn" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-full shadow-lg transition transform hover:-translate-y-1">Thêm vào giỏ hàng ngay</button></div>
             </div>
@@ -281,16 +289,14 @@
             container: document.getElementById('app-container'),
             currentFilter: 'all',
             selectedSize: null,
+            purchaseMethod: 'shipping', // Mặc định là giao hàng
             
             init() {
-                // TỰ ĐỘNG SỬA LỖI GIỎ HÀNG:
-                // Nếu sản phẩm trong giỏ bị lỗi cấu trúc (thiếu id hoặc size), xóa giỏ hàng đi để reset
                 const isValidCart = storeData.cart.every(item => item.id && item.price);
                 if (!isValidCart) {
                     storeData.cart = [];
                     this.saveCart();
                 }
-
                 this.updateCartCount();
                 this.navigate('home');
             },
@@ -320,7 +326,6 @@
                 switch(view) {
                     case 'home': this.renderDashboard(); break;
                     case 'shop': 
-                        // Khi chuyển trang Shop từ menu, không reset filter để giữ trải nghiệm
                         this.renderShop(); 
                         break;
                     case 'cart': this.renderCart(); break;
@@ -332,22 +337,18 @@
             filterByCategory(category) {
                 this.currentFilter = category;
                 this.renderShop();
-                // TỰ ĐỘNG CUỘN XUỐNG PHẦN SẢN PHẨM
                 const shopGrid = document.getElementById('shop-grid');
                 if (shopGrid) {
-                    // Cuộn nhẹ nhàng xuống cách header một chút
                     const headerOffset = 150; 
                     const elementPosition = shopGrid.getBoundingClientRect().top;
                     const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                    window.scrollTo({
-                         top: offsetPosition,
-                         behavior: "smooth"
-                    });
+                    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
                 }
                 document.getElementById('mobile-menu').classList.add('hidden');
             },
 
             renderNavBar(activeTab) {
+                if (activeTab === 'cart' || activeTab === 'checkout') return ''; 
                 return `
                     <div class="flex justify-center gap-2 sm:gap-4 mb-8 border-b pb-4 overflow-x-auto px-4">
                         <button onclick="app.filterByCategory('kids')" class="category-text px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'kids' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Trẻ em</button>
@@ -364,7 +365,6 @@
 
                 this.container.innerHTML = `
                     <div class="space-y-12 animate-fade-in">
-                        
                         <div class="hero-bg text-center py-20 rounded-3xl shadow-md px-6 overflow-hidden">
                             <div class="hero-overlay"></div>
                             <div class="hero-content">
@@ -373,11 +373,7 @@
                                 <button onclick="app.filterByCategory('new')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105 mb-8 border-2 border-white/30">Hàng mới về</button>
                             </div>
                         </div>
-
-                        <div class="mt-8">
-                            ${this.renderNavBar('')}
-                        </div>
-
+                        <div class="mt-8">${this.renderNavBar('')}</div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
                                 <h3 class="text-xl font-bold text-secondary mb-4">Phân Bố Danh Mục</h3>
@@ -422,13 +418,10 @@
                 this.container.innerHTML = `
                     <div class="space-y-8 animate-fade-in">
                         ${this.renderNavBar('shop')}
-                        
                         <div class="text-center"><h2 class="text-3xl font-bold text-secondary font-serif mb-2">${pageTitle}</h2></div>
-                        
                         <div class="flex flex-col md:flex-row justify-center gap-4">
                             <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm..." class="w-full md:w-80 px-4 py-3 border rounded-full focus:outline-none focus:border-primary shadow-sm" oninput="app.filterProducts()">
                         </div>
-                        
                         <div id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             ${filteredProducts.length > 0 ? filteredProducts.map(p => this.createProductCard(p)).join('') : '<div class="col-span-full text-center py-10 text-gray-500">Không tìm thấy sản phẩm nào.</div>'}
                         </div>
@@ -444,17 +437,77 @@
                     return;
                 }
                 let total = 0;
-                // Tạo ID duy nhất cho mỗi item trong giỏ để xóa chính xác
                 const rows = storeData.cart.map((item, index) => {
                     total += item.price * item.qty;
-                    // Sử dụng index để xóa chính xác item cụ thể
                     return `<tr class="border-b hover:bg-blue-50"><td class="py-4 px-2 flex items-center gap-3"><img src="${item.img}" class="w-12 h-12 rounded object-cover hidden sm:block" onerror="this.src='https://via.placeholder.com/60'"><div class="flex flex-col"><span class="font-bold text-sm">${item.name}</span><span class="text-xs text-gray-500">Size: ${item.size}</span></div></td><td class="py-4 px-2 text-sm">${item.price.toLocaleString('vi-VN')}₫</td><td class="py-4 px-2 flex items-center gap-1"><button onclick="app.changeQty(${index}, -1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">-</button><span class="w-6 text-center text-sm font-bold">${item.qty}</span><button onclick="app.changeQty(${index}, 1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">+</button></td><td class="py-4 px-2 font-bold text-accent text-sm">${(item.price*item.qty).toLocaleString('vi-VN')}₫</td><td class="py-4 px-2"><button onclick="app.removeItem(${index})" class="text-red-500 font-bold hover:text-red-700 text-xl">&times;</button></td></tr>`;
                 }).join('');
                 this.container.innerHTML = `${nav} <div class="max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-secondary mb-6 text-center">Giỏ Hàng</h2><div class="bg-white rounded-xl shadow overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-blue-50 text-secondary text-xs uppercase"><tr><th class="py-3 px-2">Sản phẩm</th><th class="py-3 px-2">Giá</th><th class="py-3 px-2">SL</th><th class="py-3 px-2">Tổng</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><div class="p-6 bg-gray-50 flex flex-col sm:flex-row justify-end items-center gap-4"><div class="text-lg">Tổng: <span class="font-bold text-accent text-xl">${total.toLocaleString('vi-VN')}₫</span></div><button onclick="app.navigate('checkout')" class="bg-primary text-white font-bold py-2 px-8 rounded-full shadow w-full sm:w-auto">Thanh Toán</button></div></div></div>`;
             },
 
+            // --- VIEW: CHECKOUT (Đã cập nhật lựa chọn mua hàng) ---
             renderCheckout() {
-                this.container.innerHTML = `${this.renderNavBar('')} <div class="max-w-xl mx-auto"><h2 class="text-2xl font-bold text-secondary mb-6 text-center">Thông Tin Giao Hàng</h2><form onsubmit="app.processCheckout(event)" class="bg-white p-6 rounded-xl shadow border space-y-4"><div><label class="block font-bold text-sm mb-1">Họ tên</label><input type="text" required class="w-full border p-2 rounded"></div><div><label class="block font-bold text-sm mb-1">SĐT</label><input type="tel" required class="w-full border p-2 rounded"></div><div><label class="block font-bold text-sm mb-1">Địa chỉ</label><textarea rows="2" required class="w-full border p-2 rounded"></textarea></div><button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded shadow mt-4">Xác Nhận</button><button type="button" onclick="app.navigate('cart')" class="w-full text-center text-sm text-gray-500 underline mt-2">Quay lại</button></form></div>`;
+                this.container.innerHTML = `
+                    <div class="max-w-xl mx-auto animate-fade-in">
+                        <h2 class="text-2xl font-bold text-secondary mb-6 text-center">Thông Tin Đơn Hàng</h2>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow border border-gray-100 space-y-6">
+                            
+                            <!-- Lựa chọn phương thức -->
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-3">Bạn muốn nhận hàng thế nào?</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="method-option ${this.purchaseMethod === 'hold' ? 'selected' : ''}" onclick="app.setMethod('hold')">
+                                        <div class="text-center">
+                                            <div class="text-2xl mb-1">🏬</div>
+                                            <div class="font-bold text-sm">Giữ Hàng</div>
+                                            <div class="text-xs text-gray-500">Đến shop thử</div>
+                                        </div>
+                                    </div>
+                                    <div class="method-option ${this.purchaseMethod === 'shipping' ? 'selected' : ''}" onclick="app.setMethod('shipping')">
+                                        <div class="text-center">
+                                            <div class="text-2xl mb-1">🚚</div>
+                                            <div class="font-bold text-sm">Giao Hàng</div>
+                                            <div class="text-xs text-gray-500">Ship tận nơi</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form onsubmit="app.processCheckout(event)" class="space-y-4">
+                                <div>
+                                    <label class="block font-bold text-sm mb-1">Họ tên *</label>
+                                    <input type="text" required class="w-full border p-2 rounded focus:border-primary outline-none">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-sm mb-1">Số điện thoại *</label>
+                                    <input type="tel" required class="w-full border p-2 rounded focus:border-primary outline-none">
+                                </div>
+                                
+                                <!-- Ô địa chỉ: Ẩn nếu chọn giữ hàng -->
+                                <div id="address-field" class="${this.purchaseMethod === 'hold' ? 'hidden' : ''}">
+                                    <label class="block font-bold text-sm mb-1">Địa chỉ nhận hàng *</label>
+                                    <textarea rows="2" class="w-full border p-2 rounded focus:border-primary outline-none" ${this.purchaseMethod === 'shipping' ? 'required' : ''}></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block font-bold text-sm mb-1">Ghi chú (Tùy chọn)</label>
+                                    <textarea rows="2" class="w-full border p-2 rounded focus:border-primary outline-none"></textarea>
+                                </div>
+
+                                <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded shadow mt-4 hover:bg-primaryDark transition">
+                                    ${this.purchaseMethod === 'hold' ? 'Xác Nhận Giữ Hàng' : 'Đặt Hàng Ngay'}
+                                </button>
+                            </form>
+                            <button type="button" onclick="app.navigate('cart')" class="w-full text-center text-sm text-gray-500 underline">Quay lại giỏ hàng</button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            // --- HÀM XỬ LÝ CHUYỂN ĐỔI PHƯƠNG THỨC MUA HÀNG ---
+            setMethod(method) {
+                this.purchaseMethod = method;
+                this.renderCheckout(); // Vẽ lại giao diện checkout để cập nhật form
             },
 
             createProductCard(p) {
@@ -484,17 +537,15 @@
             },
 
             openModal(id) {
-                this.selectedSize = null; // Reset size
+                this.selectedSize = null; 
                 const p = storeData.products.find(x => x.id === id);
                 if (!p) return;
-                
                 document.getElementById('modal-img').src = p.img;
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
                 document.getElementById('size-error').classList.add('hidden');
                 
-                // Render Thumbnails
                 const thumbs = document.getElementById('modal-thumbnails');
                 thumbs.innerHTML = '';
                 (p.images || [p.img]).forEach((src, idx) => {
@@ -513,7 +564,6 @@
                     thumbs.appendChild(img);
                 });
 
-                // Render Sizes
                 const sizesDiv = document.getElementById('modal-sizes');
                 sizesDiv.innerHTML = '';
                 if(p.sizes && p.sizes.length > 0) {
@@ -550,23 +600,20 @@
 
             addToCart(id, size) {
                 const p = storeData.products.find(x => x.id === id);
-                // Tìm sản phẩm trong giỏ có cùng ID VÀ cùng Size
                 const item = storeData.cart.find(x => x.id === id && x.size === size);
                 if (item) item.qty++; 
-                else storeData.cart.push({ ...p, qty: 1, size: size }); // Lưu kèm size
+                else storeData.cart.push({ ...p, qty: 1, size: size });
                 
                 this.saveCart(); this.updateCartCount();
                 this.showToast(`Đã thêm "${p.name} (Size: ${size})" vào giỏ hàng!`);
             },
 
-            // --- SỬA LẠI LOGIC XÓA SẢN PHẨM: DÙNG INDEX ---
-            // Lý do: Khi có nhiều sản phẩm giống nhau (cùng ID, cùng Size) hoặc lỗi dữ liệu, dùng index là chính xác nhất
             changeQty(index, d) {
                 const item = storeData.cart[index];
                 if (item) {
                     item.qty += d;
                     if (item.qty <= 0) {
-                        storeData.cart.splice(index, 1); // Xóa phần tử tại vị trí index
+                        storeData.cart.splice(index, 1);
                         this.showToast("Đã xóa sản phẩm khỏi giỏ!", true); 
                     }
                 }
@@ -574,14 +621,16 @@
             },
 
             removeItem(index) {
-                storeData.cart.splice(index, 1); // Xóa phần tử tại vị trí index
+                storeData.cart.splice(index, 1); 
                 this.saveCart(); this.renderCart(); this.updateCartCount();
                 this.showToast("Đã xóa sản phẩm!", true);
             },
 
             processCheckout(e) { 
                 e.preventDefault(); 
-                this.showToast("Đặt hàng thành công!"); 
+                // Thông báo khác nhau tùy theo phương thức mua
+                const msg = this.purchaseMethod === 'hold' ? "Đã giữ hàng thành công! Vui lòng ghé shop sớm nhé." : "Đặt hàng thành công! Chúng tôi sẽ giao sớm.";
+                this.showToast(msg); 
                 storeData.cart = []; 
                 this.saveCart(); 
                 this.updateCartCount(); 
