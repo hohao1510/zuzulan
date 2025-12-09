@@ -56,32 +56,52 @@
             opacity: 1;
         }
         
+        /* Style cho nút chọn Size */
+        .size-btn {
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            color: #666;
+        }
+        .size-btn:hover {
+            border-color: #5dade2;
+            color: #5dade2;
+        }
+        .size-btn.active {
+            background-color: #5dade2;
+            color: white;
+            border-color: #5dade2;
+        }
+
         #toast { transition: all 0.3s ease-in-out; }
 
-        /* CSS CHO BANNER BACKGROUND */
+        /* CSS CHO BANNER BACKGROUND - Dùng banner.jpg */
         .hero-bg {
-            /* Đường dẫn ảnh banner làm nền */
-            background-image: url('banner.jpg'); 
+            background-image: url('banner.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             position: relative;
-            /* Đảm bảo chữ nổi bật trên nền ảnh */
             color: white !important; 
         }
         
-        /* Lớp phủ mờ để làm nổi chữ */
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background-color: rgba(0, 0, 0, 0.6); /* Màu đen mờ 60% */
-            border-radius: 1.5rem; /* Bo góc giống container cha */
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 1.5rem;
         }
         
-        /* Nội dung banner phải nằm trên lớp phủ */
         .hero-content {
             position: relative;
             z-index: 10;
+        }
+
+        .category-text {
+            font-size: 2rem !important;
         }
     </style>
 </head>
@@ -106,11 +126,11 @@
             </div>
 
             <!-- Giữa: Logo ZuzuLan -->
-            <div class="justify-self-center flex items-center gap-2 cursor-pointer group" onclick="app.navigate('home')">
-                <div class="w-15 h-15 rounded-full overflow-hidden border-2 border-primary group-hover:border-primaryDark transition">
-                    <img src="logo.png" alt="ZuzuLan" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
+            <div class="justify-self-center flex items-center gap-4 cursor-pointer group" onclick="app.navigate('home')">
+                <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-primary group-hover:border-primaryDark transition p-1 bg-white">
+                    <img src="logo.png" alt="ZuzuLan" class="w-full h-full object-contain rounded-full" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
                 </div>
-                <div class="text-2xl font-bold text-primary font-serif uppercase tracking-wider hidden sm:block group-hover:text-primaryDark transition">
+                <div class="text-4xl font-bold text-primary font-serif uppercase tracking-wider hidden sm:block group-hover:text-primaryDark transition">
                     ZuzuLan
                 </div>
             </div>
@@ -127,12 +147,12 @@
         <!-- Menu Mobile -->
         <div id="mobile-menu" class="hidden bg-white border-t border-gray-100 p-4 shadow-lg absolute w-full z-40">
             <div class="flex flex-col gap-3">
-                <button onclick="app.filterByCategory('kids')" class="text-left font-bold text-secondary py-2 border-b border-gray-50 hover:text-primary transition">Trẻ em</button>
-                <button onclick="app.filterByCategory('adult')" class="text-left font-bold text-secondary py-2 border-b border-gray-50 hover:text-primary transition">Nữ</button>
-                <button onclick="app.filterByCategory('men')" class="text-left font-bold text-secondary py-2 border-b border-gray-50 hover:text-primary transition">Nam</button>
-                <button onclick="app.filterByCategory('winter')" class="text-left font-bold text-secondary py-2 border-b border-gray-50 hover:text-primary transition">Đồ mùa đông</button>
-                <button onclick="app.filterByCategory('new')" class="text-left font-bold text-secondary py-2 hover:text-primary transition">Hàng mới về</button>
-                <button onclick="app.navigate('cart')" class="text-left font-bold text-accent py-2 border-t border-gray-50 mt-2">Xem Giỏ Hàng</button>
+                <button onclick="app.filterByCategory('kids')" class="text-left font-bold text-secondary py-3 text-xl border-b border-gray-50 hover:text-primary transition">Trẻ em</button>
+                <button onclick="app.filterByCategory('adult')" class="text-left font-bold text-secondary py-3 text-xl border-b border-gray-50 hover:text-primary transition">Nữ</button>
+                <button onclick="app.filterByCategory('men')" class="text-left font-bold text-secondary py-3 text-xl border-b border-gray-50 hover:text-primary transition">Nam</button>
+                <button onclick="app.filterByCategory('winter')" class="text-left font-bold text-secondary py-3 text-xl border-b border-gray-50 hover:text-primary transition">Đồ mùa đông</button>
+                <button onclick="app.filterByCategory('new')" class="text-left font-bold text-secondary py-3 text-xl hover:text-primary transition">Hàng mới về</button>
+                <button onclick="app.navigate('cart')" class="text-left font-bold text-accent py-3 text-xl border-t border-gray-50 mt-2">Xem Giỏ Hàng</button>
             </div>
         </div>
     </header>
@@ -170,11 +190,23 @@
                 <div class="flex-grow flex items-center justify-center mb-4 h-64 md:h-80 bg-white rounded-lg shadow-inner p-2">
                     <img id="modal-img" src="" class="max-h-full max-w-full object-contain transition-all duration-300">
                 </div>
-                <div class="flex gap-3 justify-center overflow-x-auto py-2 px-2" id="modal-thumbnails"></div>
+                <div class="flex gap-3 justify-center overflow-x-auto py-2 px-2" id="modal-thumbnails">
+                    <!-- JS sẽ tạo ảnh nhỏ vào đây -->
+                </div>
             </div>
             <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto no-scrollbar">
                 <h2 id="modal-title" class="text-3xl font-bold text-secondary font-serif mb-2"></h2>
                 <div class="text-primary font-bold text-2xl mb-4" id="modal-price"></div>
+                
+                <!-- KHU VỰC CHỌN SIZE MỚI -->
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-800 mb-2">Kích thước:</h4>
+                    <div id="modal-sizes" class="flex flex-wrap gap-2">
+                        <!-- JS sẽ tạo nút size vào đây -->
+                    </div>
+                    <p id="size-error" class="text-red-500 text-sm mt-1 hidden">Vui lòng chọn kích thước!</p>
+                </div>
+
                 <div class="mb-6"><h4 class="font-bold text-gray-800 mb-2">Mô tả:</h4><p id="modal-desc" class="text-gray-600 italic"></p></div>
                 <div class="mt-auto"><button id="modal-add-btn" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-full shadow-lg transition transform hover:-translate-y-1">Thêm vào giỏ hàng ngay</button></div>
             </div>
@@ -191,15 +223,15 @@
     <script>
         const storeData = {
             products: [
-                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", isNew: true, img: "product2.jpg", images: ["product2.jpg", "https://via.placeholder.com/400x400/eee/333?text=Anh+Sau", "https://via.placeholder.com/400x400/eee/333?text=Chi+Tiet"], desc: "Áo len sọc phong cách Hàn Quốc, chất len mềm mịn." },
-                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", isNew: true, img: "product3.jpg", images: ["product3.jpg", "https://via.placeholder.com/400x400/eee/333?text=Mau+Khac"], desc: "Quần caro ống rộng thời thượng, vải thô đũi thoáng mát." },
-                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", isNew: true, img: "product4.jpg", images: ["product4.jpg", "https://via.placeholder.com/400x400/eee/333?text=Ben+Trong"], desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, ấm áp." },
-                { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", isNew: true, img: "product5.jpg", images: ["product5.jpg", "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Váy+Elsa", "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Mat+Sau"], desc: "Váy đầm công chúa lộng lẫy cho bé đi dự tiệc." },
-                { id: 5, name: "Bộ Đồ Thun Lạnh Bé Trai", price: 110000, category: "kids", isNew: false, img: "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Do+Be+Trai", images: ["https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Do+Be+Trai", "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Hinh+In"], desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi." },
-                { id: 6, name: "Áo Sơ Mi Nam Công Sở", price: 250000, category: "men", isNew: false, img: "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=So+Mi+Nam", images: ["https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=So+Mi+Nam"], desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit." },
-                { id: 7, name: "Áo Hoodie Teen", price: 195000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", images: ["https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie"], desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn." },
-                { id: 8, name: "Set Dạ Tweed Mẹ & Bé", price: 450000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", images: ["https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé"], desc: "Set dạ Tweed sang chảnh diện tết." },
-                { id: 9, name: "Quần Jean Nam Rách Gối", price: 320000, category: "men", isNew: true, img: "https://via.placeholder.com/400x400/333/fff?text=Jean+Nam", images: ["https://via.placeholder.com/400x400/333/fff?text=Jean+Nam"], desc: "Quần Jean nam phong cách bụi bặm, chất bò co giãn." }
+                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", isNew: true, img: "product2.jpg", images: ["product2.jpg", "https://via.placeholder.com/400x400/eee/333?text=Anh+Sau", "https://via.placeholder.com/400x400/eee/333?text=Chi+Tiet"], sizes: ["S", "M", "L"], desc: "Áo len sọc phong cách Hàn Quốc, chất len mềm mịn." },
+                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", isNew: true, img: "product3.jpg", images: ["product3.jpg", "https://via.placeholder.com/400x400/eee/333?text=Mau+Khac"], sizes: ["M", "L", "XL"], desc: "Quần caro ống rộng thời thượng, vải thô đũi thoáng mát." },
+                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", isNew: true, img: "product4.jpg", images: ["product4.jpg", "https://via.placeholder.com/400x400/eee/333?text=Ben+Trong"], sizes: ["L", "XL", "2XL"], desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, ấm áp." },
+                { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", isNew: true, img: "product5.jpg", images: ["product5.jpg", "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Váy+Elsa", "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Mat+Sau"], sizes: ["Size 2", "Size 4", "Size 6"], desc: "Váy đầm công chúa lộng lẫy cho bé đi dự tiệc." },
+                { id: 5, name: "Bộ Đồ Thun Lạnh Bé Trai", price: 110000, category: "kids", isNew: false, img: "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Do+Be+Trai", images: ["https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Do+Be+Trai", "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Hinh+In"], sizes: ["8kg", "10kg", "12kg"], desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi." },
+                { id: 6, name: "Áo Sơ Mi Nam Công Sở", price: 250000, category: "men", isNew: false, img: "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=So+Mi+Nam", images: ["https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=So+Mi+Nam"], sizes: ["39", "40", "41", "42"], desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit." },
+                { id: 7, name: "Áo Hoodie Teen", price: 195000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", images: ["https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie"], sizes: ["Freesize"], desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn." },
+                { id: 8, name: "Set Dạ Tweed Mẹ & Bé", price: 450000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", images: ["https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé"], sizes: ["S", "M", "L"], desc: "Set dạ Tweed sang chảnh diện tết." },
+                { id: 9, name: "Quần Jean Nam Rách Gối", price: 320000, category: "men", isNew: true, img: "https://via.placeholder.com/400x400/333/fff?text=Jean+Nam", images: ["https://via.placeholder.com/400x400/333/fff?text=Jean+Nam"], sizes: ["29", "30", "31", "32"], desc: "Quần Jean nam phong cách bụi bặm, chất bò co giãn." }
             ],
             cart: JSON.parse(localStorage.getItem("zuzulan_cart")) || []
         };
@@ -207,6 +239,7 @@
         const app = {
             container: document.getElementById('app-container'),
             currentFilter: 'all',
+            selectedSize: null, // Lưu size đang chọn tạm thời
             
             init() {
                 this.updateCartCount();
@@ -238,7 +271,7 @@
                 switch(view) {
                     case 'home': this.renderDashboard(); break;
                     case 'shop': 
-                        this.currentFilter = 'all';
+                        this.currentFilter = 'all'; 
                         this.renderShop(); 
                         break;
                     case 'cart': this.renderCart(); break;
@@ -256,11 +289,11 @@
 
             renderNavBar(activeTab) {
                 return `
-                    <div class="flex justify-center gap-2 sm:gap-8 mb-8 border-b pb-4 overflow-x-auto">
-                        <button onclick="app.filterByCategory('kids')" class="px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'kids' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Trẻ em</button>
-                        <button onclick="app.filterByCategory('adult')" class="px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'adult' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nữ</button>
-                        <button onclick="app.filterByCategory('men')" class="px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'men' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nam</button>
-                        <button onclick="app.filterByCategory('winter')" class="px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'winter' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Đồ mùa đông</button>
+                    <div class="flex justify-center gap-4 sm:gap-10 mb-8 border-b pb-4 overflow-x-auto">
+                        <button onclick="app.filterByCategory('kids')" class="category-text px-8 py-3 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'kids' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Trẻ em</button>
+                        <button onclick="app.filterByCategory('adult')" class="category-text px-8 py-3 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'adult' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nữ</button>
+                        <button onclick="app.filterByCategory('men')" class="category-text px-8 py-3 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'men' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nam</button>
+                        <button onclick="app.filterByCategory('winter')" class="category-text px-8 py-3 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'winter' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Đồ mùa đông</button>
                     </div>
                 `;
             },
@@ -272,22 +305,19 @@
                 this.container.innerHTML = `
                     <div class="space-y-12 animate-fade-in">
                         
-                        <!-- BANNER (ĐÃ SỬA LẠI ĐỂ DÙNG LOGO LÀM NỀN) -->
-                        <div class="hero-bg text-center py-20 rounded-3xl shadow-md px-6">
-                            <div class="hero-overlay"></div> <!-- Lớp phủ mờ -->
+                        <div class="hero-bg text-center py-20 rounded-3xl shadow-md px-6 overflow-hidden">
+                            <div class="hero-overlay"></div>
                             <div class="hero-content">
-                                <h1 class="text-4xl md:text-6xl font-bold mb-4 font-serif italic drop-shadow-lg">Shop ZuzuLan</h1>
-                                <p class="text-xl md:text-2xl mb-8 italic drop-shadow-md">"Phong cách của bạn, niềm vui của chúng tôi."</p>
-                                <button onclick="app.filterByCategory('new')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105 mb-8 border-2 border-white/20">Hàng mới về</button>
+                                <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 font-serif italic drop-shadow-lg">Shop ZuzuLan</h1>
+                                <p class="text-xl md:text-2xl text-white mb-8 italic drop-shadow-md">"Phong cách của bạn, niềm vui của chúng tôi."</p>
+                                <button onclick="app.filterByCategory('new')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105 mb-8 border-2 border-white/30">Hàng mới về</button>
                             </div>
                         </div>
 
-                        <!-- MENU DANH MỤC -->
                         <div class="mt-8">
                             ${this.renderNavBar('')}
                         </div>
 
-                        <!-- NỘI DUNG CHÍNH -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
                                 <h3 class="text-xl font-bold text-secondary mb-4">Phân Bố Danh Mục</h3>
@@ -356,7 +386,7 @@
                 let total = 0;
                 const rows = storeData.cart.map(item => {
                     total += item.price * item.qty;
-                    return `<tr class="border-b hover:bg-blue-50"><td class="py-4 px-2 flex items-center gap-3"><img src="${item.img}" class="w-12 h-12 rounded object-cover hidden sm:block" onerror="this.src='https://via.placeholder.com/60'"><span class="font-bold text-sm">${item.name}</span></td><td class="py-4 px-2 text-sm">${item.price.toLocaleString('vi-VN')}₫</td><td class="py-4 px-2 flex items-center gap-1"><button onclick="app.changeQty(${item.id}, -1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">-</button><span class="w-6 text-center text-sm font-bold">${item.qty}</span><button onclick="app.changeQty(${item.id}, 1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">+</button></td><td class="py-4 px-2 font-bold text-accent text-sm">${(item.price*item.qty).toLocaleString('vi-VN')}₫</td><td class="py-4 px-2"><button onclick="app.removeItem(${item.id})" class="text-red-500 font-bold hover:text-red-700 text-xl">&times;</button></td></tr>`;
+                    return `<tr class="border-b hover:bg-blue-50"><td class="py-4 px-2 flex items-center gap-3"><img src="${item.img}" class="w-12 h-12 rounded object-cover hidden sm:block" onerror="this.src='https://via.placeholder.com/60'"><div class="flex flex-col"><span class="font-bold text-sm">${item.name}</span><span class="text-xs text-gray-500">Size: ${item.size}</span></div></td><td class="py-4 px-2 text-sm">${item.price.toLocaleString('vi-VN')}₫</td><td class="py-4 px-2 flex items-center gap-1"><button onclick="app.changeQty(${item.id}, '${item.size}', -1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">-</button><span class="w-6 text-center text-sm font-bold">${item.qty}</span><button onclick="app.changeQty(${item.id}, '${item.size}', 1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">+</button></td><td class="py-4 px-2 font-bold text-accent text-sm">${(item.price*item.qty).toLocaleString('vi-VN')}₫</td><td class="py-4 px-2"><button onclick="app.removeItem(${item.id}, '${item.size}')" class="text-red-500 font-bold hover:text-red-700 text-xl">&times;</button></td></tr>`;
                 }).join('');
                 this.container.innerHTML = `${nav} <div class="max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-secondary mb-6 text-center">Giỏ Hàng</h2><div class="bg-white rounded-xl shadow overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-blue-50 text-secondary text-xs uppercase"><tr><th class="py-3 px-2">Sản phẩm</th><th class="py-3 px-2">Giá</th><th class="py-3 px-2">SL</th><th class="py-3 px-2">Tổng</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><div class="p-6 bg-gray-50 flex flex-col sm:flex-row justify-end items-center gap-4"><div class="text-lg">Tổng: <span class="font-bold text-accent text-xl">${total.toLocaleString('vi-VN')}₫</span></div><button onclick="app.navigate('checkout')" class="bg-primary text-white font-bold py-2 px-8 rounded-full shadow w-full sm:w-auto">Thanh Toán</button></div></div></div>`;
             },
@@ -374,7 +404,7 @@
                         <div class="p-5 flex flex-col flex-grow text-center">
                             <h3 class="text-lg font-bold text-secondary mb-2 line-clamp-2 h-14 overflow-hidden">${p.name}</h3>
                             <div class="text-accent font-bold text-xl mb-4">${p.price.toLocaleString('vi-VN')}₫</div>
-                            <button onclick="app.addToCart(${p.id})" class="mt-auto w-full border-2 border-primary text-primary font-bold py-2 rounded-full hover:bg-primary hover:text-white transition uppercase text-xs tracking-wider">Thêm vào giỏ</button>
+                            <button onclick="app.openModal(${p.id})" class="mt-auto w-full border-2 border-primary text-primary font-bold py-2 rounded-full hover:bg-primary hover:text-white transition uppercase text-xs tracking-wider">Xem Chi Tiết</button>
                         </div>
                     </div>`;
             },
@@ -392,12 +422,17 @@
             },
 
             openModal(id) {
+                this.selectedSize = null; // Reset size
                 const p = storeData.products.find(x => x.id === id);
                 if (!p) return;
+                
                 document.getElementById('modal-img').src = p.img;
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
+                document.getElementById('size-error').classList.add('hidden');
+                
+                // Render Thumbnails
                 const thumbs = document.getElementById('modal-thumbnails');
                 thumbs.innerHTML = '';
                 (p.images || [p.img]).forEach((src, idx) => {
@@ -415,33 +450,67 @@
                     }
                     thumbs.appendChild(img);
                 });
-                document.getElementById('modal-add-btn').onclick = () => { this.addToCart(p.id); this.closeModal(); };
+
+                // Render Sizes
+                const sizesDiv = document.getElementById('modal-sizes');
+                sizesDiv.innerHTML = '';
+                if(p.sizes && p.sizes.length > 0) {
+                    p.sizes.forEach(size => {
+                        const btn = document.createElement('div');
+                        btn.className = 'size-btn';
+                        btn.innerText = size;
+                        btn.onclick = () => {
+                            this.selectedSize = size;
+                            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                            document.getElementById('size-error').classList.add('hidden');
+                        }
+                        sizesDiv.appendChild(btn);
+                    });
+                } else {
+                    sizesDiv.innerHTML = '<span class="text-sm text-gray-500">Freesize</span>';
+                    this.selectedSize = "Freesize";
+                }
+
+                document.getElementById('modal-add-btn').onclick = () => { 
+                    if(!this.selectedSize) {
+                        document.getElementById('size-error').classList.remove('hidden');
+                        return;
+                    }
+                    this.addToCart(p.id, this.selectedSize); 
+                    this.closeModal(); 
+                };
+                
                 const m = document.getElementById('product-modal'); m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); m.querySelector('div').classList.replace('scale-95', 'scale-100'); }, 10);
             },
+            
             closeModal() { const m = document.getElementById('product-modal'); m.classList.add('opacity-0'); m.querySelector('div').classList.replace('scale-100', 'scale-95'); setTimeout(() => m.classList.add('hidden'), 300); },
 
-            addToCart(id) {
+            addToCart(id, size) {
                 const p = storeData.products.find(x => x.id === id);
-                const item = storeData.cart.find(x => x.id === id);
-                if (item) item.qty++; else storeData.cart.push({ ...p, qty: 1 });
+                // Tìm sản phẩm trong giỏ có cùng ID VÀ cùng Size
+                const item = storeData.cart.find(x => x.id === id && x.size === size);
+                if (item) item.qty++; 
+                else storeData.cart.push({ ...p, qty: 1, size: size }); // Lưu kèm size
+                
                 this.saveCart(); this.updateCartCount();
-                this.showToast(`Đã thêm "${p.name}" vào giỏ hàng!`);
+                this.showToast(`Đã thêm "${p.name} (Size: ${size})" vào giỏ hàng!`);
             },
 
-            changeQty(id, d) {
-                const item = storeData.cart.find(x => x.id === id);
+            changeQty(id, size, d) {
+                const item = storeData.cart.find(x => x.id === id && x.size === size);
                 if (item) {
                     item.qty += d;
                     if (item.qty <= 0) {
-                        storeData.cart = storeData.cart.filter(x => x.id !== id);
+                        storeData.cart = storeData.cart.filter(x => !(x.id === id && x.size === size));
                         this.showToast("Đã xóa sản phẩm khỏi giỏ!", true); 
                     }
                 }
                 this.saveCart(); this.renderCart(); this.updateCartCount();
             },
 
-            removeItem(id) {
-                storeData.cart = storeData.cart.filter(x => x.id !== id);
+            removeItem(id, size) {
+                storeData.cart = storeData.cart.filter(x => !(x.id === id && x.size === size));
                 this.saveCart(); this.renderCart(); this.updateCartCount();
                 this.showToast("Đã xóa sản phẩm!", true);
             },
