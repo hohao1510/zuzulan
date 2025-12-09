@@ -56,16 +56,17 @@
             opacity: 1;
         }
         
-        /* --- ĐÃ THÊM LẠI: CSS CHO NÚT CHỌN SIZE --- */
+        /* CSS NÚT SIZE */
         .size-btn {
             border: 1px solid #ddd;
-            padding: 8px 20px;
+            padding: 8px 16px; /* Giảm padding một chút để gọn hơn trên mobile */
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
             font-weight: bold;
             color: #666;
             background-color: #fff;
+            white-space: nowrap;
         }
         .size-btn:hover {
             border-color: #5dade2;
@@ -81,7 +82,7 @@
 
         #toast { transition: all 0.3s ease-in-out; }
 
-        /* CSS CHO BANNER BACKGROUND */
+        /* CSS BANNER */
         .hero-bg {
             background-image: url('banner.jpg');
             background-size: cover;
@@ -103,26 +104,28 @@
             z-index: 10;
         }
 
+        /* Chỉnh font chữ danh mục vừa phải, không quá to */
         .category-text {
-            font-size: 2rem !important;
+            font-size: 1.125rem !important; /* text-lg (~18px), phù hợp mobile hơn */
+        }
+        @media (min-width: 768px) {
+            .category-text {
+                font-size: 1.5rem !important; /* text-2xl (~24px) trên máy tính */
+            }
         }
 
-        /* --- ĐÃ SỬA: MENU MOBILE KHÔNG CHE WEB --- */
-        /* Bỏ position: absolute để menu đẩy nội dung xuống */
+        /* MENU MOBILE */
         #mobile-menu {
-            /* position: absolute;  <-- Đã bỏ dòng này */
             width: 100%;
             background-color: white;
             border-top: 1px solid #eee;
             border-bottom: 1px solid #eee;
         }
         
-        /* Hiệu ứng khi hiện menu */
         #mobile-menu.hidden {
             display: none;
         }
         
-        /* Style cho từng mục trong menu mobile - Chỉ hiện chữ gọn gàng */
         .mobile-nav-link {
             display: block;
             padding: 15px 20px;
@@ -139,7 +142,7 @@
         .mobile-nav-link:hover {
             color: #5dade2;
             background-color: #fcfcfc;
-            padding-left: 25px; /* Hiệu ứng đẩy nhẹ chữ sang phải khi hover */
+            padding-left: 25px;
         }
 
     </style>
@@ -157,19 +160,20 @@
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 grid grid-cols-3 items-center">
             
-            <!-- Trái: Menu 3 gạch -->
+            <!-- Trái: Menu -->
             <div class="justify-self-start">
                 <button class="text-3xl text-primary focus:outline-none hover:text-primaryDark transition" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
                     ☰
                 </button>
             </div>
 
-            <!-- Giữa: Logo ZuzuLan -->
+            <!-- Giữa: Logo -->
             <div class="justify-self-center flex items-center gap-4 cursor-pointer group" onclick="app.navigate('home')">
-                <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-primary group-hover:border-primaryDark transition p-1 bg-white">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-primary group-hover:border-primaryDark transition p-1 bg-white">
                     <img src="logo.png" alt="ZuzuLan" class="w-full h-full object-contain rounded-full" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
                 </div>
-                <div class="text-4xl font-bold text-primary font-serif uppercase tracking-wider hidden sm:block group-hover:text-primaryDark transition">
+                <!-- Ẩn tên trên mobile rất nhỏ, hiện trên mobile vừa và lớn -->
+                <div class="text-2xl sm:text-4xl font-bold text-primary font-serif uppercase tracking-wider hidden xs:block group-hover:text-primaryDark transition">
                     ZuzuLan
                 </div>
             </div>
@@ -183,7 +187,7 @@
             </div>
         </div>
 
-        <!-- Menu Mobile (Sẽ đẩy nội dung xuống khi mở) -->
+        <!-- Menu Mobile -->
         <div id="mobile-menu" class="hidden">
             <button onclick="app.filterByCategory('kids')" class="mobile-nav-link">Trẻ em</button>
             <button onclick="app.filterByCategory('adult')" class="mobile-nav-link">Nữ</button>
@@ -224,11 +228,9 @@
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row relative transform transition-transform duration-300 scale-95">
             <button onclick="app.closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold z-10">&times;</button>
             <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-4">
-                <!-- Ảnh chính -->
                 <div class="flex-grow flex items-center justify-center mb-4 h-64 md:h-80 bg-white rounded-lg shadow-inner p-2">
                     <img id="modal-img" src="" class="max-h-full max-w-full object-contain transition-all duration-300">
                 </div>
-                <!-- Danh sách ảnh nhỏ -->
                 <div class="flex gap-3 justify-center overflow-x-auto py-2 px-2" id="modal-thumbnails">
                     <!-- JS sẽ tạo ảnh nhỏ vào đây -->
                 </div>
@@ -240,7 +242,7 @@
                 <!-- KHU VỰC CHỌN SIZE -->
                 <div class="mb-6">
                     <h4 class="font-bold text-gray-800 mb-2">Kích thước:</h4>
-                    <div id="modal-sizes" class="flex flex-wrap gap-3">
+                    <div id="modal-sizes" class="flex flex-wrap gap-2">
                         <!-- JS sẽ tạo nút size vào đây -->
                     </div>
                     <p id="size-error" class="text-red-500 text-sm mt-2 hidden animate-bounce">⚠️ Vui lòng chọn kích thước!</p>
@@ -281,6 +283,14 @@
             selectedSize: null,
             
             init() {
+                // TỰ ĐỘNG SỬA LỖI GIỎ HÀNG:
+                // Nếu sản phẩm trong giỏ bị lỗi cấu trúc (thiếu id hoặc size), xóa giỏ hàng đi để reset
+                const isValidCart = storeData.cart.every(item => item.id && item.price);
+                if (!isValidCart) {
+                    storeData.cart = [];
+                    this.saveCart();
+                }
+
                 this.updateCartCount();
                 this.navigate('home');
             },
@@ -310,7 +320,7 @@
                 switch(view) {
                     case 'home': this.renderDashboard(); break;
                     case 'shop': 
-                        this.currentFilter = 'all'; 
+                        // Khi chuyển trang Shop từ menu, không reset filter để giữ trải nghiệm
                         this.renderShop(); 
                         break;
                     case 'cart': this.renderCart(); break;
@@ -322,17 +332,28 @@
             filterByCategory(category) {
                 this.currentFilter = category;
                 this.renderShop();
-                window.scrollTo(0, 0);
+                // TỰ ĐỘNG CUỘN XUỐNG PHẦN SẢN PHẨM
+                const shopGrid = document.getElementById('shop-grid');
+                if (shopGrid) {
+                    // Cuộn nhẹ nhàng xuống cách header một chút
+                    const headerOffset = 150; 
+                    const elementPosition = shopGrid.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({
+                         top: offsetPosition,
+                         behavior: "smooth"
+                    });
+                }
                 document.getElementById('mobile-menu').classList.add('hidden');
             },
 
             renderNavBar(activeTab) {
                 return `
-                    <div class="flex justify-center gap-4 sm:gap-10 mb-8 border-b pb-4 overflow-x-auto">
-                        <button onclick="app.filterByCategory('kids')" class="category-text px-8 py-3 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'kids' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Trẻ em</button>
-                        <button onclick="app.filterByCategory('adult')" class="category-text px-8 py-3 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'adult' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nữ</button>
-                        <button onclick="app.filterByCategory('men')" class="category-text px-8 py-3 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'men' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nam</button>
-                        <button onclick="app.filterByCategory('winter')" class="category-text px-8 py-3 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'winter' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Đồ mùa đông</button>
+                    <div class="flex justify-center gap-2 sm:gap-4 mb-8 border-b pb-4 overflow-x-auto px-4">
+                        <button onclick="app.filterByCategory('kids')" class="category-text px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'kids' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Trẻ em</button>
+                        <button onclick="app.filterByCategory('adult')" class="category-text px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'adult' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nữ</button>
+                        <button onclick="app.filterByCategory('men')" class="category-text px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'men' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nam</button>
+                        <button onclick="app.filterByCategory('winter')" class="category-text px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'winter' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Đồ mùa đông</button>
                     </div>
                 `;
             },
@@ -423,9 +444,11 @@
                     return;
                 }
                 let total = 0;
-                const rows = storeData.cart.map(item => {
+                // Tạo ID duy nhất cho mỗi item trong giỏ để xóa chính xác
+                const rows = storeData.cart.map((item, index) => {
                     total += item.price * item.qty;
-                    return `<tr class="border-b hover:bg-blue-50"><td class="py-4 px-2 flex items-center gap-3"><img src="${item.img}" class="w-12 h-12 rounded object-cover hidden sm:block" onerror="this.src='https://via.placeholder.com/60'"><div class="flex flex-col"><span class="font-bold text-sm">${item.name}</span><span class="text-xs text-gray-500">Size: ${item.size}</span></div></td><td class="py-4 px-2 text-sm">${item.price.toLocaleString('vi-VN')}₫</td><td class="py-4 px-2 flex items-center gap-1"><button onclick="app.changeQty(${item.id}, '${item.size}', -1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">-</button><span class="w-6 text-center text-sm font-bold">${item.qty}</span><button onclick="app.changeQty(${item.id}, '${item.size}', 1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">+</button></td><td class="py-4 px-2 font-bold text-accent text-sm">${(item.price*item.qty).toLocaleString('vi-VN')}₫</td><td class="py-4 px-2"><button onclick="app.removeItem(${item.id}, '${item.size}')" class="text-red-500 font-bold hover:text-red-700 text-xl">&times;</button></td></tr>`;
+                    // Sử dụng index để xóa chính xác item cụ thể
+                    return `<tr class="border-b hover:bg-blue-50"><td class="py-4 px-2 flex items-center gap-3"><img src="${item.img}" class="w-12 h-12 rounded object-cover hidden sm:block" onerror="this.src='https://via.placeholder.com/60'"><div class="flex flex-col"><span class="font-bold text-sm">${item.name}</span><span class="text-xs text-gray-500">Size: ${item.size}</span></div></td><td class="py-4 px-2 text-sm">${item.price.toLocaleString('vi-VN')}₫</td><td class="py-4 px-2 flex items-center gap-1"><button onclick="app.changeQty(${index}, -1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">-</button><span class="w-6 text-center text-sm font-bold">${item.qty}</span><button onclick="app.changeQty(${index}, 1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">+</button></td><td class="py-4 px-2 font-bold text-accent text-sm">${(item.price*item.qty).toLocaleString('vi-VN')}₫</td><td class="py-4 px-2"><button onclick="app.removeItem(${index})" class="text-red-500 font-bold hover:text-red-700 text-xl">&times;</button></td></tr>`;
                 }).join('');
                 this.container.innerHTML = `${nav} <div class="max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-secondary mb-6 text-center">Giỏ Hàng</h2><div class="bg-white rounded-xl shadow overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-blue-50 text-secondary text-xs uppercase"><tr><th class="py-3 px-2">Sản phẩm</th><th class="py-3 px-2">Giá</th><th class="py-3 px-2">SL</th><th class="py-3 px-2">Tổng</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><div class="p-6 bg-gray-50 flex flex-col sm:flex-row justify-end items-center gap-4"><div class="text-lg">Tổng: <span class="font-bold text-accent text-xl">${total.toLocaleString('vi-VN')}₫</span></div><button onclick="app.navigate('checkout')" class="bg-primary text-white font-bold py-2 px-8 rounded-full shadow w-full sm:w-auto">Thanh Toán</button></div></div></div>`;
             },
@@ -536,20 +559,22 @@
                 this.showToast(`Đã thêm "${p.name} (Size: ${size})" vào giỏ hàng!`);
             },
 
-            changeQty(id, size, d) {
-                const item = storeData.cart.find(x => x.id === id && x.size === size);
+            // --- SỬA LẠI LOGIC XÓA SẢN PHẨM: DÙNG INDEX ---
+            // Lý do: Khi có nhiều sản phẩm giống nhau (cùng ID, cùng Size) hoặc lỗi dữ liệu, dùng index là chính xác nhất
+            changeQty(index, d) {
+                const item = storeData.cart[index];
                 if (item) {
                     item.qty += d;
                     if (item.qty <= 0) {
-                        storeData.cart = storeData.cart.filter(x => !(x.id === id && x.size === size));
+                        storeData.cart.splice(index, 1); // Xóa phần tử tại vị trí index
                         this.showToast("Đã xóa sản phẩm khỏi giỏ!", true); 
                     }
                 }
                 this.saveCart(); this.renderCart(); this.updateCartCount();
             },
 
-            removeItem(id, size) {
-                storeData.cart = storeData.cart.filter(x => !(x.id === id && x.size === size));
+            removeItem(index) {
+                storeData.cart.splice(index, 1); // Xóa phần tử tại vị trí index
                 this.saveCart(); this.renderCart(); this.updateCartCount();
                 this.showToast("Đã xóa sản phẩm!", true);
             },
