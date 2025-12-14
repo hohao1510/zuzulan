@@ -687,13 +687,12 @@
                 document.getElementById('purchase_method_input').value = method;
 
                 const formData = new FormData(e.target);
-/*
+                
                 fetch("https://formsubmit.co/ajax/hohao1510@gmail.com", {
                     method: "POST",
                     body: formData
                 })
-  */
-                fetch(GS_URL + "&t=" + Date.now())
+
 
                 .then(response => response.json())
                 .then(data => {
@@ -716,10 +715,7 @@
             updateCartCount() { document.getElementById('cart-count').innerText = storeData.cart.reduce((s, i) => s + i.qty, 0); }
         };
 //add Hhao
-/*
-async function loadProductsFromGoogleSheet() {
-   // const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNvs5HlquMWmtnVRkYrHsfVbHX8hDiVidlQyayil9Lvx9A3W7_ibK0EksjODw6Lr7MRCnrmFot9zyu/pub?output=csv";
-    const GS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNvs5HlquMWmtnVRkYrHsfVbHX8hDiVidlQyayil9Lvx9A3W7_ibK0EksjODw6Lr7MRCnrmFot9zyu/pub?output=csv";
+   const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNvs5HlquMWmtnVRkYrHsfVbHX8hDiVidlQyayil9Lvx9A3W7_ibK0EksjODw6Lr7MRCnrmFot9zyu/pub?output=csv";
 
     const res = await fetch(url);
     const text = await res.text();
@@ -760,49 +756,6 @@ window.onload = async () => {
     await loadProductsFromGoogleSheet();
     app.init();
 };
-*/
-
-        <script>
-const GS_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNvs5HlquMWmtnVRkYrHsfVbHX8hDiVidlQyayil9Lvx9A3W7_ibK0EksjODw6Lr7MRCnrmFot9zyu/pub?gid=0&single=true&output=csv";
-
-async function loadProductsFromGS() {
-  try {
-    console.log("⏳ Đang load Google Sheet...");
-
-    const res = await fetch(GS_URL + "&t=" + Date.now(), {
-      cache: "no-store",
-    });
-
-    if (!res.ok) throw new Error("Không load được GS");
-
-    const csv = await res.text();
-    console.log("📄 CSV RAW:", csv);
-
-    const rows = csv.trim().split("\n").map(r => r.split(","));
-    const headers = rows.shift();
-
-    const products = rows.map(r => ({
-      id: r[0],
-      name: r[1],
-      price: Number(r[2]),
-      category: r[3],
-      isNew: r[4] === "TRUE",
-      img: r[5],
-      sizes: r[6].split("|"),
-      desc: r[7],
-    }));
-
-    console.log("✅ PRODUCTS:", products);
-
-    renderProducts(products);
-
-  } catch (err) {
-    console.error("❌ LỖI LOAD GS:", err);
-  }
-}
-
-loadProductsFromGS();
 </script>
 
 </body>
