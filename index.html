@@ -143,7 +143,7 @@
             background-color: #fcfcfc;
             padding-left: 25px;
         }
-        
+
         /* Style cho lựa chọn phương thức mua hàng */
         .method-option {
             border: 2px solid #ddd;
@@ -151,6 +151,11 @@
             padding: 15px;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
         }
         .method-option:hover {
             border-color: #5dade2;
@@ -160,6 +165,16 @@
             border-color: #5dade2;
             background-color: #f0f9ff;
             box-shadow: 0 4px 6px -1px rgba(93, 173, 226, 0.2);
+            color: #2e86c1;
+        }
+        
+        /* Animation fade in cho các trang */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
     </style>
@@ -185,7 +200,7 @@
 
             <!-- Giữa: Logo -->
             <div class="justify-self-center flex items-center gap-4 cursor-pointer group" onclick="app.navigate('home')">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-primary group-hover:border-primaryDark transition p-1 bg-white">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-primary p-1 bg-white">
                     <img src="logo.png" alt="ZuzuLan" class="w-full h-full object-contain rounded-full" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
                 </div>
                 <div class="text-2xl sm:text-4xl font-bold text-primary font-serif uppercase tracking-wider hidden xs:block group-hover:text-primaryDark transition">
@@ -246,11 +261,15 @@
                 <div class="flex-grow flex items-center justify-center mb-4 h-64 md:h-80 bg-white rounded-lg shadow-inner p-2">
                     <img id="modal-img" src="" class="max-h-full max-w-full object-contain transition-all duration-300">
                 </div>
-                <div class="flex gap-3 justify-center overflow-x-auto py-2 px-2" id="modal-thumbnails"></div>
+                <div class="flex gap-3 justify-center overflow-x-auto py-2 px-2" id="modal-thumbnails">
+                    <!-- JS sẽ tạo ảnh nhỏ vào đây -->
+                </div>
             </div>
             <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto no-scrollbar">
                 <h2 id="modal-title" class="text-3xl font-bold text-secondary font-serif mb-2"></h2>
                 <div class="text-primary font-bold text-2xl mb-4" id="modal-price"></div>
+                
+                <!-- KHU VỰC CHỌN SIZE -->
                 <div class="mb-6">
                     <h4 class="font-bold text-gray-800 mb-2">Kích thước:</h4>
                     <div id="modal-sizes" class="flex flex-wrap gap-2"></div>
@@ -270,8 +289,20 @@
 
     <!-- SCRIPT -->
     <script>
+        // DỮ LIỆU SẢN PHẨM CỐ ĐỊNH (Chạy trực tiếp, không qua Google Sheet)
         const storeData = {
-            products: [],
+            products: [
+                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", isNew: true, img: "product2.jpg", sizes: ["S", "M", "L"], desc: "Áo len sọc phong cách Hàn Quốc, chất len mềm mịn." },
+                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", isNew: true, img: "product3.jpg", sizes: ["M", "L", "XL"], desc: "Quần caro ống rộng thời thượng, vải thô đũi thoáng mát." },
+                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", isNew: true, img: "product4.jpg", sizes: ["L", "XL", "2XL"], desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, ấm áp." },
+                { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", isNew: true, img: "product5.jpg", sizes: ["Size 2", "Size 4", "Size 6"], desc: "Váy đầm công chúa lộng lẫy cho bé đi dự tiệc." },
+                { id: 5, name: "Bộ Đồ Thun Lạnh Bé Trai", price: 110000, category: "kids", isNew: false, img: "product1.jpg", sizes: ["8kg", "10kg", "12kg"], desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi." },
+                { id: 6, name: "Áo Sơ Mi Nam Công Sở", price: 250000, category: "men", isNew: false, img: "product6.jpg", sizes: ["39", "40", "41", "42"], desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit." },
+                { id: 7, name: "Áo Hoodie Teen", price: 195000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", sizes: ["Freesize"], desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn." },
+                { id: 8, name: "Set Dạ Tweed Mẹ & Bé", price: 450000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", sizes: ["S", "M", "L"], desc: "Set dạ Tweed sang chảnh diện tết." },
+                { id: 9, name: "Quần Jean Nam Rách Gối", price: 320000, category: "men", isNew: true, img: "https://via.placeholder.com/400x400/333/fff?text=Jean+Nam", sizes: ["29", "30", "31", "32"], desc: "Quần Jean nam phong cách bụi bặm, chất bò co giãn." },
+                { id: 10, name: "Áo Lót Nỉ", price: 100000, category: "adult", isNew: true, img: "product7.jpg", sizes: ["S", "M", "L"], desc: "Áo giữ nhiệt lót nỉ ấm áp." }
+            ],
             cart: JSON.parse(localStorage.getItem("zuzulan_cart")) || []
         };
 
@@ -279,25 +310,14 @@
             container: document.getElementById('app-container'),
             currentFilter: 'all',
             selectedSize: null,
-            purchaseMethod: 'shipping', // Mặc định là giao hàng
-
-
+            purchaseMethod: 'shipping', 
+            
             init() {
-                // bảo vệ cart, tránh crash JS
-                if (!Array.isArray(storeData.cart)) {
-                    storeData.cart = [];
-                    this.saveCart();
-                }
-
-                const isValidCart = storeData.cart.every(
-                    item => item && item.id && item.price
-                );
-
+                const isValidCart = storeData.cart.every(item => item.id && item.price);
                 if (!isValidCart) {
                     storeData.cart = [];
                     this.saveCart();
                 }
-
                 this.updateCartCount();
                 this.navigate('home');
             },
@@ -331,6 +351,7 @@
                         break;
                     case 'cart': this.renderCart(); break;
                     case 'checkout': this.renderCheckout(); break;
+                    case 'thankyou': this.renderThankYou(); break;
                 }
                 window.scrollTo(0, 0);
             },
@@ -349,7 +370,7 @@
             },
 
             renderNavBar(activeTab) {
-                if (activeTab === 'cart' || activeTab === 'checkout') return ''; 
+                if (activeTab === 'cart' || activeTab === 'checkout' || activeTab === 'thankyou') return ''; 
                 return `
                     <div class="flex justify-center gap-2 sm:gap-4 mb-8 border-b pb-4 overflow-x-auto px-4">
                         <button onclick="app.filterByCategory('kids')" class="category-text px-6 py-2 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'kids' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Trẻ em</button>
@@ -434,7 +455,7 @@
                 if (!storeData.cart.length) {
                     this.container.innerHTML = `
                         ${nav}
-                        <div class="flex flex-col items-center justify-center py-20"><div class="text-6xl mb-4">🛒</div><h2 class="text-2xl font-bold text-secondary mb-4">Giỏ hàng trống</h2><button onclick="app.navigate('shop')" class="bg-primary text-white font-bold py-2 px-6 rounded-full shadow">Mua sắm ngay</button></div>`;
+                        <div class="flex flex-col items-center justify-center py-20 animate-fade-in"><div class="text-6xl mb-4">🛒</div><h2 class="text-2xl font-bold text-secondary mb-4">Giỏ hàng trống</h2><button onclick="app.navigate('shop')" class="bg-primary text-white font-bold py-2 px-6 rounded-full shadow">Mua sắm ngay</button></div>`;
                     return;
                 }
                 let total = 0;
@@ -442,73 +463,91 @@
                     total += item.price * item.qty;
                     return `<tr class="border-b hover:bg-blue-50"><td class="py-4 px-2 flex items-center gap-3"><img src="${item.img}" class="w-12 h-12 rounded object-cover hidden sm:block" onerror="this.src='https://via.placeholder.com/60'"><div class="flex flex-col"><span class="font-bold text-sm">${item.name}</span><span class="text-xs text-gray-500">Size: ${item.size}</span></div></td><td class="py-4 px-2 text-sm">${item.price.toLocaleString('vi-VN')}₫</td><td class="py-4 px-2 flex items-center gap-1"><button onclick="app.changeQty(${index}, -1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">-</button><span class="w-6 text-center text-sm font-bold">${item.qty}</span><button onclick="app.changeQty(${index}, 1)" class="w-6 h-6 rounded bg-gray-200 font-bold hover:bg-gray-300">+</button></td><td class="py-4 px-2 font-bold text-accent text-sm">${(item.price*item.qty).toLocaleString('vi-VN')}₫</td><td class="py-4 px-2"><button onclick="app.removeItem(${index})" class="text-red-500 font-bold hover:text-red-700 text-xl">&times;</button></td></tr>`;
                 }).join('');
-                this.container.innerHTML = `${nav} <div class="max-w-4xl mx-auto"><h2 class="text-2xl font-bold text-secondary mb-6 text-center">Giỏ Hàng</h2><div class="bg-white rounded-xl shadow overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-blue-50 text-secondary text-xs uppercase"><tr><th class="py-3 px-2">Sản phẩm</th><th class="py-3 px-2">Giá</th><th class="py-3 px-2">SL</th><th class="py-3 px-2">Tổng</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><div class="p-6 bg-gray-50 flex flex-col sm:flex-row justify-end items-center gap-4"><div class="text-lg">Tổng: <span class="font-bold text-accent text-xl">${total.toLocaleString('vi-VN')}₫</span></div><button onclick="app.navigate('checkout')" class="bg-primary text-white font-bold py-2 px-8 rounded-full shadow w-full sm:w-auto">Thanh Toán</button></div></div></div>`;
+                this.container.innerHTML = `${nav} <div class="max-w-4xl mx-auto animate-fade-in"><h2 class="text-2xl font-bold text-secondary mb-6 text-center">Giỏ Hàng</h2><div class="bg-white rounded-xl shadow overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-blue-50 text-secondary text-xs uppercase"><tr><th class="py-3 px-2">Sản phẩm</th><th class="py-3 px-2">Giá</th><th class="py-3 px-2">SL</th><th class="py-3 px-2">Tổng</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><div class="p-6 bg-gray-50 flex flex-col sm:flex-row justify-end items-center gap-4"><div class="text-lg">Tổng: <span class="font-bold text-accent text-xl">${total.toLocaleString('vi-VN')}₫</span></div><button onclick="app.navigate('checkout')" class="bg-primary text-white font-bold py-2 px-8 rounded-full shadow w-full sm:w-auto">Thanh Toán</button></div></div></div>`;
             },
 
-            // --- VIEW: CHECKOUT (Đã cập nhật lựa chọn mua hàng) ---
             renderCheckout() {
                 this.container.innerHTML = `
-                    <div class="max-w-xl mx-auto animate-fade-in">
-                        <h2 class="text-2xl font-bold text-secondary mb-6 text-center">Thông Tin Đơn Hàng</h2>
-                        
-                        <div class="bg-white p-6 rounded-xl shadow border border-gray-100 space-y-6">
-                            
-                            <!-- Lựa chọn phương thức -->
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-3">Bạn muốn nhận hàng thế nào?</label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="method-option ${this.purchaseMethod === 'hold' ? 'selected' : ''}" onclick="app.setMethod('hold')">
-                                        <div class="text-center">
-                                            <div class="text-2xl mb-1">🏬</div>
-                                            <div class="font-bold text-sm">Giữ Hàng</div>
-                                            <div class="text-xs text-gray-500">Đến shop thử</div>
-                                        </div>
-                                    </div>
-                                    <div class="method-option ${this.purchaseMethod === 'shipping' ? 'selected' : ''}" onclick="app.setMethod('shipping')">
-                                        <div class="text-center">
-                                            <div class="text-2xl mb-1">🚚</div>
-                                            <div class="font-bold text-sm">Giao Hàng</div>
-                                            <div class="text-xs text-gray-500">Ship tận nơi</div>
-                                        </div>
-                                    </div>
+                <div class="max-w-xl mx-auto animate-fade-in">
+                    <h2 class="text-2xl font-bold text-secondary mb-6 text-center">Thông Tin Giao Hàng</h2>
+                    
+                    <form id="checkout-form" class="bg-white p-6 rounded-xl shadow border space-y-5">
+                        <input type="hidden" name="_subject" value="Đơn hàng mới từ ZuzuLan">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="order_details" id="order_details">
+                        <input type="hidden" name="total_price" id="total_price">
+                        <input type="hidden" name="purchase_method" id="purchase_method_input">
+
+                        <div>
+                            <label class="block font-bold text-base mb-3 text-primaryDark">Quý khách muốn nhận hàng theo hình thức nào?</label>
+                            <div class="flex gap-4">
+                                <div class="method-option flex-1 text-center py-3 border rounded cursor-pointer ${this.purchaseMethod==='shipping'?'selected':''}" onclick="app.setMethod('shipping')">
+                                    🚚 Giao tận nơi
+                                </div>
+                                <div class="method-option flex-1 text-center py-3 border rounded cursor-pointer ${this.purchaseMethod==='hold'?'selected':''}" onclick="app.setMethod('hold')">
+                                    🏬 Giữ tại shop
                                 </div>
                             </div>
+                        </div>
 
-                            <form onsubmit="app.processCheckout(event)" class="space-y-4">
-                                <div>
-                                    <label class="block font-bold text-sm mb-1">Họ tên *</label>
-                                    <input type="text" required class="w-full border p-2 rounded focus:border-primary outline-none">
-                                </div>
-                                <div>
-                                    <label class="block font-bold text-sm mb-1">Số điện thoại *</label>
-                                    <input type="tel" required class="w-full border p-2 rounded focus:border-primary outline-none">
-                                </div>
-                                
-                                <!-- Ô địa chỉ: Ẩn nếu chọn giữ hàng -->
-                                <div id="address-field" class="${this.purchaseMethod === 'hold' ? 'hidden' : ''}">
-                                    <label class="block font-bold text-sm mb-1">Địa chỉ nhận hàng *</label>
-                                    <textarea rows="2" class="w-full border p-2 rounded focus:border-primary outline-none" ${this.purchaseMethod === 'shipping' ? 'required' : ''}></textarea>
-                                </div>
+                        <hr class="border-gray-100">
 
-                                <div>
-                                    <label class="block font-bold text-sm mb-1">Ghi chú (Tùy chọn)</label>
-                                    <textarea rows="2" class="w-full border p-2 rounded focus:border-primary outline-none"></textarea>
-                                </div>
+                        <div><label class="block font-bold text-sm mb-1">Họ tên người nhận</label><input type="text" name="name" required class="w-full border p-2 rounded focus:ring-2 focus:ring-primary focus:outline-none"></div>
+                        <div><label class="block font-bold text-sm mb-1">Số điện thoại</label><input type="tel" name="phone" required class="w-full border p-2 rounded focus:ring-2 focus:ring-primary focus:outline-none"></div>
+                        
+                        <div id="address-group">
+                            <label class="block font-bold text-sm mb-1">Địa chỉ giao hàng</label>
+                            <textarea name="address" id="cust-addr" rows="2" required class="w-full border p-2 rounded focus:ring-2 focus:ring-primary focus:outline-none"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-primary hover:bg-primaryDark transition text-white font-bold py-3 rounded shadow mt-4 flex justify-center items-center">
+                            Xác Nhận Đặt Hàng
+                        </button>
+                        <button type="button" onclick="app.navigate('cart')" class="w-full text-center text-sm text-gray-500 underline mt-2">Quay lại giỏ hàng</button>
+                    </form>
+                </div>`;
+                
+                this.setMethod(this.purchaseMethod); 
 
-                                <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded shadow mt-4 hover:bg-primaryDark transition">
-                                    ${this.purchaseMethod === 'hold' ? 'Xác Nhận Giữ Hàng' : 'Đặt Hàng Ngay'}
-                                </button>
-                            </form>
-                            <button type="button" onclick="app.navigate('cart')" class="w-full text-center text-sm text-gray-500 underline">Quay lại giỏ hàng</button>
+                document.getElementById('checkout-form').addEventListener('submit', (e) => app.processCheckout(e));
+            },
+
+            renderThankYou() {
+                this.container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-16 animate-fade-in text-center px-4">
+                        <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6 shadow-inner animate-bounce">
+                            <span class="text-5xl text-green-500">✓</span>
+                        </div>
+                        <h2 class="text-3xl font-bold text-secondary mb-4 font-serif">Cảm ơn bạn đã đặt hàng!</h2>
+                        <p class="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">Đơn hàng của bạn đã được tiếp nhận và đang trong quá trình xử lý. Chúng tôi sẽ liên hệ với bạn qua số điện thoại sớm nhất có thể.</p>
+                        
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-8 max-w-sm w-full mx-auto">
+                            <p class="text-sm text-blue-800 font-semibold">💖 Chúc bạn một ngày tốt lành!</p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                            <button onclick="app.navigate('home')" class="bg-white border-2 border-gray-200 text-gray-600 font-bold py-3 px-8 rounded-full hover:bg-gray-50 hover:border-gray-300 transition shadow-sm">Về Trang Chủ</button>
+                            <button onclick="app.navigate('shop')" class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-primaryDark transition transform hover:-translate-y-1">Tiếp Tục Mua Sắm</button>
                         </div>
                     </div>
                 `;
             },
 
-            // --- HÀM XỬ LÝ CHUYỂN ĐỔI PHƯƠNG THỨC MUA HÀNG ---
             setMethod(method) {
                 this.purchaseMethod = method;
-                this.renderCheckout(); // Vẽ lại giao diện checkout để cập nhật form
+                document.querySelectorAll('.method-option').forEach(el => {
+                    el.classList.remove('selected', 'ring-2', 'ring-primary', 'bg-blue-50');
+                    if(el.getAttribute('onclick').includes(method)) el.classList.add('selected', 'ring-2', 'ring-primary', 'bg-blue-50');
+                });
+                const addrGroup = document.getElementById('address-group');
+                const addrInput = document.getElementById('cust-addr');
+                if(method === 'hold') {
+                    addrGroup.classList.add('hidden');
+                    addrInput.removeAttribute('required');
+                } else {
+                    addrGroup.classList.remove('hidden');
+                    addrInput.setAttribute('required', 'true');
+                }
             },
 
             createProductCard(p) {
@@ -545,11 +584,12 @@
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
-                document.getElementById('size-error').classList.add('hidden');
-                
                 const thumbs = document.getElementById('modal-thumbnails');
                 thumbs.innerHTML = '';
-                (p.images || [p.img]).forEach((src, idx) => {
+                
+                const images = p.images ? p.images : [p.img]; 
+                
+                images.forEach((src, idx) => {
                     const img = document.createElement('img');
                     img.src = src;
                     img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
@@ -596,7 +636,6 @@
                 
                 const m = document.getElementById('product-modal'); m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); m.querySelector('div').classList.replace('scale-95', 'scale-100'); }, 10);
             },
-            
             closeModal() { const m = document.getElementById('product-modal'); m.classList.add('opacity-0'); m.querySelector('div').classList.replace('scale-100', 'scale-95'); setTimeout(() => m.classList.add('hidden'), 300); },
 
             addToCart(id, size) {
@@ -604,7 +643,6 @@
                 const item = storeData.cart.find(x => x.id === id && x.size === size);
                 if (item) item.qty++; 
                 else storeData.cart.push({ ...p, qty: 1, size: size });
-                
                 this.saveCart(); this.updateCartCount();
                 this.showToast(`Đã thêm "${p.name} (Size: ${size})" vào giỏ hàng!`);
             },
@@ -622,20 +660,49 @@
             },
 
             removeItem(index) {
-                storeData.cart.splice(index, 1); 
+                storeData.cart.splice(index, 1);
                 this.saveCart(); this.renderCart(); this.updateCartCount();
                 this.showToast("Đã xóa sản phẩm!", true);
             },
 
             processCheckout(e) { 
-                e.preventDefault(); 
-                // Thông báo khác nhau tùy theo phương thức mua
-                const msg = this.purchaseMethod === 'hold' ? "Đã giữ hàng thành công! Vui lòng ghé shop sớm nhé." : "Đặt hàng thành công! Chúng tôi sẽ giao sớm.";
-                this.showToast(msg); 
-                storeData.cart = []; 
-                this.saveCart(); 
-                this.updateCartCount(); 
-                setTimeout(() => this.navigate('home'), 1500); 
+                e.preventDefault();
+                const btn = e.target.querySelector('button[type="submit"]');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span class="animate-spin mr-2">⏳</span> Đang xử lý...';
+                btn.disabled = true;
+                btn.classList.add('bg-gray-400');
+                btn.classList.remove('hover:bg-primaryDark');
+
+                const orderDetails = storeData.cart.map(item => `- ${item.name} (${item.size}) x ${item.qty}`).join('\n');
+                const totalPrice = storeData.cart.reduce((s, i) => s + i.price * i.qty, 0).toLocaleString('vi-VN');
+                const method = this.purchaseMethod === 'hold' ? 'Giữ hàng tại shop' : 'Giao hàng tận nơi';
+
+                document.getElementById('order_details').value = orderDetails;
+                document.getElementById('total_price').value = totalPrice;
+                document.getElementById('purchase_method_input').value = method;
+
+                const formData = new FormData(e.target);
+
+                fetch("https://formsubmit.co/ajax/hohao1510@gmail.com", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    storeData.cart = [];
+                    this.saveCart();
+                    this.updateCartCount();
+                    this.navigate('thankyou');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Có lỗi xảy ra khi gửi đơn hàng.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    btn.classList.remove('bg-gray-400');
+                    btn.classList.add('hover:bg-primaryDark');
+                });
             },
             
             saveCart() { localStorage.setItem("zuzulan_cart", JSON.stringify(storeData.cart)); },
@@ -644,60 +711,5 @@
 
         window.onload = () => app.init();
     </script>
-    <script>
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNvs5HlquMWmtnVRkYrHsfVbHX8hDiVidlQyayil9Lvx9A3W7_ibK0EksjODw6Lr7MRCnrmFot9zyu/pub?output=csv";
-
-async function loadProductsFromSheet() {
-  const res = await fetch(SHEET_URL);
-  const text = await res.text();
-
-  const rows = text.trim().split("\n").slice(1);
-
-  return rows.map(row => {
-    const cols = row.split(",");
-
-    return {
-      id: Number(cols[0]),
-      name: cols[1],
-      price: Number(cols[2]),
-      category: cols[3],
-      images: [cols[4]],
-      sizes: cols[5] ? cols[5].split("|") : [],
-      desc: cols[6],
-      isNew: cols[7] === "TRUE"
-    };
-  });
-}
-</script>
-
-<h3>Đặt hàng</h3>
-
-<input id="ten" placeholder="Tên khách"><br><br>
-<input id="sdt" placeholder="Số điện thoại"><br><br>
-<input id="sanpham" placeholder="Tên sản phẩm"><br><br>
-<textarea id="ghichu" placeholder="Ghi chú"></textarea><br><br>
-
-<button onclick="guiDonHang()">GỬI ĐƠN</button>
-
-<script>
-function submitOrder(data) {
-  fetch("https://script.google.com/macros/s/AKfycbxN_QbakygIxZ5iplTXJEf-6dXrTZtleI_-vI9Ubor8hL49_ohmSIkLBvcfEXtZdGgujA/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(() => {
-    console.log("Đã lưu đơn hàng");
-  })
-  .catch(err => {
-    console.error("Lỗi lưu đơn:", err);
-  });
-}
-</script>
-
-
 </body>
 </html>
