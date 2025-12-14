@@ -664,5 +664,41 @@ async function loadProductsFromSheet() {
   });
 }
 </script>
+
+<script>
+const ORDER_API = "https://script.google.com/macros/s/AKfycbybhmF3dd2k21XHSOkgbZz8fMiOrOPQI-BQ1WHvDCcfKoq_mf642PdHCGqESH9h0ukIVw/exec";
+function guiDonHang() {
+  const donHang = {
+    ten: document.getElementById("ten").value,
+    sdt: document.getElementById("sdt").value,
+    sanpham: document.getElementById("sanpham").value,
+    ghichu: document.getElementById("ghichu").value
+  };
+
+  fetch(ORDER_API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(donHang)
+  })
+  .then(res => res.json())
+  .then(() => {
+    alert("Đã gửi đơn hàng thành công!");
+  })
+  .catch(() => {
+    alert("Gửi đơn thất bại");
+  });
+}
+</script>
+
+<h3>Đặt hàng</h3>
+
+<input id="ten" placeholder="Tên khách"><br><br>
+<input id="sdt" placeholder="Số điện thoại"><br><br>
+<input id="sanpham" placeholder="Tên sản phẩm"><br><br>
+<textarea id="ghichu" placeholder="Ghi chú"></textarea><br><br>
+
+<button onclick="guiDonHang()">GỬI ĐƠN</button>
+
+
 </body>
 </html>
