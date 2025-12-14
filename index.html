@@ -281,21 +281,26 @@
             selectedSize: null,
             purchaseMethod: 'shipping', // Mặc định là giao hàng
 
+
             init() {
-                loadProductsFromSheet().then(products => {
-                    storeData.products = products;
-                    
-                    const isValidCart = storeData.cart.every(item => item.id && item.price);
-                    if (!isValidCart) {
-                        storeData.cart = [];
-                        this.saveCart();
-                    }
+                // bảo vệ cart, tránh crash JS
+                if (!Array.isArray(storeData.cart)) {
+                    storeData.cart = [];
+                    this.saveCart();
+                }
 
-                    this.updateCartCount();
-                    this.navigate('home');
-                    });
-                },
+                const isValidCart = storeData.cart.every(
+                    item => item && item.id && item.price
+                );
 
+                if (!isValidCart) {
+                    storeData.cart = [];
+                    this.saveCart();
+                }
+
+                this.updateCartCount();
+                this.navigate('home');
+            },
 
             showToast(message, isError = false) {
                 const toast = document.getElementById('toast');
@@ -665,31 +670,6 @@ async function loadProductsFromSheet() {
 }
 </script>
 
-<script>
-const ORDER_API = "https://script.google.com/macros/s/AKfycbxN_QbakygIxZ5iplTXJEf-6dXrTZtleI_-vI9Ubor8hL49_ohmSIkLBvcfEXtZdGgujA/exec";
-function guiDonHang() {
-  const donHang = {
-    ten: document.getElementById("ten").value,
-    sdt: document.getElementById("sdt").value,
-    sanpham: document.getElementById("sanpham").value,
-    ghichu: document.getElementById("ghichu").value
-  };
-
-  fetch(ORDER_API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(donHang)
-  })
-  .then(res => res.json())
-  .then(() => {
-    alert("Đã gửi đơn hàng thành công!");
-  })
-  .catch(() => {
-    alert("Gửi đơn thất bại");
-  });
-}
-</script>
-
 <h3>Đặt hàng</h3>
 
 <input id="ten" placeholder="Tên khách"><br><br>
@@ -698,6 +678,25 @@ function guiDonHang() {
 <textarea id="ghichu" placeholder="Ghi chú"></textarea><br><br>
 
 <button onclick="guiDonHang()">GỬI ĐƠN</button>
+
+<script>
+function submitOrder(data) {
+  fetch("https://script.google.com/macros/s/AKfycbxN_QbakygIxZ5iplTXJEf-6dXrTZtleI_-vI9Ubor8hL49_ohmSIkLBvcfEXtZdGgujA/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(() => {
+    console.log("Đã lưu đơn hàng");
+  })
+  .catch(err => {
+    console.error("Lỗi lưu đơn:", err);
+  });
+}
+</script>
 
 
 </body>
