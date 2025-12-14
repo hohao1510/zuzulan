@@ -271,17 +271,7 @@
     <!-- SCRIPT -->
     <script>
         const storeData = {
-            products: [
-                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", isNew: true, img: "product2.jpg", images: ["product2.jpg", "https://via.placeholder.com/400x400/eee/333?text=Anh+Sau", "https://via.placeholder.com/400x400/eee/333?text=Chi+Tiet"], sizes: ["S", "M", "L"], desc: "Áo len sọc phong cách Hàn Quốc, chất len mềm mịn." },
-                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", isNew: true, img: "product3.jpg", images: ["product3.jpg", "https://via.placeholder.com/400x400/eee/333?text=Mau+Khac"], sizes: ["M", "L", "XL"], desc: "Quần caro ống rộng thời thượng, vải thô đũi thoáng mát." },
-                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", isNew: true, img: "product4.jpg", images: ["product4.jpg", "https://via.placeholder.com/400x400/eee/333?text=Ben+Trong"], sizes: ["L", "XL", "2XL"], desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, ấm áp." },
-                { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", isNew: true, img: "product5.jpg", images: ["product5.jpg", "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Váy+Elsa", "https://via.placeholder.com/400x400/ffe6ea/ff3366?text=Mat+Sau"], sizes: ["Size 2", "Size 4", "Size 6"], desc: "Váy đầm công chúa lộng lẫy cho bé đi dự tiệc." },
-                { id: 5, name: "Bộ Đồ Thun Lạnh Bé Trai", price: 110000, category: "kids", isNew: false, img: "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Do+Be+Trai", images: ["https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Do+Be+Trai", "https://via.placeholder.com/400x400/e0f7fa/00bcd4?text=Hinh+In"], sizes: ["8kg", "10kg", "12kg"], desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi." },
-                { id: 6, name: "Áo Sơ Mi Nam Công Sở", price: 250000, category: "men", isNew: false, img: "https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=So+Mi+Nam", images: ["https://via.placeholder.com/400x400/e3f2fd/1e88e5?text=So+Mi+Nam"], sizes: ["39", "40", "41", "42"], desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit." },
-                { id: 7, name: "Áo Hoodie Teen", price: 195000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", images: ["https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie"], sizes: ["Freesize"], desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn." },
-                { id: 8, name: "Set Dạ Tweed Mẹ & Bé", price: 450000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", images: ["https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé"], sizes: ["S", "M", "L"], desc: "Set dạ Tweed sang chảnh diện tết." },
-                { id: 9, name: "Quần Jean Nam Rách Gối", price: 320000, category: "men", isNew: true, img: "https://via.placeholder.com/400x400/333/fff?text=Jean+Nam", images: ["https://via.placeholder.com/400x400/333/fff?text=Jean+Nam"], sizes: ["29", "30", "31", "32"], desc: "Quần Jean nam phong cách bụi bặm, chất bò co giãn." }
-            ],
+            products: [],
             cart: JSON.parse(localStorage.getItem("zuzulan_cart")) || []
         };
 
@@ -290,16 +280,22 @@
             currentFilter: 'all',
             selectedSize: null,
             purchaseMethod: 'shipping', // Mặc định là giao hàng
-            
+
             init() {
-                const isValidCart = storeData.cart.every(item => item.id && item.price);
-                if (!isValidCart) {
-                    storeData.cart = [];
-                    this.saveCart();
-                }
-                this.updateCartCount();
-                this.navigate('home');
-            },
+                loadProductsFromSheet().then(products => {
+                    storeData.products = products;
+                    
+                    const isValidCart = storeData.cart.every(item => item.id && item.price);
+                    if (!isValidCart) {
+                        storeData.cart = [];
+                        this.saveCart();
+                    }
+
+                    this.updateCartCount();
+                    this.navigate('home');
+                    });
+                },
+
 
             showToast(message, isError = false) {
                 const toast = document.getElementById('toast');
@@ -643,5 +639,30 @@
 
         window.onload = () => app.init();
     </script>
+    <script>
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNvs5HlquMWmtnVRkYrHsfVbHX8hDiVidlQyayil9Lvx9A3W7_ibK0EksjODw6Lr7MRCnrmFot9zyu/pub?output=csv";
+
+async function loadProductsFromSheet() {
+  const res = await fetch(SHEET_URL);
+  const text = await res.text();
+
+  const rows = text.trim().split("\n").slice(1);
+
+  return rows.map(row => {
+    const cols = row.split(",");
+
+    return {
+      id: Number(cols[0]),
+      name: cols[1],
+      price: Number(cols[2]),
+      category: cols[3],
+      images: [cols[4]],
+      sizes: cols[5] ? cols[5].split("|") : [],
+      desc: cols[6],
+      isNew: cols[7] === "TRUE"
+    };
+  });
+}
+</script>
 </body>
 </html>
