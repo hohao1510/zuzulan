@@ -250,10 +250,12 @@
                 <p class="text-gray-300 text-sm">Đang phục vụ hàng ngàn khách hàng.</p>
             </div>
         </div>
-        <div class="text-center text-gray-500 text-xs mt-10 pt-4 border-t border-gray-700">© 2025 Shop ZuzuLan.</div>
+        <div class="text-center text-gray-500 text-xs mt-10 pt-4 border-t border-gray-700">
+            © 2025 Shop ZuzuLan.
+        </div>
     </footer>
 
-    <!-- MODAL POPUP -->
+    <!-- MODAL POPUP CHI TIẾT SẢN PHẨM -->
     <div id="product-modal" class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row relative transform transition-transform duration-300 scale-95">
             <button onclick="app.closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold z-10">&times;</button>
@@ -289,22 +291,30 @@
 
     <!-- SCRIPT -->
     <script>
-        // DỮ LIỆU SẢN PHẨM CỐ ĐỊNH (Chạy trực tiếp, không qua Google Sheet)
         const storeData = {
             products: [
-                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", isNew: true, img: "product2.jpg", sizes: ["S", "M", "L"], desc: "Áo len sọc phong cách Hàn Quốc, chất len mềm mịn." },
-                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", isNew: true, img: "product3.jpg", sizes: ["M", "L", "XL"], desc: "Quần caro ống rộng thời thượng, vải thô đũi thoáng mát." },
-                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", isNew: true, img: "product4.jpg", sizes: ["L", "XL", "2XL"], desc: "Áo phao 3 lớp siêu nhẹ, chống thấm nước, ấm áp." },
-                { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", isNew: true, img: "product5.jpg", sizes: ["Size 2", "Size 4", "Size 6"], desc: "Váy đầm công chúa lộng lẫy cho bé đi dự tiệc." },
-                { id: 5, name: "Bộ Đồ Thun Lạnh Bé Trai", price: 110000, category: "kids", isNew: false, img: "product1.jpg", sizes: ["8kg", "10kg", "12kg"], desc: "Bộ thun lạnh in hình siêu nhân, thấm hút mồ hôi." },
-                { id: 6, name: "Áo Sơ Mi Nam Công Sở", price: 250000, category: "men", isNew: false, img: "product6.jpg", sizes: ["39", "40", "41", "42"], desc: "Sơ mi nam vải lụa tre chống nhăn, form slimfit." },
-                { id: 7, name: "Áo Hoodie Teen", price: 195000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/f3e5f5/8e24aa?text=Hoodie", sizes: ["Freesize"], desc: "Áo Hoodie form rộng Unisex, nỉ bông dày dặn." },
-                { id: 8, name: "Set Dạ Tweed Mẹ & Bé", price: 450000, category: "adult", isNew: false, img: "https://via.placeholder.com/400x400/fff3e0/ff9800?text=Set+Mẹ+Bé", sizes: ["S", "M", "L"], desc: "Set dạ Tweed sang chảnh diện tết." },
-                { id: 9, name: "Quần Jean Nam Rách Gối", price: 320000, category: "men", isNew: true, img: "https://via.placeholder.com/400x400/333/fff?text=Jean+Nam", sizes: ["29", "30", "31", "32"], desc: "Quần Jean nam phong cách bụi bặm, chất bò co giãn." },
-                { id: 10, name: "Áo Lót Nỉ", price: 100000, category: "adult", isNew: true, img: "product7.jpg", sizes: ["S", "M", "L"], desc: "Áo giữ nhiệt lót nỉ ấm áp." }
-            ],
+                { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", isNew: true, img: "product2.jpg", sizes: ["S", "M", "L"], desc: "Áo len sọc phong cách Hàn Quốc chất len mềm mịn" },
+                { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", isNew: true, img: "product3.jpg", sizes: ["M", "L", "XL"], desc: "Quần caro ống rộng thời thượng vải thô đũi thoáng mát" },
+                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", isNew: true, img: "product4.jpg", sizes: ["L", "XL", "2XL"], desc: "Áo phao 3 lớp siêu nhẹ chống thấm nước ấm áp" },
+                { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", isNew: true, img: "product5.jpg", sizes: ["Size 2", "Size 4", "Size 6"], desc: "Váy đầm công chúa lộng lẫy cho bé đi dự tiệc" },
+                ],
             cart: JSON.parse(localStorage.getItem("zuzulan_cart")) || []
         };
+
+        // Hàm tạo thẻ sản phẩm (Tách ra để tránh lỗi context)
+        function createProductCard(p) {
+            return `
+                <div class="bg-white rounded-xl overflow-hidden shadow border flex flex-col h-full group hover:shadow-xl transition duration-300">
+                    <div class="relative overflow-hidden cursor-pointer h-64 bg-gray-100" onclick="app.openModal(${p.id})">
+                        <img src="${p.img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.src='https://via.placeholder.com/300x300?text=IMG'">
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow text-center">
+                        <h3 class="text-lg font-bold text-secondary mb-2 line-clamp-2 h-14 overflow-hidden">${p.name}</h3>
+                        <div class="text-accent font-bold text-xl mb-4">${p.price.toLocaleString('vi-VN')}₫</div>
+                        <button onclick="app.openModal(${p.id})" class="mt-auto w-full border-2 border-primary text-primary font-bold py-2 rounded-full hover:bg-primary hover:text-white transition uppercase text-xs tracking-wider">Xem Chi Tiết</button>
+                    </div>
+                </div>`;
+        }
 
         const app = {
             container: document.getElementById('app-container'),
@@ -342,16 +352,21 @@
             },
 
             navigate(view) {
+                if(!this.container) this.container = document.getElementById('app-container');
                 this.container.innerHTML = '';
                 document.getElementById('mobile-menu').classList.add('hidden');
-                switch(view) {
-                    case 'home': this.renderDashboard(); break;
-                    case 'shop': 
-                        this.renderShop(); 
-                        break;
-                    case 'cart': this.renderCart(); break;
-                    case 'checkout': this.renderCheckout(); break;
-                    case 'thankyou': this.renderThankYou(); break;
+                
+                try {
+                    switch(view) {
+                        case 'home': this.renderDashboard(); break;
+                        case 'shop': this.renderShop(); break;
+                        case 'cart': this.renderCart(); break;
+                        case 'checkout': this.renderCheckout(); break;
+                        case 'thankyou': this.renderThankYou(); break;
+                    }
+                } catch (e) {
+                    console.error("Lỗi hiển thị:", e);
+                    this.container.innerHTML = `<div class="text-center py-10 text-red-500">Có lỗi xảy ra khi tải trang: ${e.message}</div>`;
                 }
                 window.scrollTo(0, 0);
             },
@@ -411,15 +426,18 @@
                         </div>
                         <div>
                             <div class="flex justify-between items-end mb-6"><h2 class="text-3xl font-bold text-secondary font-serif">Sản Phẩm Mới</h2><button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button></div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => this.createProductCard(p)).join('')}</div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}</div>
                         </div>
                     </div>`;
                 
-                new Chart(document.getElementById('categoryChart').getContext('2d'), {
-                    type: 'doughnut',
-                    data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Mùa Đông'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.winter], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-                });
+                // Kiểm tra an toàn trước khi vẽ biểu đồ
+                if (typeof Chart !== 'undefined') {
+                    new Chart(document.getElementById('categoryChart').getContext('2d'), {
+                        type: 'doughnut',
+                        data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Mùa Đông'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.winter], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                    });
+                }
             },
 
             renderShop() {
@@ -445,7 +463,7 @@
                             <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm..." class="w-full md:w-80 px-4 py-3 border rounded-full focus:outline-none focus:border-primary shadow-sm" oninput="app.filterProducts()">
                         </div>
                         <div id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            ${filteredProducts.length > 0 ? filteredProducts.map(p => this.createProductCard(p)).join('') : '<div class="col-span-full text-center py-10 text-gray-500">Không tìm thấy sản phẩm nào.</div>'}
+                            ${filteredProducts.length > 0 ? filteredProducts.map(p => createProductCard(p)).join('') : '<div class="col-span-full text-center py-10 text-gray-500">Không tìm thấy sản phẩm nào.</div>'}
                         </div>
                     </div>`;
             },
@@ -550,20 +568,6 @@
                 }
             },
 
-            createProductCard(p) {
-                return `
-                    <div class="bg-white rounded-xl overflow-hidden shadow border flex flex-col h-full group hover:shadow-xl transition duration-300">
-                        <div class="relative overflow-hidden cursor-pointer h-64 bg-gray-100" onclick="app.openModal(${p.id})">
-                            <img src="${p.img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.src='https://via.placeholder.com/300x300?text=IMG'">
-                        </div>
-                        <div class="p-5 flex flex-col flex-grow text-center">
-                            <h3 class="text-lg font-bold text-secondary mb-2 line-clamp-2 h-14 overflow-hidden">${p.name}</h3>
-                            <div class="text-accent font-bold text-xl mb-4">${p.price.toLocaleString('vi-VN')}₫</div>
-                            <button onclick="app.openModal(${p.id})" class="mt-auto w-full border-2 border-primary text-primary font-bold py-2 rounded-full hover:bg-primary hover:text-white transition uppercase text-xs tracking-wider">Xem Chi Tiết</button>
-                        </div>
-                    </div>`;
-            },
-
             filterProducts() {
                 const search = document.getElementById('searchInput').value.toLowerCase();
                 const filtered = storeData.products.filter(p => {
@@ -573,7 +577,7 @@
                     else if (this.currentFilter !== 'all') matchCat = p.category === this.currentFilter;
                     return matchSearch && matchCat;
                 });
-                document.getElementById('shop-grid').innerHTML = filtered.length ? filtered.map(p => this.createProductCard(p)).join('') : `<div class="col-span-full text-center py-10 text-gray-500">Không tìm thấy sản phẩm.</div>`;
+                document.getElementById('shop-grid').innerHTML = filtered.length ? filtered.map(p => createProductCard(p)).join('') : `<div class="col-span-full text-center py-10 text-gray-500">Không tìm thấy sản phẩm.</div>`;
             },
 
             openModal(id) {
@@ -708,8 +712,50 @@
             saveCart() { localStorage.setItem("zuzulan_cart", JSON.stringify(storeData.cart)); },
             updateCartCount() { document.getElementById('cart-count').innerText = storeData.cart.reduce((s, i) => s + i.qty, 0); }
         };
+//add Hhao
 
-        window.onload = () => app.init();
+async function loadProductsFromGoogleSheet() {
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNvs5HlquMWmtnVRkYrHsfVbHX8hDiVidlQyayil9Lvx9A3W7_ibK0EksjODw6Lr7MRCnrmFot9zyu/pub?output=csv";
+
+    const res = await fetch(url);
+    const text = await res.text();
+
+    console.log("📄 CSV RAW:", text);
+
+    const lines = text.trim().split("\n");
+    const headers = lines.shift().split(",");
+
+    console.log("🧾 HEADERS:", headers);
+
+    const products = lines.map(line => {
+        const cols = line.split(",");
+        const row = {};
+        headers.forEach((h, i) => row[h.trim()] = cols[i]?.trim());
+
+        return {
+            id: Number(row.id),
+            name: row.name,
+            price: Number(row.price),
+            category: row.category,
+            isNew: row.isNew === "TRUE",
+            img: row.img,
+            sizes: row.sizes ? row.sizes.split("|") : [],
+            desc: row.desc
+        };
+    });
+
+    console.log("📦 PRODUCTS PARSED:", products);
+
+    if (products.length) {
+        storeData.products = products;
+        console.log("✅ ĐÃ LOAD SẢN PHẨM TỪ GOOGLE SHEET");
+    }
+}
+
+window.onload = async () => {
+    await loadProductsFromGoogleSheet();
+    app.init();
+};
     </script>
 </body>
 </html>
