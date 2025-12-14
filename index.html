@@ -687,13 +687,11 @@
                 document.getElementById('purchase_method_input').value = method;
 
                 const formData = new FormData(e.target);
-                
+
                 fetch("https://formsubmit.co/ajax/hohao1510@gmail.com", {
                     method: "POST",
                     body: formData
                 })
-
-
                 .then(response => response.json())
                 .then(data => {
                     storeData.cart = [];
@@ -715,7 +713,9 @@
             updateCartCount() { document.getElementById('cart-count').innerText = storeData.cart.reduce((s, i) => s + i.qty, 0); }
         };
 //add Hhao
-   const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNvs5HlquMWmtnVRkYrHsfVbHX8hDiVidlQyayil9Lvx9A3W7_ibK0EksjODw6Lr7MRCnrmFot9zyu/pub?output=csv";
+
+async function loadProductsFromGoogleSheet() {
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNvs5HlquMWmtnVRkYrHsfVbHX8hDiVidlQyayil9Lvx9A3W7_ibK0EksjODw6Lr7MRCnrmFot9zyu/pub?output=csv";
 
     const res = await fetch(url);
     const text = await res.text();
@@ -756,7 +756,6 @@ window.onload = async () => {
     await loadProductsFromGoogleSheet();
     app.init();
 };
-</script>
-
+    </script>
 </body>
 </html>
