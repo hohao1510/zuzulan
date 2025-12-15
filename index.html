@@ -610,6 +610,22 @@
                 if (!p) return;
                 document.getElementById('modal-img').src = p.img;
 //add chọn màu
+
+                // ===== XỬ LÝ ẨN / HIỆN CHỌN MÀU =====
+                const images = p.images && p.images.length > 0 ? p.images : [p.img];
+                const colorsWrap = document.getElementById('modal-colors');
+                const colorError = document.getElementById('color-error');
+                
+                if (images.length <= 1) {
+                  colorsWrap.parentElement.classList.add('hidden');
+                  this.selectedColor = 'default';
+                } else {
+                  colorsWrap.parentElement.classList.remove('hidden');
+                  this.selectedColor = null;
+                  colorError.classList.add('hidden');
+                }
+
+                
             // ===== CHỌN MÀU (mỗi ảnh = 1 màu) =====
             const colorsDiv = document.getElementById('modal-colors');
             colorsDiv.innerHTML = '';
@@ -692,10 +708,11 @@
                         return;
                     }
                     // check màu
-                    if (!this.selectedColor) {
+                    if (!this.selectedColor && p.images && p.images.length > 1) {
                       document.getElementById('color-error').classList.remove('hidden');
                       return;
                     }
+
                     
                     this.addToCart(p.id, this.selectedSize); 
                     this.closeModal(); 
