@@ -751,8 +751,21 @@ async function loadProductsFromGoogleSheet() {
             isNew: row.isNew === "TRUE",
             //img: row.img,
             
-            img: row.img.split("|")[0],
-            images: row.img.split("|"),
+            //img: row.img.split("|")[0],
+            //images: row.img.split("|"),
+//start hao
+
+            img: row.img.split("||")[0].split(";;")[0],
+            images: row.img.split("||").map(item => {
+                const parts = item.split(";;");
+                return {
+                    src: parts[0],
+                    sizes: parts[1] ? parts[1].split("-") : [],
+                    desc: parts[2] || ""
+                };
+            }),
+//end hao
+            
 
             sizes: row.sizes ? row.sizes.split("|") : [],
             desc: row.desc
