@@ -291,15 +291,15 @@
 
 <!--add màu-->
                 <!-- KHU VỰC CHỌN MÀU -->
-                <div class="mb-6">
+            <!--    <div class="mb-6">
                   <h4 class="font-bold text-gray-800 mb-2">Màu sắc:</h4>
                   <div id="modal-colors" class="flex gap-2 flex-wrap"></div>
                 
-                <p id="color-error" class="text-red-500 text-sm mt-2 hidden animate-bounce">⚠️ Vui lòng chọn màu!
-</p>
-
+                <p id="color-error" class="text-red-500 text-sm mt-2 hidden animate-bounce">⚠️ Vui lòng chọn màu!</p>
                 </div>
+            -->
 <!--end add màu -->
+                
                 <div class="mb-6"><h4 class="font-bold text-gray-800 mb-2">Mô tả:</h4><p id="modal-desc" class="text-gray-600 italic"></p></div>
                 <div class="mt-auto"><button id="modal-add-btn" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-full shadow-lg transition transform hover:-translate-y-1">Thêm vào giỏ hàng ngay</button></div>
             </div>
@@ -604,13 +604,13 @@
             },
 
             openModal(id) {
-                this.selectedColor = null; //bắt chọn màu
+                //this.selectedColor = null; //bắt chọn màu
                 this.selectedSize = null; 
                 const p = storeData.products.find(x => x.id === id);
                 if (!p) return;
                 document.getElementById('modal-img').src = p.img;
 //add chọn màu
-
+/*
                 // ===== XỬ LÝ ẨN / HIỆN CHỌN MÀU =====
                 const images = p.images && p.images.length > 0 ? p.images : [p.img];
                 const colorsWrap = document.getElementById('modal-colors');
@@ -656,7 +656,7 @@
             }
 
 // end chọn màu
-                
+*/                
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
@@ -707,12 +707,13 @@
                         document.getElementById('size-error').classList.remove('hidden');
                         return;
                     }
+/*
                     // check màu
                     if (!this.selectedColor && p.images && p.images.length > 1) {
                       document.getElementById('color-error').classList.remove('hidden');
                       return;
                     }
-
+*/
                     
                     this.addToCart(p.id, this.selectedSize); 
                     this.closeModal(); 
