@@ -596,24 +596,6 @@
                 const p = storeData.products.find(x => x.id === id);
                 if (!p) return;
                 document.getElementById('modal-img').src = p.img;
-                //them nut màu
-
-                const thumbs = document.getElementById('modal-thumbnails');
-                thumbs.innerHTML = '';
-                
-                if (p.images && p.images.length > 0) {
-                    p.images.forEach(src => {
-                        const img = document.createElement('img');
-                        img.src = src;
-                        img.className = 'w-16 h-16 object-cover rounded cursor-pointer border';
-                        img.onclick = () => {
-                            document.getElementById('modal-img').src = src;
-                        };
-                        thumbs.appendChild(img);
-                    });
-                }
-
-                //end them nút màu
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
