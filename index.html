@@ -740,10 +740,11 @@ async function loadProductsFromGoogleSheet() {
 
     const products = lines.map(line => {
         // start hao
-        //const cols = line.split(",");
-
+        const cols = line.split(",");
+/*
         const cols = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g)
                ?.map(c => c.replace(/^"|"$/g, "").trim()) || [];
+*/
         //end hao
         
         const row = {};
