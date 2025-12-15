@@ -749,7 +749,11 @@ async function loadProductsFromGoogleSheet() {
             price: Number(row.price),
             category: row.category,
             isNew: row.isNew === "TRUE",
-            img: row.img,
+            //img: row.img,
+            
+            img: row.img.split("|")[0],
+            images: row.img.split("|"),
+
             sizes: row.sizes ? row.sizes.split("|") : [],
             desc: row.desc
         };
