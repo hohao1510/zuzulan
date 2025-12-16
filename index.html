@@ -239,22 +239,6 @@
     padding: 1px;
   }
 }
-
-/* thumbnail vuốt ngang */
-#modal-thumbnails {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 4px;
-}
-#modal-thumbnails::-webkit-scrollbar {
-    display: none;
-}
-#modal-thumbnails img {
-    flex-shrink: 0;
-}
-
         
 </style>
     
@@ -995,6 +979,31 @@ window.onload = async () => {
     await loadProductsFromGoogleSheet();
     app.init();
 };
+
+// bd vuốt ngang
+        
+let startX = 0;
+
+zoomImg.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+});
+
+zoomImg.addEventListener('touchend', e => {
+  const endX = e.changedTouches[0].clientX;
+  const diff = endX - startX;
+
+  if (Math.abs(diff) < 40) return;
+
+  if (diff < 0 && zoomIndex < zoomImages.length - 1) {
+    zoomIndex++;
+  } else if (diff > 0 && zoomIndex > 0) {
+    zoomIndex--;
+  }
+
+  zoomImg.src = zoomImages[zoomIndex];
+});
+// kt vuốt ngang
+        
     </script>
     
 <!-- ZOOM ẢNH TOÀN MÀN HÌNH -->
