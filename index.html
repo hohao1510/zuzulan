@@ -624,6 +624,16 @@
                   document.getElementById('img-zoom').classList.remove('hidden');
                 };
 
+                // đóng ảnh phóng to (PC + mobile)
+                const imgZoom = document.getElementById('img-zoom');
+                
+                ['click', 'touchstart'].forEach(evt => {
+                  imgZoom.addEventListener(evt, () => {
+                    imgZoom.classList.add('hidden');
+                  });
+                });
+
+
 //add chọn màu
 /*
                 // ===== XỬ LÝ ẨN / HIỆN CHỌN MÀU =====
