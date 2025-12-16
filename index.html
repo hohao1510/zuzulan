@@ -328,8 +328,18 @@
                 <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Hỗ trợ</h3>
                 <!-- <p class="text-gray-300 text-sm">Đang phục vụ hàng ngàn khách hàng.</p> -->
                 <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-primary transition">Chính sách đổi trả</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Quy định vận chuyển</a></li>
+
+                    <!-- Gọi hàm showPolicy('size') -->
+                        <li><button onclick="app.showPolicy('size')" class="hover:text-primary transition text-left w-full">Hướng dẫn chọn size</button></li>
+                        <!-- Gọi hàm showPolicy('return') -->
+                        <li><button onclick="app.showPolicy('return')" class="hover:text-primary transition text-left w-full">Chính sách đổi trả</button></li>
+                        <!-- Gọi hàm showPolicy('shipping') -->
+                        <li><button onclick="app.showPolicy('shipping')" class="hover:text-primary transition text-left w-full">Quy định vận chuyển</button></li>
+                        <!-- Gọi hàm showPolicy('privacy') -->
+                        <li><button onclick="app.showPolicy('privacy')" class="hover:text-primary transition text-left w-full">Bảo mật thông tin</button></li>
+                    
+                        <!-- <li><a href="#" class="hover:text-primary transition">Chính sách đổi trả</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Quy định vận chuyển</a></li> -->
                 </ul>
             </div>
         </div>
@@ -338,6 +348,27 @@
         </div>
     </footer>
 
+    <!-- (MỚI) MODAL POPUP THÔNG TIN CHÍNH SÁCH -->
+    <!-- Đây là phần thêm vào để hiện nội dung khi bấm vào link hỗ trợ -->
+    <div id="policy-modal" class="fixed inset-0 z-[110] hidden bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col relative transform transition-transform duration-300 scale-95">
+            <!-- Header Modal -->
+            <div class="flex justify-between items-center p-5 border-b">
+                <h3 id="policy-title" class="text-2xl font-bold text-secondary font-serif">Tiêu đề chính sách</h3>
+                <button onclick="app.closePolicy()" class="text-gray-400 hover:text-red-500 transition text-3xl font-bold leading-none">&times;</button>
+            </div>
+            <!-- Body Modal -->
+            <div class="p-6 overflow-y-auto custom-scrollbar text-gray-700 leading-relaxed space-y-4" id="policy-content">
+                <!-- Nội dung sẽ được JS chèn vào đây -->
+            </div>
+            <!-- Footer Modal -->
+            <div class="p-4 border-t bg-gray-50 flex justify-end rounded-b-xl">
+                <button onclick="app.closePolicy()" class="bg-primary hover:bg-primaryDark text-white px-6 py-2 rounded-full font-bold transition shadow">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+
+    
 <!-- MODAL POPUP CHI TIẾT SẢN PHẨM -->
 <div id="product-modal"
      class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm
@@ -423,6 +454,82 @@
     </div>
 
     <!-- SCRIPT -->
+
+// (MỚI) 1. Thêm dữ liệu nội dung chính sách
+        const policyData = {
+            size: {
+                title: "Hướng Dẫn Chọn Size",
+                content: `
+                    <p>Chào bạn, để chọn được size đồ vừa vặn nhất, ZuzuLan gợi ý bạn tham khảo bảng size chung dưới đây. Tuy nhiên, tùy vào form dáng từng sản phẩm mà sẽ có sự chênh lệch nhỏ (1-2cm).</p>
+                    <h4 class="font-bold mt-4 mb-2 text-primaryDark">1. Bảng size Trẻ Em:</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Size 80 (9-11kg):</strong> Bé cao 75-80cm</li>
+                        <li><strong>Size 90 (11-13kg):</strong> Bé cao 80-90cm</li>
+                        <li><strong>Size 100 (13-15kg):</strong> Bé cao 90-100cm</li>
+                        <li><strong>Size 110 (16-19kg):</strong> Bé cao 100-110cm</li>
+                    </ul>
+                    <h4 class="font-bold mt-4 mb-2 text-primaryDark">2. Bảng size Người Lớn (Nữ):</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Size S:</strong> Dưới 48kg, cao dưới 1m58</li>
+                        <li><strong>Size M:</strong> 48-54kg, cao 1m55-1m62</li>
+                        <li><strong>Size L:</strong> 55-60kg, cao 1m58-1m65</li>
+                        <li><strong>Size XL:</strong> 60-65kg, cao trên 1m60</li>
+                    </ul>
+                    <p class="mt-4 italic text-sm bg-yellow-50 p-3 rounded border border-yellow-200">💡 Mẹo nhỏ: Nếu bạn phân vân giữa 2 size, hãy chọn size lớn hơn để mặc thoải mái nhé!</p>
+                `
+            },
+            return: {
+                title: "Chính Sách Đổi Trả",
+                content: `
+                    <p>ZuzuLan luôn mong muốn mang lại sự hài lòng tuyệt đối cho khách hàng. Dưới đây là quy định đổi trả hàng:</p>
+                    <h4 class="font-bold mt-4 mb-2 text-primaryDark">1. Điều kiện đổi hàng:</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Sản phẩm còn nguyên tem mác, chưa qua sử dụng, giặt ủi.</li>
+                        <li>Thời gian đổi hàng: Trong vòng <strong>3 ngày</strong> kể từ khi nhận hàng.</li>
+                        <li>Có video quay lại quá trình mở gói hàng (để đối chiếu nếu hàng lỗi).</li>
+                    </ul>
+                    <h4 class="font-bold mt-4 mb-2 text-primaryDark">2. Các trường hợp được hỗ trợ:</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Shop gửi sai mẫu, sai màu, sai size.</li>
+                        <li>Sản phẩm bị lỗi do nhà sản xuất (rách, bẩn, lỗi đường may).</li>
+                    </ul>
+                    <h4 class="font-bold mt-4 mb-2 text-primaryDark">3. Chi phí đổi trả:</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Lỗi do shop: Shop chịu 100% phí ship 2 chiều.</li>
+                        <li>Khách muốn đổi size/mẫu (không do lỗi): Khách hàng vui lòng thanh toán phí ship 2 chiều.</li>
+                    </ul>
+                `
+            },
+            shipping: {
+                title: "Quy Định Vận Chuyển",
+                content: `
+                    <p>ZuzuLan hợp tác với các đơn vị vận chuyển uy tín để giao hàng nhanh chóng đến tay bạn.</p>
+                    <h4 class="font-bold mt-4 mb-2 text-primaryDark">1. Thời gian giao hàng:</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Nội thành (Nghệ An):</strong> 1-2 ngày.</li>
+                        <li><strong>Các tỉnh thành khác:</strong> 3-5 ngày làm việc.</li>
+                    </ul>
+                    <h4 class="font-bold mt-4 mb-2 text-primaryDark">2. Phí vận chuyển:</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Đồng giá <strong>30.000đ</strong> toàn quốc.</li>
+                        <li><strong>Freeship</strong> cho đơn hàng từ 500.000đ trở lên.</li>
+                    </ul>
+                    <p class="mt-4">🚀 Đơn hàng sẽ được đóng gói và gửi đi vào 16h hàng ngày.</p>
+                `
+            },
+            privacy: {
+                title: "Bảo Mật Thông Tin",
+                content: `
+                    <p>ZuzuLan cam kết bảo mật tuyệt đối thông tin cá nhân của khách hàng.</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li>Thông tin của bạn (Tên, SĐT, Địa chỉ) chỉ được sử dụng để xác nhận đơn hàng và giao hàng.</li>
+                        <li>Chúng tôi cam kết không chia sẻ, bán hoặc tiết lộ thông tin của bạn cho bất kỳ bên thứ ba nào khác.</li>
+                        <li>Mọi thông tin giao dịch đều được bảo mật an toàn.</li>
+                    </ul>
+                `
+            }
+        };
+    
     <script>
         const storeData = {
             products: [
@@ -465,6 +572,37 @@
                 this.navigate('home');
             },
 
+// (MỚI) 3. Thêm hàm xử lý hiện/ẩn modal chính sách
+            showPolicy(type) {
+                const data = policyData[type]; // Lấy nội dung từ biến policyData
+                if (data) {
+                    // Điền tiêu đề và nội dung vào modal
+                    document.getElementById('policy-title').innerText = data.title;
+                    document.getElementById('policy-content').innerHTML = data.content;
+                    
+                    // Hiện modal lên
+                    const modal = document.getElementById('policy-modal');
+                    modal.classList.remove('hidden');
+                    // Timeout nhỏ để animation hiện ra mượt mà
+                    setTimeout(() => {
+                        modal.classList.remove('opacity-0');
+                        modal.querySelector('div').classList.replace('scale-95', 'scale-100');
+                    }, 10);
+                }
+            },
+
+            closePolicy() {
+                // Ẩn modal đi
+                const modal = document.getElementById('policy-modal');
+                modal.classList.add('opacity-0');
+                modal.querySelector('div').classList.replace('scale-100', 'scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            },
+            // ------------------------------------------
+
+            
             showToast(message, isError = false) {
                 const toast = document.getElementById('toast');
                 const toastMsg = document.getElementById('toast-message');
