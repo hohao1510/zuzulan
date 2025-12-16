@@ -176,6 +176,10 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+/* phóng to bằng 2 ngón tay */
+          #zoom-img {
+            touch-action: pinch-zoom;
+          }
 
     </style>
 </head>
@@ -625,13 +629,29 @@
                 };
 
                 // đóng ảnh phóng to (PC + mobile)
+                // const imgZoom = document.getElementById('img-zoom');
+
                 const imgZoom = document.getElementById('img-zoom');
+                const zoomImg = document.getElementById('zoom-img');
                 
-                ['click', 'touchstart'].forEach(evt => {
-                  imgZoom.addEventListener(evt, () => {
-                    imgZoom.classList.add('hidden');
-                  });
+                // bấm nền tối để đóng
+                imgZoom.addEventListener('click', () => {
+                  imgZoom.classList.add('hidden');
                 });
+                
+                // chạm vào ảnh thì KHÔNG đóng (để pinch zoom)
+                zoomImg.addEventListener('click', e => {
+                  e.stopPropagation();
+                });
+                zoomImg.addEventListener('touchstart', e => {
+                  e.stopPropagation();
+                });
+
+                // ['click', 'touchstart'].forEach(evt => {
+                //   imgZoom.addEventListener(evt, () => {
+                //     imgZoom.classList.add('hidden');
+                //   });
+                // });
 
 
 //add chọn màu
@@ -891,15 +911,21 @@ window.onload = async () => {
     </script>
     
 <!-- ZOOM ẢNH TOÀN MÀN HÌNH -->
+
+    
 <div id="img-zoom"
-    <div id="img-zoom" 
-    class="fixed inset-0 z-[9999] hidden bg-black/70 flex items-center justify-center">
-    
-     <!-- class="fixed inset-0 bg-black/80 hidden z-[9999] flex items-center justify-center"
-     onclick="this.classList.add('hidden')"> -->
-    
-  <img id="zoom-img" class="max-w-full max-h-full object-contain">
+
+    <div id="img-zoom"
+     class="fixed inset-0 hidden z-[9999] bg-black/80 flex items-center justify-center">
+  <img id="zoom-img"
+       class="max-w-full max-h-full"
+  />
 </div>
+
+    <!-- <div id="img-zoom" 
+    class="fixed inset-0 z-[9999] hidden bg-black/70 flex items-center justify-center">    
+  <img id="zoom-img" class="max-w-full max-h-full object-contain">
+</div> -->
 
 
 
