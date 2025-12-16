@@ -767,8 +767,17 @@
                 document.getElementById('modal-desc').innerText = p.desc;
                 const thumbs = document.getElementById('modal-thumbnails');
                 thumbs.innerHTML = '';
-                
-                const images = p.images ? p.images : [p.img]; 
+
+                const images = p.images ? p.images : [p.img];
+
+                // Ẩn thumbnail nếu chỉ có 1 ảnh
+                if (images.length <= 1) {
+                    thumbs.classList.add('hidden');
+                } else {
+                    thumbs.classList.remove('hidden');
+                }         
+                                
+                // const images = p.images ? p.images : [p.img]; 
                 
                 images.forEach((src, idx) => {
                     const img = document.createElement('img');
