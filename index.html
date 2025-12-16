@@ -188,7 +188,7 @@
 
   /* tiêu đề sản phẩm */
   #modal-title {
-    font-size: 1.2rem;
+    font-size: 1.0rem;
   }
 
   /* giá */
@@ -211,6 +211,32 @@
   #modal-add-btn {
     font-size: 0.95rem;
     padding: 10px;
+  }
+}
+
+
+/* =========================
+   THU NHỎ ẢNH THUMBNAIL (MOBILE)
+   ========================= */
+@media (max-width: 640px) {
+
+  /* vùng chứa thumbnail */
+  #modal-thumbnails {
+    gap: 6px;
+    padding: 4px;
+  }
+
+  /* mỗi thumbnail */
+  #modal-thumbnails img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  /* nếu thumbnail là button */
+  #modal-thumbnails button {
+    padding: 2px;
   }
 }
 
