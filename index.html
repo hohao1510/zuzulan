@@ -240,8 +240,24 @@
   }
 }
 
+/* thumbnail vuốt ngang */
+#modal-thumbnails {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+}
+#modal-thumbnails::-webkit-scrollbar {
+    display: none;
+}
+#modal-thumbnails img {
+    flex-shrink: 0;
+}
+
         
-    </style>
+</style>
+    
 </head>
 <body class="text-gray-700 flex flex-col min-h-screen relative">
 
@@ -782,7 +798,9 @@
                 images.forEach((src, idx) => {
                     const img = document.createElement('img');
                     img.src = src;
-                    img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
+                    // img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
+                    img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
+
                     img.onclick = function() {
                         document.getElementById('modal-img').src = src;
                         thumbs.querySelectorAll('img').forEach(i => {
