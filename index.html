@@ -328,12 +328,6 @@
         </div>
     </footer>
 
-    <!-- MODAL POPUP CHI TIẾT SẢN PHẨM -->
-    <!-- <div id="product-modal" class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row relative transform transition-transform duration-300 scale-95">
-            <button onclick="app.closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold z-10">&times;</button>
-            <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-4"> -->
-
 <!-- MODAL POPUP CHI TIẾT SẢN PHẨM -->
 <div id="product-modal"
      class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm
@@ -343,11 +337,21 @@
                 overflow-hidden flex flex-col md:flex-row relative
                 transform transition-transform duration-300 scale-95">
 
-        <button onclick="app.closeModal()"
-                class="absolute top-2 right-2 md:top-4 md:right-4
+        <!-- <button onclick="app.closeModal()"
+                class="absolute top-4 right-4 md:top-4 md:right-4
                        text-gray-400 hover:text-gray-800 text-2xl md:text-3xl font-bold z-10">
             &times;
+        </button> -->
+
+        <button onclick="app.closeModal()"
+        class="absolute top-4 right-4 md:top-4 md:right-4
+               text-white bg-black/40 hover:bg-black/60
+               w-9 h-9 md:w-11 md:h-11
+               flex items-center justify-center
+               rounded-full text-2xl md:text-3xl font-bold z-20">
+            &times;
         </button>
+
 
         <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-2 md:p-4">
 
