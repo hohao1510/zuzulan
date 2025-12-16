@@ -181,6 +181,40 @@
             touch-action: pinch-zoom;
           }
 
+/* =========================
+   GIẢM FONT & NÚT TRONG MODAL (MOBILE)
+   ========================= */
+@media (max-width: 640px) {
+
+  /* tiêu đề sản phẩm */
+  #modal-title {
+    font-size: 1.2rem;
+  }
+
+  /* giá */
+  #modal-price {
+    font-size: 1.05rem;
+  }
+
+  /* mô tả */
+  #modal-desc {
+    font-size: 0.9rem;
+  }
+
+  /* nút chọn size */
+  .size-btn {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+  }
+
+  /* nút thêm giỏ hàng */
+  #modal-add-btn {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+}
+
+        
     </style>
 </head>
 <body class="text-gray-700 flex flex-col min-h-screen relative">
