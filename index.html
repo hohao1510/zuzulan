@@ -329,10 +329,29 @@
     </footer>
 
     <!-- MODAL POPUP CHI TIẾT SẢN PHẨM -->
-    <div id="product-modal" class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+    <!-- <div id="product-modal" class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row relative transform transition-transform duration-300 scale-95">
             <button onclick="app.closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold z-10">&times;</button>
-            <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-4">
+            <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-4"> -->
+
+<!-- MODAL POPUP CHI TIẾT SẢN PHẨM -->
+<div id="product-modal"
+     class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm
+            flex items-center justify-center p-2 md:p-4 transition-opacity duration-300 opacity-0">
+
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-3xl max-h-[90vh]
+                overflow-hidden flex flex-col md:flex-row relative
+                transform transition-transform duration-300 scale-95">
+
+        <button onclick="app.closeModal()"
+                class="absolute top-2 right-2 md:top-4 md:right-4
+                       text-gray-400 hover:text-gray-800 text-2xl md:text-3xl font-bold z-10">
+            &times;
+        </button>
+
+        <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-2 md:p-4">
+
+                
                  <!-- phóng to ảnh -->
                 <!-- <div class="flex-grow flex items-center justify-center mb-4 h-64 md:h-80 bg-white rounded-lg shadow-inner p-2"> -->
                 
@@ -979,36 +998,11 @@ window.onload = async () => {
     await loadProductsFromGoogleSheet();
     app.init();
 };
-
-// bd vuốt ngang
-        
-let startX = 0;
-
-zoomImg.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-});
-
-zoomImg.addEventListener('touchend', e => {
-  const endX = e.changedTouches[0].clientX;
-  const diff = endX - startX;
-
-  if (Math.abs(diff) < 40) return;
-
-  if (diff < 0 && zoomIndex < zoomImages.length - 1) {
-    zoomIndex++;
-  } else if (diff > 0 && zoomIndex > 0) {
-    zoomIndex--;
-  }
-
-  zoomImg.src = zoomImages[zoomIndex];
-});
-// kt vuốt ngang
-        
-    </script>
+    
+</script>
     
 <!-- ZOOM ẢNH TOÀN MÀN HÌNH -->
-
-    
+ 
 <div id="img-zoom"
 
     <div id="img-zoom"
@@ -1024,7 +1018,5 @@ zoomImg.addEventListener('touchend', e => {
 </div> -->
 
 
-
-    
 </body>
 </html>
