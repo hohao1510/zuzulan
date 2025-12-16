@@ -335,8 +335,6 @@
                         <li><button onclick="app.showPolicy('return')" class="hover:text-primary transition text-left w-full">Chính sách đổi trả</button></li>
                         <!-- Gọi hàm showPolicy('shipping') -->
                         <li><button onclick="app.showPolicy('shipping')" class="hover:text-primary transition text-left w-full">Quy định vận chuyển</button></li>
-                        <!-- Gọi hàm showPolicy('privacy') -->
-                        <li><button onclick="app.showPolicy('privacy')" class="hover:text-primary transition text-left w-full">Bảo mật thông tin</button></li>
                     
                         <!-- <li><a href="#" class="hover:text-primary transition">Chính sách đổi trả</a></li>
                         <li><a href="#" class="hover:text-primary transition">Quy định vận chuyển</a></li> -->
@@ -373,10 +371,6 @@
 <div id="product-modal"
      class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm
             flex items-center justify-center p-1 md:p-4 transition-opacity duration-300 opacity-0">
-
-    <!-- <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh]
-                overflow-hidden flex flex-col md:flex-row relative
-                transform transition-transform duration-300 scale-95"> -->
 
     <div class="bg-white rounded-lg shadow-lg w-full
             max-w-2xl md:max-w-4xl lg:max-w-5xl
@@ -517,17 +511,6 @@
                     <p class="mt-4">🚀 Đơn hàng sẽ được đóng gói và gửi đi vào 16h hàng ngày.</p>
                 `
             },
-            privacy: {
-                title: "Bảo Mật Thông Tin",
-                content: `
-                    <p>ZuzuLan cam kết bảo mật tuyệt đối thông tin cá nhân của khách hàng.</p>
-                    <ul class="list-disc pl-5 space-y-2 mt-2">
-                        <li>Thông tin của bạn (Tên, SĐT, Địa chỉ) chỉ được sử dụng để xác nhận đơn hàng và giao hàng.</li>
-                        <li>Chúng tôi cam kết không chia sẻ, bán hoặc tiết lộ thông tin của bạn cho bất kỳ bên thứ ba nào khác.</li>
-                        <li>Mọi thông tin giao dịch đều được bảo mật an toàn.</li>
-                    </ul>
-                `
-            }
         };
     
     <script>
@@ -572,7 +555,7 @@
                 this.navigate('home');
             },
 
-// (MỚI) 3. Thêm hàm xử lý hiện/ẩn modal chính sách
+            // (MỚI) 3. Thêm hàm xử lý hiện/ẩn modal chính sách
             showPolicy(type) {
                 const data = policyData[type]; // Lấy nội dung từ biến policyData
                 if (data) {
