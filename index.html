@@ -248,7 +248,7 @@
     <!-- TOP BAR -->
     <div class="bg-primary text-white py-2 font-bold text-lg overflow-hidden">
         <marquee direction="left" scrollamount="12">
-            Shop quần áo Zuzulan chào quý khách, chúc quý khách mua sắm vui vẻ
+            Shop quần áo Zuzulan chào quý khách, chúc quý khách mua sắm vui vẻ!
         </marquee>
     </div>
 
@@ -300,6 +300,27 @@
     <main id="app-container" class="flex-grow container mx-auto px-4 py-8">
         <!-- JS sẽ điền nội dung vào đây -->
     </main>
+
+    <!-- BIỂU ĐỒ & THỐNG KÊ NHANH -->
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                                <h3 class="text-xl font-bold text-secondary mb-4">Phân Bố Danh Mục</h3>
+                                <div class="chart-container"><canvas id="categoryChart"></canvas></div>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center">
+                                <h3 class="text-xl font-bold text-secondary mb-4">Thống Kê Nhanh</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-primary">${storeData.products.length}</div><div class="text-sm text-gray-600">Sản Phẩm</div></div>
+                                    <div class="bg-pink-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-accent">4</div><div class="text-sm text-gray-600">Danh Mục</div></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+  <!-- THÊM NỀN XÁM ĐỂ TÁCH FOOTER -->
+
+  <div class="bg-gray-50 p-8 rounded-2xl">
 
     <!-- FOOTER -->
     <footer class="bg-gray-800 text-white py-10 mt-auto">
@@ -507,7 +528,7 @@
                     <h4 class="font-bold mt-4 mb-2 text-primaryDark">2. Phí vận chuyển:</h4>
                     <ul class="list-disc pl-5 space-y-1">
                         <li>Đồng giá <strong>30.000đ</strong> toàn quốc.</li>
-                        <li><strong>Freeship</strong> cho đơn hàng từ 500.000đ trở lên.</li>
+                        <li><strong>Freeship</strong> cho đơn hàng từ 1.000.000đ trở lên.</li>
                     </ul>
                     <p class="mt-4">🚀 Đơn hàng sẽ được đóng gói và gửi đi vào 16h hàng ngày.</p>
                 `
@@ -666,19 +687,19 @@
                             </div>
                         </div>
                         <div class="mt-8">${this.renderNavBar('')}</div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                                <h3 class="text-xl font-bold text-secondary mb-4">Phân Bố Danh Mục</h3>
-                                <div class="chart-container"><canvas id="categoryChart"></canvas></div>
-                            </div>
-                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center">
-                                <h3 class="text-xl font-bold text-secondary mb-4">Thống Kê Nhanh</h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="bg-blue-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-primary">${storeData.products.length}</div><div class="text-sm text-gray-600">Sản Phẩm</div></div>
-                                    <div class="bg-pink-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-accent">4</div><div class="text-sm text-gray-600">Danh Mục</div></div>
-                                </div>
-                            </div>
-                        </div>
+                        // <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        //     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                        //         <h3 class="text-xl font-bold text-secondary mb-4">Phân Bố Danh Mục</h3>
+                        //         <div class="chart-container"><canvas id="categoryChart"></canvas></div>
+                        //     </div>
+                        //     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center">
+                        //         <h3 class="text-xl font-bold text-secondary mb-4">Thống Kê Nhanh</h3>
+                        //         <div class="grid grid-cols-2 gap-4">
+                        //             <div class="bg-blue-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-primary">${storeData.products.length}</div><div class="text-sm text-gray-600">Sản Phẩm</div></div>
+                        //             <div class="bg-pink-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-accent">4</div><div class="text-sm text-gray-600">Danh Mục</div></div>
+                        //         </div>
+                        //     </div>
+                        // </div>
                         <div>
                             <div class="flex justify-between items-end mb-6"><h2 class="text-3xl font-bold text-secondary font-serif">Sản Phẩm Mới</h2><button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button></div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}</div>
@@ -836,11 +857,11 @@
             },
 
             openModal(id) {
-                //this.selectedColor = null; //bắt chọn màu
-                this.selectedSize = null; 
-                const p = storeData.products.find(x => x.id === id);
-                if (!p) return;
-                document.getElementById('modal-img').src = p.img;
+                // //this.selectedColor = null; //bắt chọn màu
+                // this.selectedSize = null; 
+                // const p = storeData.products.find(x => x.id === id);
+                // if (!p) return;
+                // document.getElementById('modal-img').src = p.img;
                 
                 // phóng to ảnh
                 document.getElementById('modal-img').onclick = () => {
@@ -1006,7 +1027,7 @@
                 if (item) item.qty++; 
                 else storeData.cart.push({ ...p, qty: 1, size: size });
                 this.saveCart(); this.updateCartCount();
-                this.showToast(`Đã thêm "${p.name} (Size: ${size})" vào giỏ hàng!`);
+                this.showToast(`Đã thêm "${p.name} (${size})" vào giỏ hàng!`);
             },
 
             changeQty(index, d) {
