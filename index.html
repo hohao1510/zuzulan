@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -674,14 +674,14 @@
                     </div>`;
                 
                 // Kiểm tra an toàn trước khi vẽ biểu đồ
-                if (typeof Chart !== 'undefined') {
-                    new Chart(document.getElementById('categoryChart').getContext('2d'), {
-                        type: 'doughnut',
-                        data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Mùa Đông'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.winter], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-                    });
-                }
-            },
+            //     if (typeof Chart !== 'undefined') {
+            //         new Chart(document.getElementById('categoryChart').getContext('2d'), {
+            //             type: 'doughnut',
+            //             data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Mùa Đông'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.winter], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
+            //             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            //         });
+            //     }
+            // },
 
             renderShop() {
                 let filteredProducts = storeData.products;
