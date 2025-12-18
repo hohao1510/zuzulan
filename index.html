@@ -581,6 +581,7 @@
 
         const app = {
             container: document.getElementById('app-container'),
+            myChart: null, // <--- THÊM DÒNG NÀY (để lưu trữ biểu đồ)
             currentFilter: 'all',
             selectedSize: null,
             purchaseMethod: 'shipping', 
@@ -721,6 +722,32 @@
                         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
                     });
                 }
+
+                // --- ĐOẠN MỚI THÊM VÀO ĐÂY ---
+                    // Kiểm tra: Nếu biến myChart đang giữ một biểu đồ cũ, hãy hủy nó đi
+                    if (this.myChart) {
+                        this.myChart.destroy();
+                    }
+                    // -----------------------------
+
+                    // Gán biểu đồ mới vào biến this.myChart thay vì chỉ gọi new Chart()
+                    this.myChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: { 
+                            labels: ['Trẻ Em', 'Nữ', 'Nam', 'Sản Phẩm Khác'], 
+                            datasets: [{ 
+                                data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.other], 
+                                backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], 
+                                borderWidth: 0 
+                            }] 
+                        },
+                        options: { 
+                            responsive: true, 
+                            maintainAspectRatio: false, 
+                            plugins: { legend: { position: 'bottom' } } 
+                        }
+                    });
+
             },
 
             renderShop() {
