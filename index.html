@@ -7,6 +7,7 @@
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,10 +36,6 @@
     </script>
 
     <style>
-        body { font-family: 'Nunito', sans-serif; background-color: #fcfdfe; }
-        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 300px; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         .thumb-selected { 
             border-color: #5dade2 !important; 
@@ -173,79 +170,15 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-/* phóng to bằng 2 ngón tay */
-          #zoom-img {
-            touch-action: pinch-zoom;
-          }
 
-/* =========================
-   GIẢM FONT & NÚT TRONG MODAL (MOBILE)
-   ========================= */
-@media (max-width: 640px) {
-
-  /* tiêu đề sản phẩm */
-  #modal-title {
-    font-size: 1.0rem;
-  }
-
-  /* giá */
-  #modal-price {
-    font-size: 1.05rem;
-  }
-
-  /* mô tả */
-  #modal-desc {
-    font-size: 0.9rem;
-  }
-
-  /* nút chọn size */
-  .size-btn {
-    font-size: 0.85rem;
-    padding: 6px 12px;
-  }
-
-  /* nút thêm giỏ hàng */
-  #modal-add-btn {
-    font-size: 0.95rem;
-    padding: 10px;
-  }
-}
-
-
-/* =========================
-   THU NHỎ ẢNH THUMBNAIL (MOBILE)
-   ========================= */
-@media (max-width: 640px) {
-
-  /* vùng chứa thumbnail */
-  #modal-thumbnails {
-    gap: 3px;
-    padding: 2px;
-  }
-
-  /* mỗi thumbnail */
-  #modal-thumbnails img {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 3px;
-  }
-
-  /* nếu thumbnail là button */
-  #modal-thumbnails button {
-    padding: 1px;
-  }
-}
-        
-</style>
-    
+    </style>
 </head>
 <body class="text-gray-700 flex flex-col min-h-screen relative">
 
     <!-- TOP BAR -->
     <div class="bg-primary text-white py-2 font-bold text-lg overflow-hidden">
         <marquee direction="left" scrollamount="12">
-            Shop quần áo Zuzulan chào quý khách, chúc quý khách mua sắm vui vẻ!
+            Shop quần áo Zuzulan chào quý khách, chúc quý khách mua sắm vui vẻ
         </marquee>
     </div>
 
@@ -261,10 +194,17 @@
 
             <!-- Giữa: Logo -->
             <div class="justify-self-center flex items-center gap-4 cursor-pointer group" onclick="app.navigate('home')">
+                <!--
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-primary p-1 bg-white">
+                    <img src="images/logo.png" alt="ZuzuLan" class="w-full h-full object-contain rounded-full" onerror="this.src='https://via.placeholder.com/60/5dade2/ffffff?text=Z'">
+                </div>
+                -->
 
                 <div class="w-20 h-20 sm:w-25 sm:h-25 rounded-full overflow-hidden border-2 border-primary p-1 bg-white">
                     <img src="images/logo.png" alt="ZuzuLan" class="w-full h-full object-contain rounded-full"> 
                 </div>
+
+
                 
                 <div class="text-2xl sm:text-4xl font-bold text-primary font-serif uppercase tracking-wider hidden xs:block group-hover:text-primaryDark transition">
                     ZuzuLan
@@ -362,54 +302,44 @@
         </div>
     </div>
 
-    
-<!-- MODAL POPUP CHI TIẾT SẢN PHẨM -->
-<div id="product-modal"
-     class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm
-            flex items-center justify-center p-1 md:p-4 transition-opacity duration-300 opacity-0">
-
-    <div class="bg-white rounded-lg shadow-lg w-full
-            max-w-2xl md:max-w-4xl lg:max-w-5xl
-            max-h-[90vh] overflow-hidden
-            flex flex-col md:flex-row relative
-            transform transition-transform duration-300 scale-95">
 
 
-        <button onclick="app.closeModal()"
-        class="absolute top-4 right-4 md:top-4 md:right-4
-               text-white bg-black/40 hover:bg-black/60
-               w-9 h-9 md:w-11 md:h-11
-               flex items-center justify-center
-               rounded-full text-2xl md:text-3xl font-bold z-20">
-            &times;
-        </button>
+    <!-- <footer class="bg-gray-800 text-white py-10 mt-auto">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Về ZuzuLan</h3>
+                <p class="text-gray-300 text-sm leading-relaxed">Nơi hội tụ những phong cách thời trang mới nhất dành cho bé và gia đình.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Liên Hệ</h3>
+                <p class="text-gray-300 text-sm">📍 Xóm 1, Cống Lao, Nam Thanh, Nam Đàn, NA</p>
+                <p class="text-gray-300 text-sm">📞 096 3456 108</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-primary inline-block pb-1">Thống Kê</h3>
+                <p class="text-gray-300 text-sm">Đang phục vụ hàng ngàn khách hàng.</p>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 text-xs mt-10 pt-4 border-t border-gray-700">
+            © 2025 Shop ZuzuLan.
+        </div>
+    </footer> -->
 
-
-        <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-2 md:p-4">
-
-                
-                 <!-- phóng to ảnh -->
-                <div class="flex-grow flex items-center justify-center mb-2 md:mb-10 max-h-[70vh] bg-white rounded-lg shadow-inner p-2">
-                <img id="modal-img"
-                     src=""
-                     class="max-h-[50vh] md:max-h-[90vh] max-w-full object-contain cursor-zoom-in transition-all duration-300">
-
-                <!-- <img id="modal-img" src="" class="max-h-full max-w-full object-contain cursor-zoom-in transition-all duration-300"> -->
-                <!-- end phóng to ảnh -->
-                    
+    <!-- MODAL POPUP CHI TIẾT SẢN PHẨM -->
+    <div id="product-modal" class="fixed inset-0 z-[100] hidden bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row relative transform transition-transform duration-300 scale-95">
+            <button onclick="app.closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold z-10">&times;</button>
+            <div class="w-full md:w-1/2 bg-gray-100 flex flex-col p-4">
+                <div class="flex-grow flex items-center justify-center mb-4 h-64 md:h-80 bg-white rounded-lg shadow-inner p-2">
+                    <img id="modal-img" src="" class="max-h-full max-w-full object-contain transition-all duration-300">
                 </div>
                 <div class="flex gap-3 justify-center overflow-x-auto py-2 px-2" id="modal-thumbnails">
-                <div class="flex gap-2 md:gap-3 justify-center overflow-x-auto py-1 md:py-2 px-1 md:px-2" id="modal-thumbnails">
-
-
                     <!-- JS sẽ tạo ảnh nhỏ vào đây -->
 
 
                 </div>
             </div>
-            <!-- <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto no-scrollbar"> -->
-            <div class="w-full md:w-1/2 p-4 md:p-8 flex flex-col overflow-y-auto no-scrollbar">
-
+            <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto no-scrollbar">
                 <h2 id="modal-title" class="text-3xl font-bold text-secondary font-serif mb-2"></h2>
                 <div class="text-primary font-bold text-2xl mb-4" id="modal-price"></div>
                 
@@ -419,18 +349,6 @@
                     <div id="modal-sizes" class="flex flex-wrap gap-2"></div>
                     <p id="size-error" class="text-red-500 text-sm mt-2 hidden animate-bounce">⚠️ Vui lòng chọn kích thước!</p>
                 </div>
-
-<!--add màu-->
-                <!-- KHU VỰC CHỌN MÀU -->
-            <!--    <div class="mb-6">
-                  <h4 class="font-bold text-gray-800 mb-2">Màu sắc:</h4>
-                  <div id="modal-colors" class="flex gap-2 flex-wrap"></div>
-                
-                <p id="color-error" class="text-red-500 text-sm mt-2 hidden animate-bounce">⚠️ Vui lòng chọn màu!</p>
-                </div>
-            -->
-<!--end add màu -->
-                
                 <div class="mb-6"><h4 class="font-bold text-gray-800 mb-2">Mô tả:</h4><p id="modal-desc" class="text-gray-600 italic"></p></div>
                 <div class="mt-auto"><button id="modal-add-btn" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-full shadow-lg transition transform hover:-translate-y-1">Thêm vào giỏ hàng ngay</button></div>
             </div>
@@ -444,7 +362,9 @@
     </div>
 
     <!-- SCRIPT -->
-<script>
+    <script>
+
+
 // (MỚI) 1. Thêm dữ liệu nội dung chính sách
         const policyData = {
             size: {
@@ -509,7 +429,7 @@
             },
         };
     
-    
+
         const storeData = {
             products: [
                 { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", isNew: true, img: "product2.jpg", sizes: ["S", "M", "L"], desc: "Áo len sọc phong cách Hàn Quốc chất len mềm mịn" },
@@ -581,7 +501,7 @@
             },
             // ------------------------------------------
 
-            
+
             showToast(message, isError = false) {
                 const toast = document.getElementById('toast');
                 const toastMsg = document.getElementById('toast-message');
@@ -662,12 +582,14 @@
                         </div>
                         <div class="mt-8">${this.renderNavBar('')}</div>
 
+
                         <div>
                             <div class="flex justify-between items-end mb-6"><h2 class="text-3xl font-bold text-secondary font-serif">Sản Phẩm Mới</h2><button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button></div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}</div>
                         </div>
                     </div>`;
-                },
+                
+            },
 
             renderShop() {
                 let filteredProducts = storeData.products;
@@ -810,61 +732,22 @@
             },
 
             openModal(id) {
-                //this.selectedColor = null; //bắt chọn màu
                 this.selectedSize = null; 
                 const p = storeData.products.find(x => x.id === id);
                 if (!p) return;
                 document.getElementById('modal-img').src = p.img;
-                
-                // phóng to ảnh
-                document.getElementById('modal-img').onclick = () => {
-                  document.getElementById('zoom-img').src =
-                    document.getElementById('modal-img').src;
-                  document.getElementById('img-zoom').classList.remove('hidden');
-                };
-
-                // đóng ảnh phóng to (PC + mobile)
-                // const imgZoom = document.getElementById('img-zoom');
-
-                const imgZoom = document.getElementById('img-zoom');
-                const zoomImg = document.getElementById('zoom-img');
-                
-                // bấm nền tối để đóng
-                imgZoom.addEventListener('click', () => {
-                  imgZoom.classList.add('hidden');
-                });
-                
-                // chạm vào ảnh thì KHÔNG đóng (để pinch zoom)
-                zoomImg.addEventListener('click', e => {
-                  e.stopPropagation();
-                });
-                zoomImg.addEventListener('touchstart', e => {
-                  e.stopPropagation();
-                });
-   
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
                 const thumbs = document.getElementById('modal-thumbnails');
                 thumbs.innerHTML = '';
-
-                const images = p.images ? p.images : [p.img];
-
-                // Ẩn thumbnail nếu chỉ có 1 ảnh
-                if (images.length <= 1) {
-                    thumbs.classList.add('hidden');
-                } else {
-                    thumbs.classList.remove('hidden');
-                }         
-                                
-                // const images = p.images ? p.images : [p.img]; 
+                
+                const images = p.images ? p.images : [p.img]; 
                 
                 images.forEach((src, idx) => {
                     const img = document.createElement('img');
                     img.src = src;
-                    // img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
-                    img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
-
+                    img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
                     img.onclick = function() {
                         document.getElementById('modal-img').src = src;
                         thumbs.querySelectorAll('img').forEach(i => {
@@ -898,12 +781,10 @@
                 }
 
                 document.getElementById('modal-add-btn').onclick = () => { 
-                    // check size
                     if(!this.selectedSize) {
                         document.getElementById('size-error').classList.remove('hidden');
                         return;
                     }
-                    
                     this.addToCart(p.id, this.selectedSize); 
                     this.closeModal(); 
                 };
@@ -918,7 +799,7 @@
                 if (item) item.qty++; 
                 else storeData.cart.push({ ...p, qty: 1, size: size });
                 this.saveCart(); this.updateCartCount();
-                this.showToast(`Đã thêm "${p.name} (${size})" vào giỏ hàng!`);
+                this.showToast(`Đã thêm "${p.name} (Size: ${size})" vào giỏ hàng!`);
             },
 
             changeQty(index, d) {
@@ -998,7 +879,13 @@ async function loadProductsFromGoogleSheet() {
     console.log("🧾 HEADERS:", headers);
 
     const products = lines.map(line => {
-        const cols = line.split(",");
+        // start hao
+        //const cols = line.split(",");
+
+        const cols = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g)
+               ?.map(c => c.replace(/^"|"$/g, "").trim()) || [];
+        //end hao
+        
         const row = {};
         headers.forEach((h, i) => row[h.trim()] = cols[i]?.trim());
 
@@ -1008,9 +895,23 @@ async function loadProductsFromGoogleSheet() {
             price: Number(row.price),
             category: row.category,
             isNew: row.isNew === "TRUE",
+            //img: row.img,
             
-            img: row.img.split("|")[0],
-            images: row.img.split("|"),
+            //img: row.img.split("|")[0],
+            //images: row.img.split("|"),
+//start hao
+
+            img: row.img.split("||")[0].split(";;")[0],
+            images: row.img.split("||").map(item => {
+                const parts = item.split(";;");
+                return {
+                    src: parts[0],
+                    sizes: parts[1] ? parts[1].split("-") : [],
+                    desc: parts[2] || ""
+                };
+            }),
+//end hao
+            
 
             sizes: row.sizes ? row.sizes.split("|") : [],
             desc: row.desc
@@ -1029,24 +930,6 @@ window.onload = async () => {
     await loadProductsFromGoogleSheet();
     app.init();
 };
-    
-</script>
-    
-<!-- ZOOM ẢNH TOÀN MÀN HÌNH -->
- 
-<!-- <div id="img-zoom"
-    <div id="img-zoom"
-     class="fixed inset-0 hidden z-[9999] bg-black/80 flex items-center justify-center">
-  <img id="zoom-img"
-       class="max-w-full max-h-full"
-  />
-</div> -->
-
-    <div id="img-zoom"
-     class="fixed inset-0 hidden z-[9999] bg-black/80 flex items-center justify-center">
-  <img id="zoom-img" class="max-w-full max-h-full" />
-</div>
-
-
+    </script>
 </body>
 </html>
