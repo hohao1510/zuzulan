@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -301,39 +301,36 @@
         <!-- JS sẽ điền nội dung vào đây -->
     </main>
 
-<div class="bg-white p-3 rounded-xl shadow-md border border-gray-100">
+<!-- <div class="bg-white p-3 rounded-xl shadow-md border border-gray-100">
     <h3 class="text-xl font-bold text-secondary mb-4 text-center">
         📊 Thống Kê Tổng Quan
-    </h3>
+    </h3> -->
 
     <!-- MOBILE: xếp dọc | PC: chia 2 cột -->
-    <div class="flex flex-col md:flex-row gap-4">
+    <!-- <div class="flex flex-col md:flex-row gap-4"> -->
 
         <!-- CỘT TRÁI: SỐ LIỆU -->
-        <div class="grid grid-cols-2 gap-3 md:w-1/3">
+        <!-- <div class="grid grid-cols-2 gap-3 md:w-1/3">
             <div class="bg-blue-50 p-4 rounded-lg text-center">
-                <!-- <div class="text-3xl font-bold text-primary">
-                    ${storeData.products.length}
-                            </div> -->
-                <div class="text-3xl font-bold text-primary" id="total-product-count"></div>
                 <div class="text-sm text-gray-600">Sản Phẩm</div>
-                                </div>
+                <div class="text-3xl font-bold text-primary" id="total-product-count"></div>
+            </div>
 
             <div class="bg-pink-50 p-4 rounded-lg text-center">
-                <div class="text-3xl font-bold text-accent">4</div>
                 <div class="text-sm text-gray-600">Danh Mục</div>
+                <div class="text-3xl font-bold text-accent">4</div>
             </div>
-        </div>
+        </div> -->
 
         <!-- CỘT PHẢI: BIỂU ĐỒ -->
-        <div class="md:w-2/3">
+        <!-- <div class="md:w-2/3">
             <div class="chart-container h-48 md:h-56">
                 <canvas id="categoryChart"></canvas>
             </div>
-        </div>
+        </div> -->
 
-                            </div>
-                        </div>
+    </div>
+</div>
 
 
   <!-- THÊM NỀN XÁM ĐỂ TÁCH FOOTER -->
@@ -581,7 +578,6 @@
 
         const app = {
             container: document.getElementById('app-container'),
-            myChart: null, // <--- THÊM DÒNG NÀY (để lưu trữ biểu đồ)
             currentFilter: 'all',
             selectedSize: null,
             purchaseMethod: 'shipping', 
@@ -692,8 +688,8 @@
             },
 
             renderDashboard() {
-                const catCounts = { kids: 0, adult: 0, men: 0, other: 0 };
-                storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
+                // const catCounts = { kids: 0, adult: 0, men: 0, other: 0 };
+                // storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
 
                 this.container.innerHTML = `
                     <div class="space-y-12 animate-fade-in">
@@ -715,38 +711,13 @@
                     </div>`;
                 
                 // Kiểm tra an toàn trước khi vẽ biểu đồ
-                if (typeof Chart !== 'undefined') {
-                    new Chart(document.getElementById('categoryChart').getContext('2d'), {
-                        type: 'doughnut',
-                        data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Sản Phẩm Khác'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.other], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-                    });
-                }
-
-                // --- ĐOẠN MỚI THÊM VÀO ĐÂY ---
-                    // Kiểm tra: Nếu biến myChart đang giữ một biểu đồ cũ, hãy hủy nó đi
-                    if (this.myChart) {
-                        this.myChart.destroy();
-                    }
-                    // -----------------------------
-
-                    // Gán biểu đồ mới vào biến this.myChart thay vì chỉ gọi new Chart()
-                    this.myChart = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: { 
-                            labels: ['Trẻ Em', 'Nữ', 'Nam', 'Sản Phẩm Khác'], 
-                            datasets: [{ 
-                                data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.other], 
-                                backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], 
-                                borderWidth: 0 
-                            }] 
-                        },
-                        options: { 
-                            responsive: true, 
-                            maintainAspectRatio: false, 
-                            plugins: { legend: { position: 'bottom' } } 
-                        }
-                    });
+                // if (typeof Chart !== 'undefined') {
+                //     new Chart(document.getElementById('categoryChart').getContext('2d'), {
+                //         type: 'doughnut',
+                //         data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Sản Phẩm Khác'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.other], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
+                //         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                //     });
+                // }
 
             },
 
@@ -1195,10 +1166,10 @@ window.onload = async () => {
     await loadProductsFromGoogleSheet();
     app.init();
 
-    const countElement = document.getElementById('total-product-count');
-    if (countElement) {
-        countElement.innerText = storeData.products.length;
-    }
+    // const countElement = document.getElementById('total-product-count');
+    // if (countElement) {
+    //     countElement.innerText = storeData.products.length;
+    // }
 };
     
 </script>
