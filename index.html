@@ -810,11 +810,11 @@
             },
 
             openModal(id) {
-                // //this.selectedColor = null; //bắt chọn màu
-                // this.selectedSize = null; 
-                // const p = storeData.products.find(x => x.id === id);
-                // if (!p) return;
-                // document.getElementById('modal-img').src = p.img;
+                //this.selectedColor = null; //bắt chọn màu
+                this.selectedSize = null; 
+                const p = storeData.products.find(x => x.id === id);
+                if (!p) return;
+                document.getElementById('modal-img').src = p.img;
                 
                 // phóng to ảnh
                 document.getElementById('modal-img').onclick = () => {
