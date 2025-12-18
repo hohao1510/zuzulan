@@ -301,41 +301,8 @@
         <!-- JS sẽ điền nội dung vào đây -->
     </main>
 
-<!-- <div class="bg-white p-3 rounded-xl shadow-md border border-gray-100">
-    <h3 class="text-xl font-bold text-secondary mb-4 text-center">
-        📊 Thống Kê Tổng Quan
-    </h3> -->
-
-    <!-- MOBILE: xếp dọc | PC: chia 2 cột -->
-    <!-- <div class="flex flex-col md:flex-row gap-4"> -->
-
-        <!-- CỘT TRÁI: SỐ LIỆU -->
-        <!-- <div class="grid grid-cols-2 gap-3 md:w-1/3">
-            <div class="bg-blue-50 p-4 rounded-lg text-center">
-                <div class="text-sm text-gray-600">Sản Phẩm</div>
-                <div class="text-3xl font-bold text-primary" id="total-product-count"></div>
-            </div>
-
-            <div class="bg-pink-50 p-4 rounded-lg text-center">
-                <div class="text-sm text-gray-600">Danh Mục</div>
-                <div class="text-3xl font-bold text-accent">4</div>
-            </div>
-        </div> -->
-
-        <!-- CỘT PHẢI: BIỂU ĐỒ -->
-        <!-- <div class="md:w-2/3">
-            <div class="chart-container h-48 md:h-56">
-                <canvas id="categoryChart"></canvas>
-            </div>
-        </div> -->
-
     </div>
 </div>
-
-
-  <!-- THÊM NỀN XÁM ĐỂ TÁCH FOOTER -->
-
-  <div class="bg-gray-50 p-8 rounded-2xl">
 
     <!-- FOOTER -->
     <footer class="bg-gray-800 text-white py-10 mt-auto">
@@ -460,18 +427,7 @@
                     <div id="modal-sizes" class="flex flex-wrap gap-2"></div>
                     <p id="size-error" class="text-red-500 text-sm mt-2 hidden animate-bounce">⚠️ Vui lòng chọn kích thước!</p>
                 </div>
-
-<!--add màu-->
-                <!-- KHU VỰC CHỌN MÀU -->
-            <!--    <div class="mb-6">
-                  <h4 class="font-bold text-gray-800 mb-2">Màu sắc:</h4>
-                  <div id="modal-colors" class="flex gap-2 flex-wrap"></div>
-                
-                <p id="color-error" class="text-red-500 text-sm mt-2 hidden animate-bounce">⚠️ Vui lòng chọn màu!</p>
-                </div>
-            -->
-<!--end add màu -->
-                
+                       
                 <div class="mb-6"><h4 class="font-bold text-gray-800 mb-2">Mô tả:</h4><p id="modal-desc" class="text-gray-600 italic"></p></div>
                 <div class="mt-auto"><button id="modal-add-btn" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-full shadow-lg transition transform hover:-translate-y-1">Thêm vào giỏ hàng ngay</button></div>
             </div>
@@ -708,15 +664,6 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}</div>
                         </div>
                     </div>`;
-                
-                // Kiểm tra an toàn trước khi vẽ biểu đồ
-                // if (typeof Chart !== 'undefined') {
-                //     new Chart(document.getElementById('categoryChart').getContext('2d'), {
-                //         type: 'doughnut',
-                //         data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Sản Phẩm Khác'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.other], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
-                //         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-                //     });
-                // }
 
             },
 
@@ -892,62 +839,7 @@
                 zoomImg.addEventListener('touchstart', e => {
                   e.stopPropagation();
                 });
-
-                // ['click', 'touchstart'].forEach(evt => {
-                //   imgZoom.addEventListener(evt, () => {
-                //     imgZoom.classList.add('hidden');
-                //   });
-                // });
-
-
-//add chọn màu
-/*
-                // ===== XỬ LÝ ẨN / HIỆN CHỌN MÀU =====
-                const images = p.images && p.images.length > 0 ? p.images : [p.img];
-                const colorsWrap = document.getElementById('modal-colors');
-                const colorError = document.getElementById('color-error');
-                
-                if (images.length <= 1) {
-                  colorsWrap.parentElement.classList.add('hidden');
-                  this.selectedColor = 'default';
-                } else {
-                  colorsWrap.parentElement.classList.remove('hidden');
-                  this.selectedColor = null;
-                  colorError.classList.add('hidden');
-                }
-
-                
-            // ===== CHỌN MÀU (mỗi ảnh = 1 màu) =====
-            const colorsDiv = document.getElementById('modal-colors');
-            colorsDiv.innerHTML = '';
-            
-            if (p.images && p.images.length > 0) {
-              p.images.forEach((img, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'border rounded px-3 py-1 text-sm';
-                //btn.innerText = 'Màu ' + (index + 1);
-                const colorNames = ['Đen', 'Trắng', 'Nâu', 'Be'];
-                btn.innerText = colorNames[index] || 'Màu khác';
-
-            
-                btn.onclick = () => {
-                  document.getElementById('modal-img').src = img;
-                    //bắt chọn màu
-                    this.selectedColor = btn.innerText;
-                        document.getElementById('color-error').classList.add('hidden');
-
-                  document
-                    .querySelectorAll('#modal-colors button')
-                    .forEach(b => b.classList.remove('bg-primary', 'text-white'));
-                  btn.classList.add('bg-primary', 'text-white');
-                };
-            
-                colorsDiv.appendChild(btn);
-              });
-            }
-
-// end chọn màu
-*/                
+               
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
