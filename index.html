@@ -649,8 +649,8 @@
             },
 
             renderDashboard() {
-                // const catCounts = { kids: 0, adult: 0, men: 0, winter: 0 };
-                // storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
+                const catCounts = { kids: 0, adult: 0, men: 0, winter: 0 };
+                storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
 
                 this.container.innerHTML = `
                     <div class="space-y-12 animate-fade-in">
