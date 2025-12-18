@@ -7,9 +7,6 @@
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -652,8 +649,8 @@
             },
 
             renderDashboard() {
-                const catCounts = { kids: 0, adult: 0, men: 0, winter: 0 };
-                storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
+                // const catCounts = { kids: 0, adult: 0, men: 0, winter: 0 };
+                // storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
 
                 this.container.innerHTML = `
                     <div class="space-y-12 animate-fade-in">
@@ -672,16 +669,6 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}</div>
                         </div>
                     </div>`;
-                
-                // Kiểm tra an toàn trước khi vẽ biểu đồ
-            //     if (typeof Chart !== 'undefined') {
-            //         new Chart(document.getElementById('categoryChart').getContext('2d'), {
-            //             type: 'doughnut',
-            //             data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Mùa Đông'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.winter], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
-            //             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-            //         });
-            //     }
-            // },
 
             renderShop() {
                 let filteredProducts = storeData.products;
@@ -855,12 +842,6 @@
                 zoomImg.addEventListener('touchstart', e => {
                   e.stopPropagation();
                 });
-
-                // ['click', 'touchstart'].forEach(evt => {
-                //   imgZoom.addEventListener(evt, () => {
-                //     imgZoom.classList.add('hidden');
-                //   });
-                // });
    
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
@@ -923,13 +904,6 @@
                         document.getElementById('size-error').classList.remove('hidden');
                         return;
                     }
-/*
-                    // check màu
-                    if (!this.selectedColor && p.images && p.images.length > 1) {
-                      document.getElementById('color-error').classList.remove('hidden');
-                      return;
-                    }
-*/
                     
                     this.addToCart(p.id, this.selectedSize); 
                     this.closeModal(); 
@@ -1025,14 +999,7 @@ async function loadProductsFromGoogleSheet() {
     console.log("🧾 HEADERS:", headers);
 
     const products = lines.map(line => {
-        // start hao
         const cols = line.split(",");
-/*
-        const cols = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g)
-               ?.map(c => c.replace(/^"|"$/g, "").trim()) || [];
-*/
-        //end hao
-        
         const row = {};
         headers.forEach((h, i) => row[h.trim()] = cols[i]?.trim());
 
@@ -1042,25 +1009,9 @@ async function loadProductsFromGoogleSheet() {
             price: Number(row.price),
             category: row.category,
             isNew: row.isNew === "TRUE",
-//start hao
-            //img: row.img,
             
             img: row.img.split("|")[0],
             images: row.img.split("|"),
-/*
-            img: row.img.split("||")[0].split(";;")[0],
-            images: row.img.split("||").map(item => {
-                const parts = item.split(";;");
-                return {
-                    src: parts[0],
-                    sizes: parts[1] ? parts[1].split("-") : [],
-                    desc: parts[2] || ""
-                };
-            }),
-
-*/
-//end hao
-            
 
             sizes: row.sizes ? row.sizes.split("|") : [],
             desc: row.desc
