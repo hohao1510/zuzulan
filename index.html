@@ -91,6 +91,18 @@
             position: relative;
             color: white !important; 
         }
+
+        /* --- Ảnh Hiển Thị Hết --- */
+        @media (max-width: 640px) {
+            .hero-bg {
+                /* Hiển thị 100% chiều rộng, chiều cao tự động */
+                background-size: 100% auto; 
+                /* Đẩy ảnh lên trên cùng */
+                background-position: center top; 
+                /* Nếu ảnh banner màu sáng, đổi màu chữ thành đen để dễ đọc */
+                /* color: #333 !important; */ 
+            }
+        }
         
         .hero-overlay {
             position: absolute;
@@ -427,7 +439,7 @@
                     <div id="modal-sizes" class="flex flex-wrap gap-2"></div>
                     <p id="size-error" class="text-red-500 text-sm mt-2 hidden animate-bounce">⚠️ Vui lòng chọn kích thước!</p>
                 </div>
-                       
+
                 <div class="mb-6"><h4 class="font-bold text-gray-800 mb-2">Mô tả:</h4><p id="modal-desc" class="text-gray-600 italic"></p></div>
                 <div class="mt-auto"><button id="modal-add-btn" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-full shadow-lg transition transform hover:-translate-y-1">Thêm vào giỏ hàng ngay</button></div>
             </div>
