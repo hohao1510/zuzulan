@@ -290,7 +290,7 @@
             <button onclick="app.filterByCategory('kids')" class="mobile-nav-link">Trẻ em</button>
             <button onclick="app.filterByCategory('adult')" class="mobile-nav-link">Nữ</button>
             <button onclick="app.filterByCategory('men')" class="mobile-nav-link">Nam</button>
-            <button onclick="app.filterByCategory('winter')" class="mobile-nav-link">Đồ mùa đông</button>
+            <button onclick="app.filterByCategory('other')" class="mobile-nav-link">Sản Phẩm Khác</button>
             <button onclick="app.filterByCategory('new')" class="mobile-nav-link text-primary">Hàng mới về</button>
             <button onclick="app.navigate('cart')" class="mobile-nav-link text-accent">Xem Giỏ Hàng</button>
         </div>
@@ -301,19 +301,36 @@
         <!-- JS sẽ điền nội dung vào đây -->
     </main>
 
-    <!-- BIỂU ĐỒ & THỐNG KÊ NHANH -->
+<div class="bg-white p-3 rounded-xl shadow-md border border-gray-100">
+    <h3 class="text-xl font-bold text-secondary mb-4 text-center">
+        📊 Thống Kê Tổng Quan
+    </h3>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                                <h3 class="text-xl font-bold text-secondary mb-4">Phân Bố Danh Mục</h3>
-                                <div class="chart-container"><canvas id="categoryChart"></canvas></div>
+    <!-- MOBILE: xếp dọc | PC: chia 2 cột -->
+    <div class="flex flex-col md:flex-row gap-4">
+
+        <!-- CỘT TRÁI: SỐ LIỆU -->
+        <div class="grid grid-cols-2 gap-3 md:w-1/3">
+            <div class="bg-blue-50 p-4 rounded-lg text-center">
+                <div class="text-3xl font-bold text-primary">
+                    ${storeData.products.length}
                             </div>
-                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center">
-                                <h3 class="text-xl font-bold text-secondary mb-4">Thống Kê Nhanh</h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="bg-blue-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-primary">${storeData.products.length}</div><div class="text-sm text-gray-600">Sản Phẩm</div></div>
-                                    <div class="bg-pink-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-accent">4</div><div class="text-sm text-gray-600">Danh Mục</div></div>
+                <div class="text-sm text-gray-600">Sản Phẩm</div>
                                 </div>
+
+            <div class="bg-pink-50 p-4 rounded-lg text-center">
+                <div class="text-3xl font-bold text-accent">4</div>
+                <div class="text-sm text-gray-600">Danh Mục</div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: BIỂU ĐỒ -->
+        <div class="md:w-2/3">
+            <div class="chart-container h-48 md:h-56">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
                             </div>
                         </div>
 
@@ -540,7 +557,7 @@
             products: [
                 { id: 1, name: "Áo Len Sọc (1831#)", price: 150000, category: "kids", isNew: true, img: "product2.jpg", sizes: ["S", "M", "L"], desc: "Áo len sọc phong cách Hàn Quốc chất len mềm mịn" },
                 { id: 2, name: "Quần Caro Ống Rộng", price: 180000, category: "adult", isNew: true, img: "product3.jpg", sizes: ["M", "L", "XL"], desc: "Quần caro ống rộng thời thượng vải thô đũi thoáng mát" },
-                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "winter", isNew: true, img: "product4.jpg", sizes: ["L", "XL", "2XL"], desc: "Áo phao 3 lớp siêu nhẹ chống thấm nước ấm áp" },
+                { id: 3, name: "Áo Khoác Phao Mùa Đông", price: 350000, category: "other", isNew: true, img: "product4.jpg", sizes: ["L", "XL", "2XL"], desc: "Áo phao 3 lớp siêu nhẹ chống thấm nước ấm áp" },
                 { id: 4, name: "Váy Công Chúa Elsa", price: 220000, category: "kids", isNew: true, img: "product5.jpg", sizes: ["Size 2", "Size 4", "Size 6"], desc: "Váy đầm công chúa lộng lẫy cho bé đi dự tiệc" },
                 ],
             cart: JSON.parse(localStorage.getItem("zuzulan_cart")) || []
@@ -667,13 +684,13 @@
                         <button onclick="app.filterByCategory('kids')" class="category-text px-3 py-1.5 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'kids' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Trẻ em</button>
                         <button onclick="app.filterByCategory('adult')" class="category-text px-3 py-1.5 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'adult' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nữ</button>
                         <button onclick="app.filterByCategory('men')" class="category-text px-3 py-1.5 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'men' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nam</button>
-                        <button onclick="app.filterByCategory('winter')" class="category-text px-3 py-1.5 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'winter' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Đồ mùa đông</button>
+                        <button onclick="app.filterByCategory('other')" class="category-text px-3 py-1.5 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'other' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Sản Phẩm Khác</button>
                     </div>
                 `;
             },
 
             renderDashboard() {
-                const catCounts = { kids: 0, adult: 0, men: 0, winter: 0 };
+                const catCounts = { kids: 0, adult: 0, men: 0, other: 0 };
                 storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
 
                 this.container.innerHTML = `
@@ -687,19 +704,8 @@
                             </div>
                         </div>
                         <div class="mt-8">${this.renderNavBar('')}</div>
-                        // <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        //     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                        //         <h3 class="text-xl font-bold text-secondary mb-4">Phân Bố Danh Mục</h3>
-                        //         <div class="chart-container"><canvas id="categoryChart"></canvas></div>
-                        //     </div>
-                        //     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center">
-                        //         <h3 class="text-xl font-bold text-secondary mb-4">Thống Kê Nhanh</h3>
-                        //         <div class="grid grid-cols-2 gap-4">
-                        //             <div class="bg-blue-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-primary">${storeData.products.length}</div><div class="text-sm text-gray-600">Sản Phẩm</div></div>
-                        //             <div class="bg-pink-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-accent">4</div><div class="text-sm text-gray-600">Danh Mục</div></div>
-                        //         </div>
-                        //     </div>
-                        // </div>
+
+                        </div>
                         <div>
                             <div class="flex justify-between items-end mb-6"><h2 class="text-3xl font-bold text-secondary font-serif">Sản Phẩm Mới</h2><button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button></div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}</div>
@@ -710,7 +716,7 @@
                 if (typeof Chart !== 'undefined') {
                     new Chart(document.getElementById('categoryChart').getContext('2d'), {
                         type: 'doughnut',
-                        data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Mùa Đông'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.winter], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
+                        data: { labels: ['Trẻ Em', 'Nữ', 'Nam', 'Sản Phẩm Khác'], datasets: [{ data: [catCounts.kids, catCounts.adult, catCounts.men, catCounts.other], backgroundColor: ['#5dade2', '#ff6b6b', '#34495e', '#a0aec0'], borderWidth: 0 }] },
                         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
                     });
                 }
@@ -728,7 +734,7 @@
                 if(this.currentFilter === 'kids') pageTitle = "Thời Trang Trẻ Em";
                 if(this.currentFilter === 'adult') pageTitle = "Thời Trang Nữ";
                 if(this.currentFilter === 'men') pageTitle = "Thời Trang Nam";
-                if(this.currentFilter === 'winter') pageTitle = "Đồ Mùa Đông";
+                if(this.currentFilter === 'other') pageTitle = "Sản Phẩm Khác";
                 if(this.currentFilter === 'new') pageTitle = "Hàng Mới Về";
 
                 this.container.innerHTML = `
