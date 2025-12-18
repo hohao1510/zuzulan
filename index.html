@@ -687,19 +687,7 @@
                             </div>
                         </div>
                         <div class="mt-8">${this.renderNavBar('')}</div>
-                        // <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        //     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                        //         <h3 class="text-xl font-bold text-secondary mb-4">Phân Bố Danh Mục</h3>
-                        //         <div class="chart-container"><canvas id="categoryChart"></canvas></div>
-                        //     </div>
-                        //     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-center">
-                        //         <h3 class="text-xl font-bold text-secondary mb-4">Thống Kê Nhanh</h3>
-                        //         <div class="grid grid-cols-2 gap-4">
-                        //             <div class="bg-blue-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-primary">${storeData.products.length}</div><div class="text-sm text-gray-600">Sản Phẩm</div></div>
-                        //             <div class="bg-pink-50 p-4 rounded-lg text-center"><div class="text-3xl font-bold text-accent">4</div><div class="text-sm text-gray-600">Danh Mục</div></div>
-                        //         </div>
-                        //     </div>
-                        // </div>
+
                         <div>
                             <div class="flex justify-between items-end mb-6"><h2 class="text-3xl font-bold text-secondary font-serif">Sản Phẩm Mới</h2><button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button></div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}</div>
@@ -894,56 +882,7 @@
                 //     imgZoom.classList.add('hidden');
                 //   });
                 // });
-
-
-//add chọn màu
-/*
-                // ===== XỬ LÝ ẨN / HIỆN CHỌN MÀU =====
-                const images = p.images && p.images.length > 0 ? p.images : [p.img];
-                const colorsWrap = document.getElementById('modal-colors');
-                const colorError = document.getElementById('color-error');
-                
-                if (images.length <= 1) {
-                  colorsWrap.parentElement.classList.add('hidden');
-                  this.selectedColor = 'default';
-                } else {
-                  colorsWrap.parentElement.classList.remove('hidden');
-                  this.selectedColor = null;
-                  colorError.classList.add('hidden');
-                }
-
-                
-            // ===== CHỌN MÀU (mỗi ảnh = 1 màu) =====
-            const colorsDiv = document.getElementById('modal-colors');
-            colorsDiv.innerHTML = '';
-            
-            if (p.images && p.images.length > 0) {
-              p.images.forEach((img, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'border rounded px-3 py-1 text-sm';
-                //btn.innerText = 'Màu ' + (index + 1);
-                const colorNames = ['Đen', 'Trắng', 'Nâu', 'Be'];
-                btn.innerText = colorNames[index] || 'Màu khác';
-
-            
-                btn.onclick = () => {
-                  document.getElementById('modal-img').src = img;
-                    //bắt chọn màu
-                    this.selectedColor = btn.innerText;
-                        document.getElementById('color-error').classList.add('hidden');
-
-                  document
-                    .querySelectorAll('#modal-colors button')
-                    .forEach(b => b.classList.remove('bg-primary', 'text-white'));
-                  btn.classList.add('bg-primary', 'text-white');
-                };
-            
-                colorsDiv.appendChild(btn);
-              });
-            }
-
-// end chọn màu
-*/                
+   
                 document.getElementById('modal-title').innerText = p.name;
                 document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
