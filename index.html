@@ -83,14 +83,14 @@
         #toast { transition: all 0.3s ease-in-out; }
 
         /* CSS BANNER */
-        .hero-bg {
+        /* .hero-bg {
             background-image: url('images/banner.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             /* position: relative;
             color: white !important;  */
-        }
+        } */
 
         /* --- Ảnh Hiển Thị Hết --- */
         /* @media (max-width: 640px) {
@@ -681,11 +681,35 @@
 
             // },
 
+            // renderDashboard() {
+            //     this.container.innerHTML = `
+            //         <div class="space-y-12 animate-fade-in">
+                        
+            //             <div class="hero-bg w-full h-48 md:h-96 rounded-3xl shadow-md"></div>
+
+            //             <div class="mt-8">${this.renderNavBar('')}</div>
+
+            //             <div>
+            //                 <div class="flex justify-between items-end mb-6">
+            //                     <h2 class="text-3xl font-bold text-secondary font-serif">Sản Phẩm Mới</h2>
+            //                     <button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button>
+            //                 </div>
+            //                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            //                     ${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}
+            //                 </div>
+            //             </div>
+            //         </div>`;
+            // },
+
+
+
             renderDashboard() {
                 this.container.innerHTML = `
                     <div class="space-y-12 animate-fade-in">
                         
-                        <div class="hero-bg w-full h-48 md:h-96 rounded-3xl shadow-md"></div>
+                        <div class="rounded-3xl shadow-md overflow-hidden border border-gray-100">
+                            <img src="images/banner.jpg" alt="Banner ZuzuLan" class="w-full h-auto object-contain block">
+                        </div>
 
                         <div class="mt-8">${this.renderNavBar('')}</div>
 
@@ -700,6 +724,9 @@
                         </div>
                     </div>`;
             },
+
+
+
 
             renderShop() {
                 let filteredProducts = storeData.products;
