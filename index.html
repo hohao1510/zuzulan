@@ -88,28 +88,28 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            position: relative;
-            color: white !important; 
+            /* position: relative;
+            color: white !important;  */
         }
 
         /* --- Ảnh Hiển Thị Hết --- */
-        @media (max-width: 640px) {
+        /* @media (max-width: 640px) {
             .hero-bg {
                 /* Hiển thị 100% chiều rộng, chiều cao tự động */
-                background-size: 100% auto; 
+                /* background-size: 100% auto;  */
                 /* Đẩy ảnh lên trên cùng */
-                background-position: center top; 
+                /* background-position: center top;  */
                 /* Nếu ảnh banner màu sáng, đổi màu chữ thành đen để dễ đọc */
                 /* color: #333 !important; */ 
-            }
-        }
+            /* }
+        } */ */
         
         .hero-overlay {
             position: absolute;
             inset: 0;
             /* background-color: rgba(0, 0, 0, 0.5); */
-            /* Thay màu xám cũ bằng Gradient Hồng Cam */
-            background: linear-gradient(to bottom, rgba(255, 175, 189, 0.2), rgba(255, 195, 160, 0.9));
+            /* Thay màu xám cũ bằng Gradient Xanh Tím */
+            background: linear-gradient(to bottom, rgba(93, 173, 226, 0.3), rgba(74, 0, 224, 0.8));
             border-radius: 1.5rem;
         }
         
@@ -657,28 +657,48 @@
                 `;
             },
 
-            renderDashboard() {
-                // const catCounts = { kids: 0, adult: 0, men: 0, other: 0 };
-                // storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
+            // renderDashboard() {
+            //     // const catCounts = { kids: 0, adult: 0, men: 0, other: 0 };
+            //     // storeData.products.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
 
+            //     this.container.innerHTML = `
+            //         <div class="space-y-12 animate-fade-in">
+            //             <div class="hero-bg text-center pt-48 pb-2 md:py-20 rounded-3xl shadow-md px-6 overflow-hidden">
+            //                 <div class="hero-overlay"></div>
+            //                 <div class="hero-content">
+            //                     <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 font-serif italic drop-shadow-lg">Shop ZuzuLan</h1>
+            //                     <p class="text-xl md:text-2xl text-white mb-8 italic drop-shadow-md">"Phong cách của bạn, niềm vui của chúng tôi."</p>
+            //                     <button onclick="app.filterByCategory('new')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105 mb-8 border-2 border-white/30">Hàng mới về</button>
+            //                 </div>
+            //             </div>
+            //             <div class="mt-8">${this.renderNavBar('')}</div>
+
+            //             </div>
+            //             <div>
+            //                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}</div>
+            //             </div>
+            //         </div>`;
+
+            // },
+
+            renderDashboard() {
                 this.container.innerHTML = `
                     <div class="space-y-12 animate-fade-in">
-                        <div class="hero-bg text-center pt-48 pb-2 md:py-20 rounded-3xl shadow-md px-6 overflow-hidden">
-                            <div class="hero-overlay"></div>
-                            <div class="hero-content">
-                                <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 font-serif italic drop-shadow-lg">Shop ZuzuLan</h1>
-                                <p class="text-xl md:text-2xl text-white mb-8 italic drop-shadow-md">"Phong cách của bạn, niềm vui của chúng tôi."</p>
-                                <button onclick="app.filterByCategory('new')" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105 mb-8 border-2 border-white/30">Hàng mới về</button>
-                            </div>
-                        </div>
+                        
+                        <div class="hero-bg w-full h-48 md:h-96 rounded-3xl shadow-md"></div>
+
                         <div class="mt-8">${this.renderNavBar('')}</div>
 
-                        </div>
                         <div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}</div>
+                            <div class="flex justify-between items-end mb-6">
+                                <h2 class="text-3xl font-bold text-secondary font-serif">Sản Phẩm Mới</h2>
+                                <button onclick="app.navigate('shop')" class="text-primary font-bold hover:underline">Xem tất cả &rarr;</button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                                ${storeData.products.slice(0, 4).map(p => createProductCard(p)).join('')}
+                            </div>
                         </div>
                     </div>`;
-
             },
 
             renderShop() {
