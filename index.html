@@ -789,52 +789,6 @@
                 this.container.innerHTML = `${nav} <div class="max-w-4xl mx-auto animate-fade-in"><h2 class="text-2xl font-bold text-secondary mb-6 text-center">Giỏ Hàng</h2><div class="bg-white rounded-xl shadow overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-blue-50 text-secondary text-xs uppercase"><tr><th class="py-3 px-2">Sản phẩm</th><th class="py-3 px-2">Giá</th><th class="py-3 px-2">SL</th><th class="py-3 px-2">Tổng</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><div class="p-6 bg-gray-50 flex flex-col sm:flex-row justify-end items-center gap-4"><div class="text-lg">Tổng: <span class="font-bold text-accent text-xl">${total.toLocaleString('vi-VN')}₫</span></div><button onclick="app.navigate('checkout')" class="bg-primary text-white font-bold py-2 px-8 rounded-full shadow w-full sm:w-auto">Thanh Toán</button></div></div></div>`;
             },
 
-            // renderCheckout() {
-            //     this.container.innerHTML = `
-            //     <div class="max-w-xl mx-auto animate-fade-in">
-            //         <h2 class="text-2xl font-bold text-secondary mb-6 text-center">Thông Tin Giao Hàng</h2>
-                    
-            //         <form id="checkout-form" class="bg-white p-6 rounded-xl shadow border space-y-5">
-            //             <input type="hidden" name="_subject" value="Đơn hàng mới từ shop ZuzuLan">
-            //             <input type="hidden" name="_captcha" value="false">
-            //             <input type="hidden" name="Thông tin đơn hàng" id="order_details">
-            //             <input type="hidden" name="Tổng đơn hàng" id="total_price">
-            //             <input type="hidden" name="Phương thức mua hàng" id="purchase_method_input">
-
-            //             <div>
-            //                 <label class="block font-bold text-base mb-3 text-primaryDark">Quý khách muốn nhận hàng theo hình thức nào?</label>
-            //                 <div class="flex gap-4">
-            //                     <div class="method-option flex-1 text-center py-3 border rounded cursor-pointer ${this.purchaseMethod==='shipping'?'selected':''}" onclick="app.setMethod('shipping')">
-            //                         🚚 Giao hàng tận nơi
-            //                     </div>
-            //                     <div class="method-option flex-1 text-center py-3 border rounded cursor-pointer ${this.purchaseMethod==='hold'?'selected':''}" onclick="app.setMethod('hold')">
-            //                         🏬 Tạm giữ hàng tại shop
-            //                     </div>
-            //                 </div>
-            //             </div>
-
-            //             <hr class="border-gray-100">
-
-            //             <div><label class="block font-bold text-sm mb-1">Họ tên người nhận</label><input type="text" name="Tên" required class="w-full border p-2 rounded focus:ring-2 focus:ring-primary focus:outline-none"></div>
-            //             <div><label class="block font-bold text-sm mb-1">Số điện thoại</label><input type="tel" name="SDT" required class="w-full border p-2 rounded focus:ring-2 focus:ring-primary focus:outline-none"></div>
-                        
-            //             <div id="address-group">
-            //                 <label class="block font-bold text-sm mb-1">Địa chỉ giao hàng</label>
-            //                 <textarea name="address" id="cust-addr" rows="2" required class="w-full border p-2 rounded focus:ring-2 focus:ring-primary focus:outline-none"></textarea>
-            //             </div>
-                        
-            //             <button type="submit" class="w-full bg-primary hover:bg-primaryDark transition text-white font-bold py-3 rounded shadow mt-4 flex justify-center items-center">
-            //                 Xác Nhận Đặt Hàng
-            //             </button>
-            //             <button type="button" onclick="app.navigate('cart')" class="w-full text-center text-sm text-gray-500 underline mt-2">Quay lại giỏ hàng</button>
-            //         </form>
-            //     </div>`;
-                
-            //     this.setMethod(this.purchaseMethod); 
-
-            //     document.getElementById('checkout-form').addEventListener('submit', (e) => app.processCheckout(e));
-            // },
-
 
             renderCheckout() {
                 this.container.innerHTML = `
@@ -939,175 +893,62 @@
 
 
 
-// openModal(id) {
-//                 // this.selectedColor = null; //bắt chọn màu
-//                 this.selectedSize = null; 
-//                 const p = storeData.products.find(x => x.id === id);
-//                 if (!p) return;
-                
-//                 document.getElementById('modal-img').src = p.img;
-                
-//                 // --- Xử lý phóng to ảnh ---
-//                 document.getElementById('modal-img').onclick = () => {
-//                   document.getElementById('zoom-img').src = document.getElementById('modal-img').src;
-//                   document.getElementById('img-zoom').classList.remove('hidden');
-//                 };
-//                 const imgZoom = document.getElementById('img-zoom');
-//                 const zoomImg = document.getElementById('zoom-img');
-//                 imgZoom.addEventListener('click', () => { imgZoom.classList.add('hidden'); });
-//                 zoomImg.addEventListener('click', e => { e.stopPropagation(); });
-//                 zoomImg.addEventListener('touchstart', e => { e.stopPropagation(); });
-//                 // ---------------------------
-               
-//                 document.getElementById('modal-title').innerText = p.name;
-
-//                 // --- SỬA: LOGIC HIỂN THỊ GIÁ TRONG MODAL ---
-//                 const priceEl = document.getElementById('modal-price');
-//                 const addBtn = document.getElementById('modal-add-btn');
-                
-//                 let giaTri = Number(p.price);
-//                 if (giaTri && giaTri > 0) {
-//                     // Nếu có giá: Hiện giá tiền + Hiện nút mua
-//                     priceEl.innerText = giaTri.toLocaleString('vi-VN') + '₫';
-//                     priceEl.classList.remove('text-red-500'); 
-//                     addBtn.classList.remove('hidden'); // Hiện nút mua
-//                 } else {
-//                     // Nếu giá = 0: Hiện chữ Liên Hệ + Ẩn nút mua
-//                     priceEl.innerText = "Liên Hệ";
-//                     priceEl.classList.add('text-red-500'); // Đổi màu chữ thành đỏ
-//                     addBtn.classList.add('hidden'); // Ẩn nút mua để tránh khách đặt đơn 0đ
-//                 }
-//                 // -------------------------------------------
-
-//                 document.getElementById('modal-desc').innerText = p.desc;
-//                 const thumbs = document.getElementById('modal-thumbnails');
-//                 thumbs.innerHTML = '';
-
-//                 const images = p.images ? p.images : [p.img];
-
-//                 // Ẩn thumbnail nếu chỉ có 1 ảnh
-//                 if (images.length <= 1) {
-//                     thumbs.classList.add('hidden');
-//                 } else {
-//                     thumbs.classList.remove('hidden');
-//                 }         
-                                
-//                 images.forEach((src, idx) => {
-//                     const img = document.createElement('img');
-//                     img.src = src;
-//                     img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
-
-//                     img.onclick = function() {
-//                         document.getElementById('modal-img').src = src;
-//                         thumbs.querySelectorAll('img').forEach(i => {
-//                             i.classList.remove('thumb-selected');
-//                             i.classList.add('border-transparent');
-//                         });
-//                         this.classList.add('thumb-selected');
-//                         this.classList.remove('border-transparent');
-//                     }
-//                     thumbs.appendChild(img);
-//                 });
-
-//                 const sizesDiv = document.getElementById('modal-sizes');
-//                 sizesDiv.innerHTML = '';
-//                 if(p.sizes && p.sizes.length > 0) {
-//                     p.sizes.forEach(size => {
-//                         const btn = document.createElement('div');
-//                         btn.className = 'size-btn';
-//                         btn.innerText = size;
-//                         btn.onclick = () => {
-//                             this.selectedSize = size;
-//                             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-//                             btn.classList.add('active');
-//                             document.getElementById('size-error').classList.add('hidden');
-//                         }
-//                         sizesDiv.appendChild(btn);
-//                     });
-//                 } else {
-//                     sizesDiv.innerHTML = '<span class="text-sm text-gray-500">Freesize</span>';
-//                     this.selectedSize = "Freesize";
-//                 }
-
-//                 // Gán sự kiện cho nút thêm vào giỏ
-//                 addBtn.onclick = () => { 
-//                     // check size
-//                     if(!this.selectedSize) {
-//                         document.getElementById('size-error').classList.remove('hidden');
-//                         return;
-//                     }
-                    
-//                     this.addToCart(p.id, this.selectedSize); 
-//                     this.closeModal(); 
-//                 };
-                
-//                 const m = document.getElementById('product-modal'); 
-//                 m.classList.remove('hidden'); 
-//                 setTimeout(() => { 
-//                     m.classList.remove('opacity-0'); 
-//                     m.querySelector('div').classList.replace('scale-95', 'scale-100'); 
-//                 }, 10);
-//             },
-
-
-
-
             openModal(id) {
-                // //this.selectedColor = null; //bắt chọn màu
                 this.selectedSize = null; 
                 const p = storeData.products.find(x => x.id === id);
                 if (!p) return;
+                
+                // 1. Xử lý ảnh chính và Zoom
                 document.getElementById('modal-img').src = p.img;
                 
-                // phóng to ảnh
                 document.getElementById('modal-img').onclick = () => {
-                  document.getElementById('zoom-img').src =
-                    document.getElementById('modal-img').src;
+                  document.getElementById('zoom-img').src = document.getElementById('modal-img').src;
                   document.getElementById('img-zoom').classList.remove('hidden');
                 };
-
-                // đóng ảnh phóng to (PC + mobile)
-                // const imgZoom = document.getElementById('img-zoom');
-
                 const imgZoom = document.getElementById('img-zoom');
                 const zoomImg = document.getElementById('zoom-img');
                 
-                // bấm nền tối để đóng
-                imgZoom.addEventListener('click', () => {
-                  imgZoom.classList.add('hidden');
-                });
-                
-                // chạm vào ảnh thì KHÔNG đóng (để pinch zoom)
-                zoomImg.addEventListener('click', e => {
-                  e.stopPropagation();
-                });
-                zoomImg.addEventListener('touchstart', e => {
-                  e.stopPropagation();
-                });
+                // Sự kiện đóng zoom
+                imgZoom.onclick = () => { imgZoom.classList.add('hidden'); };
+                // Chặn sự kiện click vào ảnh để không bị đóng nhầm khi zoom
+                zoomImg.onclick = (e) => { e.stopPropagation(); }; 
                
                 document.getElementById('modal-title').innerText = p.name;
-                document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
+
+                // --- 2. SỬA: LOGIC GIÁ & NÚT MUA ---
+                const priceEl = document.getElementById('modal-price');
+                const addBtn = document.getElementById('modal-add-btn');
+                
+                let giaTri = Number(p.price);
+                if (giaTri && giaTri > 0) {
+                    // CÓ GIÁ: Hiện tiền + Hiện nút mua + Xóa màu đỏ (nếu có)
+                    priceEl.innerText = giaTri.toLocaleString('vi-VN') + '₫';
+                    priceEl.classList.remove('text-red-500'); 
+                    addBtn.classList.remove('hidden'); 
+                } else {
+                    // KHÔNG GIÁ: Hiện Liên Hệ + Ẩn nút mua + Thêm màu đỏ
+                    priceEl.innerText = "Liên Hệ";
+                    priceEl.classList.add('text-red-500'); 
+                    addBtn.classList.add('hidden'); 
+                }
+                // ------------------------------------
+
                 document.getElementById('modal-desc').innerText = p.desc;
+                
+                // 3. Xử lý Thumbnails (Ảnh nhỏ)
                 const thumbs = document.getElementById('modal-thumbnails');
                 thumbs.innerHTML = '';
-
                 const images = p.images ? p.images : [p.img];
 
-
-
-                // Ẩn thumbnail nếu chỉ có 1 ảnh
                 if (images.length <= 1) {
                     thumbs.classList.add('hidden');
                 } else {
                     thumbs.classList.remove('hidden');
                 }         
                                 
-                // const images = p.images ? p.images : [p.img]; 
-                
                 images.forEach((src, idx) => {
                     const img = document.createElement('img');
                     img.src = src;
-                    // img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
                     img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
 
                     img.onclick = function() {
@@ -1122,6 +963,7 @@
                     thumbs.appendChild(img);
                 });
 
+                // 4. Xử lý chọn Size
                 const sizesDiv = document.getElementById('modal-sizes');
                 sizesDiv.innerHTML = '';
                 if(p.sizes && p.sizes.length > 0) {
@@ -1142,19 +984,125 @@
                     this.selectedSize = "Freesize";
                 }
 
-                document.getElementById('modal-add-btn').onclick = () => { 
-                    // check size
+                // 5. Gán sự kiện cho nút Thêm vào giỏ (đã check ẩn/hiện ở trên)
+                addBtn.onclick = () => { 
                     if(!this.selectedSize) {
                         document.getElementById('size-error').classList.remove('hidden');
                         return;
                     }
-/*
-                    // check màu
-                    if (!this.selectedColor && p.images && p.images.length > 1) {
-                      document.getElementById('color-error').classList.remove('hidden');
-                      return;
-                    }
-*/
+                    this.addToCart(p.id, this.selectedSize); 
+                    this.closeModal(); 
+                };
+                
+                // 6. Hiệu ứng hiện Modal
+                const m = document.getElementById('product-modal'); 
+                m.classList.remove('hidden'); 
+                setTimeout(() => { 
+                    m.classList.remove('opacity-0'); 
+                    m.querySelector('div').classList.replace('scale-95', 'scale-100'); 
+                }, 10);
+            },
+
+
+            // openModal(id) {
+            //     // //this.selectedColor = null; //bắt chọn màu
+            //     this.selectedSize = null; 
+            //     const p = storeData.products.find(x => x.id === id);
+            //     if (!p) return;
+            //     document.getElementById('modal-img').src = p.img;
+                
+            //     // phóng to ảnh
+            //     document.getElementById('modal-img').onclick = () => {
+            //       document.getElementById('zoom-img').src =
+            //         document.getElementById('modal-img').src;
+            //       document.getElementById('img-zoom').classList.remove('hidden');
+            //     };
+
+            //     // đóng ảnh phóng to (PC + mobile)
+            //     // const imgZoom = document.getElementById('img-zoom');
+
+            //     const imgZoom = document.getElementById('img-zoom');
+            //     const zoomImg = document.getElementById('zoom-img');
+                
+            //     // bấm nền tối để đóng
+            //     imgZoom.addEventListener('click', () => {
+            //       imgZoom.classList.add('hidden');
+            //     });
+                
+            //     // chạm vào ảnh thì KHÔNG đóng (để pinch zoom)
+            //     zoomImg.addEventListener('click', e => {
+            //       e.stopPropagation();
+            //     });
+            //     zoomImg.addEventListener('touchstart', e => {
+            //       e.stopPropagation();
+            //     });
+               
+            //     document.getElementById('modal-title').innerText = p.name;
+            //     document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
+            //     document.getElementById('modal-desc').innerText = p.desc;
+            //     const thumbs = document.getElementById('modal-thumbnails');
+            //     thumbs.innerHTML = '';
+
+            //     const images = p.images ? p.images : [p.img];
+
+
+
+            //     // Ẩn thumbnail nếu chỉ có 1 ảnh
+            //     if (images.length <= 1) {
+            //         thumbs.classList.add('hidden');
+            //     } else {
+            //         thumbs.classList.remove('hidden');
+            //     }         
+                                
+            //     // const images = p.images ? p.images : [p.img]; 
+                
+            //     images.forEach((src, idx) => {
+            //         const img = document.createElement('img');
+            //         img.src = src;
+            //         // img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
+            //         img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
+
+            //         img.onclick = function() {
+            //             document.getElementById('modal-img').src = src;
+            //             thumbs.querySelectorAll('img').forEach(i => {
+            //                 i.classList.remove('thumb-selected');
+            //                 i.classList.add('border-transparent');
+            //             });
+            //             this.classList.add('thumb-selected');
+            //             this.classList.remove('border-transparent');
+            //         }
+            //         thumbs.appendChild(img);
+            //     });
+
+            //     const sizesDiv = document.getElementById('modal-sizes');
+            //     sizesDiv.innerHTML = '';
+            //     if(p.sizes && p.sizes.length > 0) {
+            //         p.sizes.forEach(size => {
+            //             const btn = document.createElement('div');
+            //             btn.className = 'size-btn';
+            //             btn.innerText = size;
+            //             btn.onclick = () => {
+            //                 this.selectedSize = size;
+            //                 document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            //                 btn.classList.add('active');
+            //                 document.getElementById('size-error').classList.add('hidden');
+            //             }
+            //             sizesDiv.appendChild(btn);
+            //         });
+            //     } else {
+            //         sizesDiv.innerHTML = '<span class="text-sm text-gray-500">Freesize</span>';
+            //         this.selectedSize = "Freesize";
+            //     }
+
+            //     document.getElementById('modal-add-btn').onclick = () => { 
+            //         // check size
+            //         if(!this.selectedSize) {
+            //             document.getElementById('size-error').classList.remove('hidden');
+            //             return;
+            //         }
+
+
+
                     
                     this.addToCart(p.id, this.selectedSize); 
                     this.closeModal(); 
