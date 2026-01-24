@@ -82,19 +82,6 @@
 
         #toast { transition: all 0.3s ease-in-out; }
 
-
-
-        /* --- Ảnh Hiển Thị Hết --- */
-        /* @media (max-width: 640px) {
-            .hero-bg {
-                /* Hiển thị 100% chiều rộng, chiều cao tự động */
-                /* background-size: 100% auto;  */
-                /* Đẩy ảnh lên trên cùng */
-                /* background-position: center top;  */
-                /* Nếu ảnh banner màu sáng, đổi màu chữ thành đen để dễ đọc */
-                /* color: #333 !important; */ 
-            /* }
-        } */
         
         .hero-overlay {
             position: absolute;
@@ -677,60 +664,6 @@
                 document.getElementById('mobile-menu').classList.add('hidden');
             },
 
-            // renderNavBar(activeTab) {
-            //     if (activeTab === 'cart' || activeTab === 'checkout' || activeTab === 'thankyou') return ''; 
-            //     return `
-            //         <div class="flex justify-center gap-1 sm:gap-2 mb-6 border-b pb-3 overflow-x-auto px-2">
-            //             <button onclick="app.filterByCategory('kids')" class="category-text px-3 py-1.5 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'kids' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Trẻ em</button>
-            //             <button onclick="app.filterByCategory('adult')" class="category-text px-3 py-1.5 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'adult' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nữ</button>
-            //             <button onclick="app.filterByCategory('men')" class="category-text px-3 py-1.5 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'men' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Nam</button>
-            //             <button onclick="app.filterByCategory('other')" class="category-text px-3 py-1.5 rounded-full font-bold transition whitespace-nowrap border-2 ${this.currentFilter === 'other' && activeTab === 'shop' ? 'bg-primary text-white border-primary shadow-md' : 'border-transparent text-secondary hover:bg-gray-100'}">Sản Phẩm Khác</button>
-            //         </div>
-            //     `;
-            // },
-
-
-
-            // renderNavBar(activeTab) {
-            //     if (activeTab === 'cart' || activeTab === 'checkout' || activeTab === 'thankyou') return ''; 
-                
-            //     return `
-            //         <div class="flex justify-center gap-2 md:gap-8 mb-8 border-b-2 border-dashed border-gray-100 pb-5 overflow-x-auto px-2 scrollbar-hide">
-                        
-            //             <button onclick="app.filterByCategory('kids')" 
-            //                     class="px-5 py-2 md:px-10 md:py-4 rounded-full font-bold transition-all duration-300 whitespace-nowrap border-2 uppercase tracking-wide md:text-2xl 
-            //                     ${this.currentFilter === 'kids' && activeTab === 'shop' 
-            //                         ? 'bg-primary text-white border-primary shadow-xl transform scale-105' 
-            //                         : 'bg-white border-gray-200 text-gray-500 hover:text-primary hover:border-primary hover:shadow-lg hover:-translate-y-1'}">
-            //                 👶 Trẻ em
-            //             </button>
-                        
-            //             <button onclick="app.filterByCategory('adult')" 
-            //                     class="px-5 py-2 md:px-10 md:py-4 rounded-full font-bold transition-all duration-300 whitespace-nowrap border-2 uppercase tracking-wide md:text-2xl 
-            //                     ${this.currentFilter === 'adult' && activeTab === 'shop' 
-            //                         ? 'bg-accent text-white border-accent shadow-xl transform scale-105' 
-            //                         : 'bg-white border-gray-200 text-gray-500 hover:text-accent hover:border-accent hover:shadow-lg hover:-translate-y-1'}">
-            //                 👗 Nữ
-            //             </button>
-                        
-            //             <button onclick="app.filterByCategory('men')" 
-            //                     class="px-5 py-2 md:px-10 md:py-4 rounded-full font-bold transition-all duration-300 whitespace-nowrap border-2 uppercase tracking-wide md:text-2xl 
-            //                     ${this.currentFilter === 'men' && activeTab === 'shop' 
-            //                         ? 'bg-secondary text-white border-secondary shadow-xl transform scale-105' 
-            //                         : 'bg-white border-gray-200 text-gray-500 hover:text-secondary hover:border-secondary hover:shadow-lg hover:-translate-y-1'}">
-            //                 👔 Nam
-            //             </button>
-                        
-            //             <button onclick="app.filterByCategory('other')" 
-            //                     class="px-5 py-2 md:px-10 md:py-4 rounded-full font-bold transition-all duration-300 whitespace-nowrap border-2 uppercase tracking-wide md:text-2xl 
-            //                     ${this.currentFilter === 'other' && activeTab === 'shop' 
-            //                         ? 'bg-gray-500 text-white border-gray-500 shadow-xl transform scale-105' 
-            //                         : 'bg-white border-gray-200 text-gray-500 hover:text-gray-600 hover:border-gray-500 hover:shadow-lg hover:-translate-y-1'}">
-            //                 ✨ Khác
-            //             </button>
-            //         </div>
-            //     `;
-            // },
 
 
             renderNavBar(activeTab) {
@@ -1006,51 +939,161 @@
 
 
 
-openModal(id) {
-                // this.selectedColor = null; //bắt chọn màu
+// openModal(id) {
+//                 // this.selectedColor = null; //bắt chọn màu
+//                 this.selectedSize = null; 
+//                 const p = storeData.products.find(x => x.id === id);
+//                 if (!p) return;
+                
+//                 document.getElementById('modal-img').src = p.img;
+                
+//                 // --- Xử lý phóng to ảnh ---
+//                 document.getElementById('modal-img').onclick = () => {
+//                   document.getElementById('zoom-img').src = document.getElementById('modal-img').src;
+//                   document.getElementById('img-zoom').classList.remove('hidden');
+//                 };
+//                 const imgZoom = document.getElementById('img-zoom');
+//                 const zoomImg = document.getElementById('zoom-img');
+//                 imgZoom.addEventListener('click', () => { imgZoom.classList.add('hidden'); });
+//                 zoomImg.addEventListener('click', e => { e.stopPropagation(); });
+//                 zoomImg.addEventListener('touchstart', e => { e.stopPropagation(); });
+//                 // ---------------------------
+               
+//                 document.getElementById('modal-title').innerText = p.name;
+
+//                 // --- SỬA: LOGIC HIỂN THỊ GIÁ TRONG MODAL ---
+//                 const priceEl = document.getElementById('modal-price');
+//                 const addBtn = document.getElementById('modal-add-btn');
+                
+//                 let giaTri = Number(p.price);
+//                 if (giaTri && giaTri > 0) {
+//                     // Nếu có giá: Hiện giá tiền + Hiện nút mua
+//                     priceEl.innerText = giaTri.toLocaleString('vi-VN') + '₫';
+//                     priceEl.classList.remove('text-red-500'); 
+//                     addBtn.classList.remove('hidden'); // Hiện nút mua
+//                 } else {
+//                     // Nếu giá = 0: Hiện chữ Liên Hệ + Ẩn nút mua
+//                     priceEl.innerText = "Liên Hệ";
+//                     priceEl.classList.add('text-red-500'); // Đổi màu chữ thành đỏ
+//                     addBtn.classList.add('hidden'); // Ẩn nút mua để tránh khách đặt đơn 0đ
+//                 }
+//                 // -------------------------------------------
+
+//                 document.getElementById('modal-desc').innerText = p.desc;
+//                 const thumbs = document.getElementById('modal-thumbnails');
+//                 thumbs.innerHTML = '';
+
+//                 const images = p.images ? p.images : [p.img];
+
+//                 // Ẩn thumbnail nếu chỉ có 1 ảnh
+//                 if (images.length <= 1) {
+//                     thumbs.classList.add('hidden');
+//                 } else {
+//                     thumbs.classList.remove('hidden');
+//                 }         
+                                
+//                 images.forEach((src, idx) => {
+//                     const img = document.createElement('img');
+//                     img.src = src;
+//                     img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
+
+//                     img.onclick = function() {
+//                         document.getElementById('modal-img').src = src;
+//                         thumbs.querySelectorAll('img').forEach(i => {
+//                             i.classList.remove('thumb-selected');
+//                             i.classList.add('border-transparent');
+//                         });
+//                         this.classList.add('thumb-selected');
+//                         this.classList.remove('border-transparent');
+//                     }
+//                     thumbs.appendChild(img);
+//                 });
+
+//                 const sizesDiv = document.getElementById('modal-sizes');
+//                 sizesDiv.innerHTML = '';
+//                 if(p.sizes && p.sizes.length > 0) {
+//                     p.sizes.forEach(size => {
+//                         const btn = document.createElement('div');
+//                         btn.className = 'size-btn';
+//                         btn.innerText = size;
+//                         btn.onclick = () => {
+//                             this.selectedSize = size;
+//                             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+//                             btn.classList.add('active');
+//                             document.getElementById('size-error').classList.add('hidden');
+//                         }
+//                         sizesDiv.appendChild(btn);
+//                     });
+//                 } else {
+//                     sizesDiv.innerHTML = '<span class="text-sm text-gray-500">Freesize</span>';
+//                     this.selectedSize = "Freesize";
+//                 }
+
+//                 // Gán sự kiện cho nút thêm vào giỏ
+//                 addBtn.onclick = () => { 
+//                     // check size
+//                     if(!this.selectedSize) {
+//                         document.getElementById('size-error').classList.remove('hidden');
+//                         return;
+//                     }
+                    
+//                     this.addToCart(p.id, this.selectedSize); 
+//                     this.closeModal(); 
+//                 };
+                
+//                 const m = document.getElementById('product-modal'); 
+//                 m.classList.remove('hidden'); 
+//                 setTimeout(() => { 
+//                     m.classList.remove('opacity-0'); 
+//                     m.querySelector('div').classList.replace('scale-95', 'scale-100'); 
+//                 }, 10);
+//             },
+
+
+
+
+            openModal(id) {
+                // //this.selectedColor = null; //bắt chọn màu
                 this.selectedSize = null; 
                 const p = storeData.products.find(x => x.id === id);
                 if (!p) return;
-                
                 document.getElementById('modal-img').src = p.img;
                 
-                // --- Xử lý phóng to ảnh ---
+                // phóng to ảnh
                 document.getElementById('modal-img').onclick = () => {
-                  document.getElementById('zoom-img').src = document.getElementById('modal-img').src;
+                  document.getElementById('zoom-img').src =
+                    document.getElementById('modal-img').src;
                   document.getElementById('img-zoom').classList.remove('hidden');
                 };
+
+                // đóng ảnh phóng to (PC + mobile)
+                // const imgZoom = document.getElementById('img-zoom');
+
                 const imgZoom = document.getElementById('img-zoom');
                 const zoomImg = document.getElementById('zoom-img');
-                imgZoom.addEventListener('click', () => { imgZoom.classList.add('hidden'); });
-                zoomImg.addEventListener('click', e => { e.stopPropagation(); });
-                zoomImg.addEventListener('touchstart', e => { e.stopPropagation(); });
-                // ---------------------------
+                
+                // bấm nền tối để đóng
+                imgZoom.addEventListener('click', () => {
+                  imgZoom.classList.add('hidden');
+                });
+                
+                // chạm vào ảnh thì KHÔNG đóng (để pinch zoom)
+                zoomImg.addEventListener('click', e => {
+                  e.stopPropagation();
+                });
+                zoomImg.addEventListener('touchstart', e => {
+                  e.stopPropagation();
+                });
                
                 document.getElementById('modal-title').innerText = p.name;
-
-                // --- SỬA: LOGIC HIỂN THỊ GIÁ TRONG MODAL ---
-                const priceEl = document.getElementById('modal-price');
-                const addBtn = document.getElementById('modal-add-btn');
-                
-                let giaTri = Number(p.price);
-                if (giaTri && giaTri > 0) {
-                    // Nếu có giá: Hiện giá tiền + Hiện nút mua
-                    priceEl.innerText = giaTri.toLocaleString('vi-VN') + '₫';
-                    priceEl.classList.remove('text-red-500'); 
-                    addBtn.classList.remove('hidden'); // Hiện nút mua
-                } else {
-                    // Nếu giá = 0: Hiện chữ Liên Hệ + Ẩn nút mua
-                    priceEl.innerText = "Liên Hệ";
-                    priceEl.classList.add('text-red-500'); // Đổi màu chữ thành đỏ
-                    addBtn.classList.add('hidden'); // Ẩn nút mua để tránh khách đặt đơn 0đ
-                }
-                // -------------------------------------------
-
+                document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
                 const thumbs = document.getElementById('modal-thumbnails');
                 thumbs.innerHTML = '';
 
                 const images = p.images ? p.images : [p.img];
+
+
 
                 // Ẩn thumbnail nếu chỉ có 1 ảnh
                 if (images.length <= 1) {
@@ -1059,9 +1102,12 @@ openModal(id) {
                     thumbs.classList.remove('hidden');
                 }         
                                 
+                // const images = p.images ? p.images : [p.img]; 
+                
                 images.forEach((src, idx) => {
                     const img = document.createElement('img');
                     img.src = src;
+                    // img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
                     img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
 
                     img.onclick = function() {
@@ -1096,125 +1142,12 @@ openModal(id) {
                     this.selectedSize = "Freesize";
                 }
 
-                // Gán sự kiện cho nút thêm vào giỏ
-                addBtn.onclick = () => { 
+                document.getElementById('modal-add-btn').onclick = () => { 
                     // check size
                     if(!this.selectedSize) {
                         document.getElementById('size-error').classList.remove('hidden');
                         return;
                     }
-                    
-                    this.addToCart(p.id, this.selectedSize); 
-                    this.closeModal(); 
-                };
-                
-                const m = document.getElementById('product-modal'); 
-                m.classList.remove('hidden'); 
-                setTimeout(() => { 
-                    m.classList.remove('opacity-0'); 
-                    m.querySelector('div').classList.replace('scale-95', 'scale-100'); 
-                }, 10);
-            },
-
-
-
-
-            // openModal(id) {
-            //     // //this.selectedColor = null; //bắt chọn màu
-            //     this.selectedSize = null; 
-            //     const p = storeData.products.find(x => x.id === id);
-            //     if (!p) return;
-            //     document.getElementById('modal-img').src = p.img;
-                
-            //     // phóng to ảnh
-            //     document.getElementById('modal-img').onclick = () => {
-            //       document.getElementById('zoom-img').src =
-            //         document.getElementById('modal-img').src;
-            //       document.getElementById('img-zoom').classList.remove('hidden');
-            //     };
-
-            //     // đóng ảnh phóng to (PC + mobile)
-            //     // const imgZoom = document.getElementById('img-zoom');
-
-            //     const imgZoom = document.getElementById('img-zoom');
-            //     const zoomImg = document.getElementById('zoom-img');
-                
-            //     // bấm nền tối để đóng
-            //     imgZoom.addEventListener('click', () => {
-            //       imgZoom.classList.add('hidden');
-            //     });
-                
-            //     // chạm vào ảnh thì KHÔNG đóng (để pinch zoom)
-            //     zoomImg.addEventListener('click', e => {
-            //       e.stopPropagation();
-            //     });
-            //     zoomImg.addEventListener('touchstart', e => {
-            //       e.stopPropagation();
-            //     });
-               
-            //     document.getElementById('modal-title').innerText = p.name;
-            //     document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
-            //     document.getElementById('modal-desc').innerText = p.desc;
-            //     const thumbs = document.getElementById('modal-thumbnails');
-            //     thumbs.innerHTML = '';
-
-            //     const images = p.images ? p.images : [p.img];
-
-
-
-            //     // Ẩn thumbnail nếu chỉ có 1 ảnh
-            //     if (images.length <= 1) {
-            //         thumbs.classList.add('hidden');
-            //     } else {
-            //         thumbs.classList.remove('hidden');
-            //     }         
-                                
-            //     // const images = p.images ? p.images : [p.img]; 
-                
-            //     images.forEach((src, idx) => {
-            //         const img = document.createElement('img');
-            //         img.src = src;
-            //         // img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
-            //         img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
-
-            //         img.onclick = function() {
-            //             document.getElementById('modal-img').src = src;
-            //             thumbs.querySelectorAll('img').forEach(i => {
-            //                 i.classList.remove('thumb-selected');
-            //                 i.classList.add('border-transparent');
-            //             });
-            //             this.classList.add('thumb-selected');
-            //             this.classList.remove('border-transparent');
-            //         }
-            //         thumbs.appendChild(img);
-            //     });
-
-            //     const sizesDiv = document.getElementById('modal-sizes');
-            //     sizesDiv.innerHTML = '';
-            //     if(p.sizes && p.sizes.length > 0) {
-            //         p.sizes.forEach(size => {
-            //             const btn = document.createElement('div');
-            //             btn.className = 'size-btn';
-            //             btn.innerText = size;
-            //             btn.onclick = () => {
-            //                 this.selectedSize = size;
-            //                 document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            //                 btn.classList.add('active');
-            //                 document.getElementById('size-error').classList.add('hidden');
-            //             }
-            //             sizesDiv.appendChild(btn);
-            //         });
-            //     } else {
-            //         sizesDiv.innerHTML = '<span class="text-sm text-gray-500">Freesize</span>';
-            //         this.selectedSize = "Freesize";
-            //     }
-
-            //     document.getElementById('modal-add-btn').onclick = () => { 
-            //         // check size
-            //         if(!this.selectedSize) {
-            //             document.getElementById('size-error').classList.remove('hidden');
-            //             return;
-            //         }
 /*
                     // check màu
                     if (!this.selectedColor && p.images && p.images.length > 1) {
