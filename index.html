@@ -892,63 +892,62 @@
             },
 
 
-
             openModal(id) {
+                // //this.selectedColor = null; //bắt chọn màu
                 this.selectedSize = null; 
                 const p = storeData.products.find(x => x.id === id);
                 if (!p) return;
-                
-                // 1. Xử lý ảnh chính và Zoom
                 document.getElementById('modal-img').src = p.img;
                 
+                // phóng to ảnh
                 document.getElementById('modal-img').onclick = () => {
-                  document.getElementById('zoom-img').src = document.getElementById('modal-img').src;
+                  document.getElementById('zoom-img').src =
+                    document.getElementById('modal-img').src;
                   document.getElementById('img-zoom').classList.remove('hidden');
                 };
+
+                // đóng ảnh phóng to (PC + mobile)
+                // const imgZoom = document.getElementById('img-zoom');
+
                 const imgZoom = document.getElementById('img-zoom');
                 const zoomImg = document.getElementById('zoom-img');
                 
-                // Sự kiện đóng zoom
-                imgZoom.onclick = () => { imgZoom.classList.add('hidden'); };
-                // Chặn sự kiện click vào ảnh để không bị đóng nhầm khi zoom
-                zoomImg.onclick = (e) => { e.stopPropagation(); }; 
+                // bấm nền tối để đóng
+                imgZoom.addEventListener('click', () => {
+                  imgZoom.classList.add('hidden');
+                });
+                
+                // chạm vào ảnh thì KHÔNG đóng (để pinch zoom)
+                zoomImg.addEventListener('click', e => {
+                  e.stopPropagation();
+                });
+                zoomImg.addEventListener('touchstart', e => {
+                  e.stopPropagation();
+                });
                
                 document.getElementById('modal-title').innerText = p.name;
-
-                // --- 2. SỬA: LOGIC GIÁ & NÚT MUA ---
-                const priceEl = document.getElementById('modal-price');
-                const addBtn = document.getElementById('modal-add-btn');
-                
-                let giaTri = Number(p.price);
-                if (giaTri && giaTri > 0) {
-                    // CÓ GIÁ: Hiện tiền + Hiện nút mua + Xóa màu đỏ (nếu có)
-                    priceEl.innerText = giaTri.toLocaleString('vi-VN') + '₫';
-                    priceEl.classList.remove('text-red-500'); 
-                    addBtn.classList.remove('hidden'); 
-                } else {
-                    // KHÔNG GIÁ: Hiện Liên Hệ + Ẩn nút mua + Thêm màu đỏ
-                    priceEl.innerText = "Liên Hệ";
-                    priceEl.classList.add('text-red-500'); 
-                    addBtn.classList.add('hidden'); 
-                }
-                // ------------------------------------
-
+                document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
                 document.getElementById('modal-desc').innerText = p.desc;
-                
-                // 3. Xử lý Thumbnails (Ảnh nhỏ)
                 const thumbs = document.getElementById('modal-thumbnails');
                 thumbs.innerHTML = '';
+
                 const images = p.images ? p.images : [p.img];
 
+
+
+                // Ẩn thumbnail nếu chỉ có 1 ảnh
                 if (images.length <= 1) {
                     thumbs.classList.add('hidden');
                 } else {
                     thumbs.classList.remove('hidden');
                 }         
                                 
+                // const images = p.images ? p.images : [p.img]; 
+                
                 images.forEach((src, idx) => {
                     const img = document.createElement('img');
                     img.src = src;
+                    // img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
                     img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
 
                     img.onclick = function() {
@@ -963,7 +962,6 @@
                     thumbs.appendChild(img);
                 });
 
-                // 4. Xử lý chọn Size
                 const sizesDiv = document.getElementById('modal-sizes');
                 sizesDiv.innerHTML = '';
                 if(p.sizes && p.sizes.length > 0) {
@@ -984,122 +982,12 @@
                     this.selectedSize = "Freesize";
                 }
 
-                // 5. Gán sự kiện cho nút Thêm vào giỏ (đã check ẩn/hiện ở trên)
-                addBtn.onclick = () => { 
+                document.getElementById('modal-add-btn').onclick = () => { 
+                    // check size
                     if(!this.selectedSize) {
                         document.getElementById('size-error').classList.remove('hidden');
                         return;
                     }
-                    this.addToCart(p.id, this.selectedSize); 
-                    this.closeModal(); 
-                };
-                
-                // 6. Hiệu ứng hiện Modal
-                const m = document.getElementById('product-modal'); 
-                m.classList.remove('hidden'); 
-                setTimeout(() => { 
-                    m.classList.remove('opacity-0'); 
-                    m.querySelector('div').classList.replace('scale-95', 'scale-100'); 
-                }, 10);
-            },
-
-
-            // openModal(id) {
-            //     // //this.selectedColor = null; //bắt chọn màu
-            //     this.selectedSize = null; 
-            //     const p = storeData.products.find(x => x.id === id);
-            //     if (!p) return;
-            //     document.getElementById('modal-img').src = p.img;
-                
-            //     // phóng to ảnh
-            //     document.getElementById('modal-img').onclick = () => {
-            //       document.getElementById('zoom-img').src =
-            //         document.getElementById('modal-img').src;
-            //       document.getElementById('img-zoom').classList.remove('hidden');
-            //     };
-
-            //     // đóng ảnh phóng to (PC + mobile)
-            //     // const imgZoom = document.getElementById('img-zoom');
-
-            //     const imgZoom = document.getElementById('img-zoom');
-            //     const zoomImg = document.getElementById('zoom-img');
-                
-            //     // bấm nền tối để đóng
-            //     imgZoom.addEventListener('click', () => {
-            //       imgZoom.classList.add('hidden');
-            //     });
-                
-            //     // chạm vào ảnh thì KHÔNG đóng (để pinch zoom)
-            //     zoomImg.addEventListener('click', e => {
-            //       e.stopPropagation();
-            //     });
-            //     zoomImg.addEventListener('touchstart', e => {
-            //       e.stopPropagation();
-            //     });
-               
-            //     document.getElementById('modal-title').innerText = p.name;
-            //     document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
-            //     document.getElementById('modal-desc').innerText = p.desc;
-            //     const thumbs = document.getElementById('modal-thumbnails');
-            //     thumbs.innerHTML = '';
-
-            //     const images = p.images ? p.images : [p.img];
-
-
-
-            //     // Ẩn thumbnail nếu chỉ có 1 ảnh
-            //     if (images.length <= 1) {
-            //         thumbs.classList.add('hidden');
-            //     } else {
-            //         thumbs.classList.remove('hidden');
-            //     }         
-                                
-            //     // const images = p.images ? p.images : [p.img]; 
-                
-            //     images.forEach((src, idx) => {
-            //         const img = document.createElement('img');
-            //         img.src = src;
-            //         // img.className = `w-16 h-16 object-cover rounded border-2 cursor-pointer thumb-item ${idx === 0 ? 'thumb-selected' : 'border-transparent'}`;
-            //         img.className = 'w-14 h-14 object-cover rounded border cursor-pointer thumb-item';
-
-            //         img.onclick = function() {
-            //             document.getElementById('modal-img').src = src;
-            //             thumbs.querySelectorAll('img').forEach(i => {
-            //                 i.classList.remove('thumb-selected');
-            //                 i.classList.add('border-transparent');
-            //             });
-            //             this.classList.add('thumb-selected');
-            //             this.classList.remove('border-transparent');
-            //         }
-            //         thumbs.appendChild(img);
-            //     });
-
-            //     const sizesDiv = document.getElementById('modal-sizes');
-            //     sizesDiv.innerHTML = '';
-            //     if(p.sizes && p.sizes.length > 0) {
-            //         p.sizes.forEach(size => {
-            //             const btn = document.createElement('div');
-            //             btn.className = 'size-btn';
-            //             btn.innerText = size;
-            //             btn.onclick = () => {
-            //                 this.selectedSize = size;
-            //                 document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            //                 btn.classList.add('active');
-            //                 document.getElementById('size-error').classList.add('hidden');
-            //             }
-            //             sizesDiv.appendChild(btn);
-            //         });
-            //     } else {
-            //         sizesDiv.innerHTML = '<span class="text-sm text-gray-500">Freesize</span>';
-            //         this.selectedSize = "Freesize";
-            //     }
-
-            //     document.getElementById('modal-add-btn').onclick = () => { 
-            //         // check size
-            //         if(!this.selectedSize) {
-            //             document.getElementById('size-error').classList.remove('hidden');
-            //             return;
-            //         }
 
 
 
