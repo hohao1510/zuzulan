@@ -1060,13 +1060,35 @@
                   e.stopPropagation();
                 });
                
+                // document.getElementById('modal-title').innerText = p.name;
+                // document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
+                // document.getElementById('modal-desc').innerText = p.desc;
+                // const thumbs = document.getElementById('modal-thumbnails');
+                // thumbs.innerHTML = '';
+
+                // const images = p.images ? p.images : [p.img];
+
+
                 document.getElementById('modal-title').innerText = p.name;
-                document.getElementById('modal-price').innerText = p.price.toLocaleString('vi-VN') + '₫';
+
+                // --- BẮT ĐẦU SỬA: Logic hiển thị giá hoặc Liên Hệ ---
+                let giaTri = Number(p.price); // Đảm bảo dữ liệu là số
+                if (giaTri && giaTri > 0) {
+                    // Nếu có giá và giá lớn hơn 0
+                    document.getElementById('modal-price').innerText = giaTri.toLocaleString('vi-VN') + '₫';
+                } else {
+                    // Nếu giá bằng 0 hoặc trống
+                    document.getElementById('modal-price').innerText = "Liên Hệ";
+                }
+                // --- KẾT THÚC SỬA ---
+
                 document.getElementById('modal-desc').innerText = p.desc;
                 const thumbs = document.getElementById('modal-thumbnails');
                 thumbs.innerHTML = '';
 
                 const images = p.images ? p.images : [p.img];
+
+
 
                 // Ẩn thumbnail nếu chỉ có 1 ảnh
                 if (images.length <= 1) {
