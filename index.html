@@ -239,20 +239,23 @@
 <body class="text-gray-700 flex flex-col min-h-screen relative">
 
     <!-- TOP BAR -->
-    <!-- <div class="bg-primary text-white py-2 font-bold text-lg overflow-hidden">
-        <marquee direction="left" scrollamount="12">
-            Shop quần áo Zuzulan chào quý khách, chúc quý khách mua sắm vui vẻ! Đồ mua tại shop sẽ được sửa miễn phí
-        </marquee>
-    </div>
--->
 
-    <div class="bg-primary text-white py-2 font-bold text-lg overflow-hidden">
+    <!-- <div class="bg-primary text-white py-2 font-bold text-lg overflow-hidden">
     <marquee direction="left" scrollamount="12">
         <span>Shop quần áo Zuzulan chào quý khách, chúc quý khách mua sắm vui vẻ!</span>
         
         <span class="text-yellow-300 mx-4">Đồ mua tại shop sẽ được sửa miễn phí!</span>
         
         <span class="text-lime-300">Có thể chọn màu lúc thanh toán!</span>
+    </marquee>
+    </div> -->
+
+    <div class="bg-red-600 text-yellow-300 py-2 font-bold text-lg overflow-hidden border-b-2 border-yellow-400">
+    <marquee direction="left" scrollamount="12">
+        <span>🧧 CHÚC MỪNG NĂM MỚI - XẢ KHO ĐÓN TẾT! 🧧</span>
+        <span class="text-white mx-4">Giảm giá lên đến 50% toàn bộ sản phẩm!</span>
+        <span class="text-yellow-200">Lì xì ngay 20k cho đơn hàng đầu tiên!</span>
+        <span class="text-white mx-4">Nhanh tay sắm đồ đẹp du xuân! 🌸</span>
     </marquee>
     </div>
 
@@ -1163,6 +1166,85 @@ window.onload = async () => {
   <img id="zoom-img" class="max-w-full max-h-full" />
 </div>
 
+
+<!-- Thêm Popup Quảng Cáo Tết (Banner Lì Xì) -->
+
+<div id="tet-popup" class="fixed inset-0 z-[200] hidden bg-black/70 flex items-center justify-center p-4 transition-opacity duration-500 opacity-0">
+    <div class="relative bg-red-600 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden text-center border-4 border-yellow-400 transform scale-90 transition-transform duration-300">
+        
+        <button onclick="closeTetPopup()" class="absolute top-2 right-2 text-white/80 hover:text-white text-2xl font-bold z-10">&times;</button>
+        
+        <div class="bg-yellow-400 py-4">
+            <h2 class="text-3xl font-bold text-red-600 uppercase font-serif">🧨 Tết Đong Đầy 🧨</h2>
+            <p class="text-red-700 font-bold">Săn Sale Ngất Ngây</p>
+        </div>
+
+        <div class="p-6 text-white">
+            <div class="text-6xl mb-2">🌸</div>
+            <h3 class="text-xl font-bold mb-2 text-yellow-300">Lì Xì Ngay Voucher 10%</h3>
+            <p class="mb-6 text-sm">Nhập mã: <span class="bg-yellow-400 text-red-600 px-2 py-1 rounded font-bold border border-dashed border-red-600">TET2025</span> khi thanh toán.</p>
+            
+            <button onclick="closeTetPopup(); app.filterByCategory('new');" class="bg-yellow-400 text-red-600 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300 hover:scale-105 transition w-full uppercase">
+                Sắm Đồ Tết Ngay
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Hàm hiện popup tết sau 2 giây
+    setTimeout(() => {
+        const p = document.getElementById('tet-popup');
+        if(p) {
+            p.classList.remove('hidden');
+            setTimeout(() => {
+                p.classList.remove('opacity-0');
+                p.querySelector('div').classList.replace('scale-90', 'scale-100');
+            }, 100);
+        }
+    }, 2000); // 2000ms = 2 giây
+
+    function closeTetPopup() {
+        const p = document.getElementById('tet-popup');
+        p.classList.add('opacity-0');
+        p.querySelector('div').classList.replace('scale-100', 'scale-90');
+        setTimeout(() => p.classList.add('hidden'), 300);
+    }
+</script>
+
+<script>
+    // Hiệu ứng hoa rơi đơn giản
+    function createPetal() {
+        const petal = document.createElement('div');
+        petal.innerHTML = '🌸'; 
+        petal.style.position = 'fixed';
+        petal.style.left = Math.random() * 100 + 'vw';
+        petal.style.top = '-10px';
+        petal.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        petal.style.opacity = Math.random() * 0.5 + 0.3;
+        petal.style.zIndex = '50';
+        petal.style.pointerEvents = 'none'; // Không che nút bấm
+        petal.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+        
+        document.body.appendChild(petal);
+
+        setTimeout(() => {
+            petal.remove();
+        }, 5000);
+    }
+
+    // Thêm style animation vào thẻ head
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = `
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // Tạo hoa mỗi 300ms
+    setInterval(createPetal, 300);
+</script>
 
 </body>
 </html>
