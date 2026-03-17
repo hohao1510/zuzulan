@@ -2,30 +2,53 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zuzu Sudoku Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sudoku Zuzu Lan</title>
     <style>
-        :root { --primary: #2e7d32; --bg: #f0f2f5; }
-        body { font-family: sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        :root { --primary: #2e7d32; --bg: #f0f2f5; --border: #333; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
+        h2 { color: var(--primary); margin: 10px 0; }
+
+        .status-bar { width: 360px; display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
         
-        /* Đồng hồ và trạng thái */
-        .status-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; color: #333; }
-        
-        /* Bảng Sudoku */
-        #container { position: relative; width: 360px; height: 360px; background: white; border: 2px solid #333; display: grid; grid-template-columns: repeat(9, 1fr); }
-        .cell { border: 0.5px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
-        .cell:nth-child(3n) { border-right: 2px solid #333; }
-        .cell:nth-child(n+19):nth-child(-n+27), .cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 2px solid #333; }
-        
-        /* Màn che khi Tạm dừng hoặc chưa Bắt đầu */
+        /* Bảng Sudoku chuẩn */
+        #sudoku-board { 
+            display: grid; 
+            grid-template-columns: repeat(9, 1fr); 
+            width: 360px; 
+            height: 360px; 
+            background: white; 
+            border: 2px solid var(--border); 
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .cell { 
+            border: 0.5px solid #ccc; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px; 
+            font-weight: bold;
+            box-sizing: border-box;
+            cursor: pointer;
+            height: 40px; /* 360 / 9 */
+        }
+
+        /* Kẻ vạch đậm cho khối 3x3 */
+        .cell:nth-child(3n) { border-right: 2px solid var(--border); }
+        .cell:nth-child(9n) { border-right: none; }
+        .cell:nth-child(n+19):nth-child(-n+27),
+        .cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 2px solid var(--border); }
+
         #overlay { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(255,255,255,0.9); display: flex; align-items: center; 
-            justify-content: center; z-index: 10; font-weight: bold; color: var(--primary);
+            background: rgba(255,255,255,0.95); display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; z-index: 10; 
         }
 
         .controls { margin-top: 20px; display: flex; gap: 10px; }
-        .btn { padding: 10px 20px; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; }
+        .btn { padding: 12px 25px; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; }
         .btn-start { background: var(--primary); }
         .btn-pause { background: #f57c00; }
         .hidden { display: none !important; }
@@ -33,61 +56,82 @@
 </head>
 <body>
 
-    <h2 style="color: var(--primary);">Sudoku Zuzu Lan</h2>
+    <h2>Sudoku Zuzu Lan</h2>
 
     <div class="status-bar">
         <span>Thời gian: <span id="timer">00:00</span></span>
         <span id="game-status">Sẵn sàng</span>
     </div>
 
-    <div id="container">
-        <div id="overlay">Nhấn Bắt đầu để chơi</div>
+    <div id="sudoku-board">
+        <div id="overlay">
+            <p id="overlay-text">Sẵn sàng chơi?</p>
+            <button class="btn btn-start" onclick="startGame()">BẮT ĐẦU</button>
+        </div>
         </div>
 
     <div class="controls">
-        <button id="start-btn" class="btn btn-start" onclick="startGame()">BẮT ĐẦU</button>
         <button id="pause-btn" class="btn btn-pause hidden" onclick="togglePause()">TẠM DỪNG</button>
+        <button id="new-game-btn" class="btn btn-start hidden" onclick="startGame()">CHƠI MỚI</button>
     </div>
 
     <script>
         let timerInterval;
         let seconds = 0;
         let isPaused = false;
-        let gameStarted = false;
 
-        // Tạo bảng 81 ô
-        const container = document.getElementById('container');
-        for (let i = 0; i < 81; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'cell';
-            // Tạm thời để số giả để minh họa
-            if (Math.random() > 0.7) cell.innerText = Math.floor(Math.random() * 9) + 1;
-            container.appendChild(cell);
+        // Dữ liệu Sudoku chuẩn (0 là ô trống)
+        const puzzle = [
+            5,3,0,0,7,0,0,0,0, 6,0,0,1,9,5,0,0,0, 0,9,8,0,0,0,0,6,0,
+            8,0,0,0,6,0,0,0,3, 4,0,0,8,0,3,0,0,1, 7,0,0,0,2,0,0,0,6,
+            0,6,0,0,0,0,2,8,0, 0,0,0,4,1,9,0,0,5, 0,0,0,0,8,0,0,7,9
+        ];
+
+        function createBoard() {
+            const board = document.getElementById('sudoku-board');
+            // Xóa các ô cũ nếu có (giữ lại overlay)
+            const cells = board.querySelectorAll('.cell');
+            cells.forEach(c => c.remove());
+
+            puzzle.forEach((num, index) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                if (num !== 0) {
+                    cell.innerText = num;
+                    cell.style.color = "#555"; // Số mặc định
+                } else {
+                    cell.contentEditable = "true"; // Cho phép nhập số
+                    cell.style.color = var(--blue);
+                }
+                board.appendChild(cell);
+            });
         }
 
         function startGame() {
-            gameStarted = true;
-            isPaused = false;
             seconds = 0;
+            isPaused = false;
+            document.getElementById('timer').innerText = "00:00";
             document.getElementById('overlay').classList.add('hidden');
-            document.getElementById('start-btn').innerText = "CHƠI MỚI";
             document.getElementById('pause-btn').classList.remove('hidden');
+            document.getElementById('new-game-btn').classList.remove('hidden');
+            document.getElementById('pause-btn').innerText = "TẠM DỪNG";
             document.getElementById('game-status').innerText = "Đang chơi";
             
+            createBoard();
             clearInterval(timerInterval);
             timerInterval = setInterval(updateTimer, 1000);
         }
 
         function togglePause() {
-            if (!gameStarted) return;
-
             isPaused = !isPaused;
             const overlay = document.getElementById('overlay');
+            const overlayText = document.getElementById('overlay-text');
             const pauseBtn = document.getElementById('pause-btn');
 
             if (isPaused) {
                 clearInterval(timerInterval);
-                overlay.innerText = "ĐÃ TẠM DỪNG";
+                overlayText.innerText = "ĐÃ TẠM DỪNG";
+                overlay.querySelector('button').classList.add('hidden'); // Ẩn nút bắt đầu trong overlay
                 overlay.classList.remove('hidden');
                 pauseBtn.innerText = "TIẾP TỤC";
                 document.getElementById('game-status').innerText = "Tạm dừng";
