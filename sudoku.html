@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku Pro - Full Features</title>
+    <title>Sudoku Pro - Pause Feature</title>
     <style>
         :root { --primary: #2196f3; --bg: #f4f7f6; --cell: #ffffff; --text: #333; --fixed: #e9ecef; --selected: #bbdefb; --error: #f44336; }
         body { font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; background: var(--bg); margin: 0; padding: 10px; }
@@ -14,7 +14,18 @@
         .menu button { padding: 6px 12px; border: 1px solid #ccc; background: white; cursor: pointer; border-radius: 15px; font-size: 13px; }
         .menu button.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        #grid { display: grid; grid-template-columns: repeat(9, 1fr); border: 3px solid #333; background: #333; gap: 1px; max-width: 400px; width: 100%; aspect-ratio: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        /* Container cho Grid để chứa Overlay */
+        #grid-container { position: relative; max-width: 400px; width: 100%; aspect-ratio: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        #grid { display: grid; grid-template-columns: repeat(9, 1fr); border: 3px solid #333; background: #333; gap: 1px; width: 100%; height: 100%; }
+        
+        /* Màn hình tạm dừng */
+        #pause-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(244, 247, 246, 0.97); z-index: 10; 
+            display: none; flex-direction: column; align-items: center; justify-content: center; 
+        }
+        #pause-overlay span { font-size: 24px; font-weight: bold; color: var(--text); margin-bottom: 15px; }
+
         .cell { background: var(--cell); display: flex; align-items: center; justify-content: center; font-size: clamp(16px, 5vw, 22px); font-weight: bold; cursor: pointer; }
         .cell:nth-child(3n) { border-right: 2px solid #333; }
         .cell:nth-child(9n) { border-right: none; }
@@ -26,9 +37,10 @@
         #controls { margin-top: 15px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; max-width: 400px; }
         #controls button { padding: 12px 0; font-size: 18px; border: none; border-radius: 8px; background: var(--primary); color: white; cursor: pointer; }
         
-        .special-controls { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-top: 10px; }
-        .special-controls button { flex: 1; padding: 10px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        .special-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; margin-top: 10px; }
+        .special-controls button { padding: 10px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
         .btn-hint { background: #ff9800; }
+        .btn-pause { background: #607d8b; } /* Màu xám cho nút tạm dừng */
         .btn-new { background: #4caf50; }
 
         .history { margin-top: 20px; width: 100%; max-width: 400px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
@@ -52,7 +64,13 @@
         <button id="btn-hard" onclick="changeDifficulty('hard')">Khó</button>
     </div>
 
-    <div id="grid"></div>
+    <div id="grid-container">
+        <div id="pause-overlay">
+            <span>TẠM DỪNG</span>
+            <button class="menu button active" style="padding: 10px 20px; border-radius: 20px;" onclick="togglePause()">Tiếp tục</button>
+        </div>
+        <div id="grid"></div>
+    </div>
 
     <div id="controls">
         <button onclick="handleInput(1)">1</button><button onclick="handleInput(2)">2</button>
@@ -63,7 +81,8 @@
     </div>
 
     <div class="special-controls">
-        <button class="btn-hint" onclick="useHint()">Trợ giúp (Hint)</button>
+        <button class="btn-hint" onclick="useHint()">Gợi ý</button>
+        <button id="btn-pause-main" class="btn-pause" onclick="togglePause()">Tạm dừng</button>
         <button class="btn-new" onclick="startNewGame()">Ván mới</button>
     </div>
 
@@ -74,17 +93,44 @@
 
     <script>
         let solution = [], displayBoard = [], selectedIdx = null, difficulty = 'medium';
-        let hintsLeft = 2, seconds = 0, timerInterval = null;
+        let hintsLeft = 2, seconds = 0, timerInterval = null, isPaused = false;
 
         function startTimer() {
-            clearInterval(timerInterval);
-            seconds = 0;
+            if (timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 seconds++;
-                let m = Math.floor(seconds / 60).toString().padStart(2, '0');
-                let s = (seconds % 60).toString().padStart(2, '0');
-                document.getElementById('timer').textContent = `${m}:${s}`;
+                updateTimerDisplay();
             }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            let s = (seconds % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${m}:${s}`;
+        }
+
+        // HÀM TẠM DỪNG MỚI
+        function togglePause() {
+            if (displayBoard.length === 0) return; // Không làm gì nếu chưa có game
+            
+            isPaused = !isPaused;
+            const overlay = document.getElementById('pause-overlay');
+            const pauseBtn = document.getElementById('btn-pause-main');
+
+            if (isPaused) {
+                clearInterval(timerInterval);
+                overlay.style.display = 'flex';
+                pauseBtn.innerText = "Tiếp tục";
+                pauseBtn.style.background = "#2196f3"; // Đổi màu sang xanh khi là nút Tiếp tục
+            } else {
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    updateTimerDisplay();
+                }, 1000);
+                overlay.style.display = 'none';
+                pauseBtn.innerText = "Tạm dừng";
+                pauseBtn.style.background = "#607d8b";
+            }
         }
 
         function generateSudoku() {
@@ -107,13 +153,17 @@
                 const cell = document.createElement('div');
                 cell.className = 'cell' + (val !== 0 ? ' fixed' : '') + (selectedIdx === i ? ' selected' : '');
                 cell.textContent = val !== 0 ? val : '';
-                cell.onclick = () => { selectedIdx = i; renderGrid(); };
+                cell.onclick = () => { 
+                    if (isPaused) return; // Không cho chọn ô khi đang tạm dừng
+                    selectedIdx = i; 
+                    renderGrid(); 
+                };
                 grid.appendChild(cell);
             });
         }
 
         function handleInput(num) {
-            if (selectedIdx === null || document.querySelectorAll('.cell')[selectedIdx].classList.contains('fixed')) return;
+            if (isPaused || selectedIdx === null || document.querySelectorAll('.cell')[selectedIdx].classList.contains('fixed')) return;
             const cell = document.querySelectorAll('.cell')[selectedIdx];
             if (num === 0) { cell.textContent = ""; cell.classList.remove('error'); return; }
             cell.textContent = num;
@@ -122,7 +172,7 @@
         }
 
         function useHint() {
-            if (hintsLeft <= 0 || selectedIdx === null || displayBoard[selectedIdx] !== 0) return;
+            if (isPaused || hintsLeft <= 0 || selectedIdx === null || displayBoard[selectedIdx] !== 0) return;
             hintsLeft--;
             document.getElementById('hint-count').textContent = hintsLeft;
             displayBoard[selectedIdx] = solution[selectedIdx];
@@ -160,8 +210,13 @@
         }
 
         function startNewGame() {
-            selectedIdx = null; hintsLeft = 2;
+            isPaused = false;
+            document.getElementById('pause-overlay').style.display = 'none';
+            document.getElementById('btn-pause-main').innerText = "Tạm dừng";
+            document.getElementById('btn-pause-main').style.background = "#607d8b";
+            selectedIdx = null; seconds = 0; hintsLeft = 2;
             document.getElementById('hint-count').textContent = hintsLeft;
+            document.getElementById('timer').textContent = "00:00";
             generateSudoku(); startTimer();
         }
 
