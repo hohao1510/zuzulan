@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zuzu Lan Admin</title>
+    <title>Zuzu Lan Admin Pro</title>
     <style>
         :root { --primary: #2e7d32; --bg: #f0f2f5; --blue: #1565c0; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 15px; margin: 0; display: flex; flex-direction: column; align-items: center; }
@@ -19,7 +19,6 @@
         .dash-item span { font-size: 13px; font-weight: bold; color: var(--primary); }
         .history-item { border-bottom: 1px solid #eee; padding: 10px 0; }
         .logout-btn { padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: #fff; font-size: 12px; cursor: pointer; }
-        .delete-btn { color: #d32f2f; font-size: 11px; cursor: pointer; margin-top: 8px; text-decoration: underline; text-align: right; }
     </style>
 </head>
 <body>
@@ -43,8 +42,9 @@
             <div class="dash-item"><label>Năm nay</label><span id="sum-year">0k</span></div>
         </div>
 
-        <label style="font-size: 12px; color: #666;">Ngày nhập (ngày/tháng/năm):</label>
-        <input type="text" id="date" placeholder="dd/mm/yyyy">
+        <label style="font-size: 12px; color: #666;">Chọn ngày bán hàng:</label>
+        <input type="date" id="date" onchange="updateUI()">
+        
         <input type="text" id="name" placeholder="Tên hàng (VD: Áo thun)">
         <div style="display: flex; gap: 10px;">
             <input type="number" id="cost" placeholder="Gốc (VD: 100)">
@@ -55,7 +55,7 @@
 
     <div id="history-card" class="card hidden">
         <h3 style="margin-top: 0; font-size: 16px;">Lịch sử đơn hàng</h3>
-        <div id="history-list">Đang tải dữ liệu...</div>
+        <div id="history-list">Đang tải...</div>
     </div>
 
     <script type="module">
@@ -85,12 +85,9 @@
                 document.getElementById('history-card').classList.remove('hidden');
                 document.getElementById('user-display').textContent = user.email;
                 
-                // ĐỊNH DẠNG NGÀY VN: dd/mm/yyyy
-                const n = new Date();
-                const d = String(n.getDate()).padStart(2, '0');
-                const m = String(n.getMonth() + 1).padStart(2, '0');
-                const y = n.getFullYear();
-                document.getElementById('date').value = `${d}/${m}/${y}`;
+                // Mặc định chọn ngày hôm nay cho ô lịch
+                const now = new Date();
+                document.getElementById('date').value = now.toISOString().split('T')[0];
                 
                 loadData();
             } else {
@@ -114,7 +111,7 @@
         };
 
         window.deleteItem = async (id) => {
-            if (!confirm("Bạn muốn xóa đơn này?")) return;
+            if (!confirm("Xóa đơn này?")) return;
             try {
                 await deleteDoc(doc(db, "revenues", id));
                 allData = allData.filter(item => item.id !== id);
@@ -126,15 +123,20 @@
             const s = document.getElementById('sale').value;
             const c = document.getElementById('cost').value;
             const n = document.getElementById('name').value || "Hàng mới";
-            const d = document.getElementById('date').value;
-            if (!s) return;
+            const d = document.getElementById('date').value; // yyyy-mm-dd từ ô lịch
+
+            if (!s || !d) { alert("Vui lòng chọn ngày và nhập giá bán!"); return; }
+
             const profit = (Number(s) - Number(c)) * 1000;
             const tempId = "temp-" + Date.now();
+            
             allData.unshift({ id: tempId, date: d, name: n, profit: profit, cost: Number(c)*1000, sale: Number(s)*1000 });
             updateUI();
+
             document.getElementById('name').value = "";
             document.getElementById('cost').value = "";
             document.getElementById('sale').value = "";
+
             try {
                 const docRef = await addDoc(collection(db, "revenues"), {
                     date: d, name: n, cost: Number(c) * 1000, sale: Number(s) * 1000, profit: profit, timestamp: serverTimestamp()
@@ -155,24 +157,31 @@
             } catch (e) { console.error(e); }
         }
 
-        function updateUI() {
+        // HÀM HIỂN THỊ CHUẨN ĐỊNH DẠNG VN
+        function formatVN(dateStr) {
+            const p = dateStr.split('-');
+            return `${p[2]}/${p[1]}/${p[0]}`;
+        }
+
+        window.updateUI = () => {
             const now = new Date();
-            const dStr = String(now.getDate()).padStart(2, '0');
-            const mStr = String(now.getMonth() + 1).padStart(2, '0');
-            const todayStr = `${dStr}/${mStr}/${now.getFullYear()}`;
-            const currentMonth = now.getMonth();
+            const todayStr = now.toISOString().split('T')[0]; // yyyy-mm-dd
+            const currentMonth = now.getMonth(); // 0-11
             const currentYear = now.getFullYear();
 
             let dSum = 0, mSum = 0, ySum = 0;
+
             allData.forEach(item => {
                 const p = item.profit || 0;
+                const itemDate = new Date(item.date); // item.date là yyyy-mm-dd
+
+                // 1. Hôm nay (Dựa trên ngày thực tế)
                 if (item.date === todayStr) dSum += p;
-                const parts = item.date.split('/');
-                if (parts.length === 3) {
-                    const iM = parseInt(parts[1]) - 1;
-                    const iY = parseInt(parts[2]);
-                    if (iM === currentMonth && iY === currentYear) mSum += p;
-                    if (iY === currentYear) ySum += p;
+                
+                // 2. Tháng này/Năm này
+                if (itemDate.getFullYear() === currentYear) {
+                    ySum += p;
+                    if (itemDate.getMonth() === currentMonth) mSum += p;
                 }
             });
 
@@ -185,14 +194,13 @@
                     <div onclick="toggleDetail('${item.id}')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
                         <div>
                             <div style="font-weight:bold;">${item.name}</div>
-                            <div style="font-size:11px; color:#888;">${item.date} ▾</div>
+                            <div style="font-size:11px; color:#888;">${formatVN(item.date)} ▾</div>
                         </div>
                         <div style="color:var(--primary); font-weight:bold;">+${(item.profit || 0).toLocaleString()}đ</div>
                     </div>
                     <div id="detail-${item.id}" class="hidden" style="background: #f9f9f9; padding: 10px; margin-top: 5px; border-radius: 5px; font-size: 13px;">
-                        <div>Gốc: ${(item.cost || 0).toLocaleString()}đ</div>
-                        <div>Bán: ${(item.sale || 0).toLocaleString()}đ</div>
-                        <div class="delete-btn" onclick="deleteItem('${item.id}')">[Xóa đơn]</div>
+                        <div>Gốc: ${(item.cost || 0).toLocaleString()}đ | Bán: ${(item.sale || 0).toLocaleString()}đ</div>
+                        <div style="color:red; text-align: right; margin-top: 8px; cursor: pointer;" onclick="deleteItem('${item.id}')">[Xóa đơn]</div>
                     </div>
                 </div>`).join('');
         }
