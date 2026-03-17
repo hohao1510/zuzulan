@@ -85,7 +85,10 @@
                 document.getElementById('history-card').classList.remove('hidden');
                 document.getElementById('user-display').textContent = user.email;
                 const now = new Date();
-                document.getElementById('date').value = now.toISOString().split('T')[0];
+                const offset = now.getTimezoneOffset() * 60000;
+                const localISODate = new Date(now - offset).toISOString().split('T')[0];
+                document.getElementById('date').value = localISODate;
+                // document.getElementById('date').value = now.toISOString().split('T')[0];
                 loadData();
             } else {
                 document.getElementById('login-section').classList.remove('hidden');
@@ -139,13 +142,25 @@
             } catch (e) { alert("Lỗi: " + e.message); }
         };
 
+        // async function loadData() {
+        //     try {
+        //         const q = query(collection(db, "revenues"), orderBy("timestamp", "desc"));
+        //         const snap = await getDocs(q);
+        //         allData = [];
+        //         snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
+        //         updateUI();
+        //     } catch (e) { console.error(e); }
+        // }
+
         async function loadData() {
             try {
                 const q = query(collection(db, "revenues"), orderBy("timestamp", "desc"));
                 const snap = await getDocs(q);
                 allData = [];
                 snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
-                updateUI();
+                
+                // Đảm bảo tính toán lại theo ngày đang hiển thị (ngày hôm nay vừa set ở trên)
+                updateUI(); 
             } catch (e) { console.error(e); }
         }
 
