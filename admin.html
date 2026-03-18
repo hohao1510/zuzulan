@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zuzu Lan Admin Pro</title>
+    <title>Zuzu Lan - Quản Lý Bán Hàng & Nợ</title>
     <style>
-        :root { --primary: #2e7d32; --bg: #f0f2f5; --blue: #1565c0; }
+        :root { --primary: #2e7d32; --bg: #f0f2f5; --blue: #1565c0; --orange: #ef6c00; --red: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 15px; margin: 0; display: flex; flex-direction: column; align-items: center; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 450px; margin-bottom: 15px; box-sizing: border-box; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
         .btn-save { background: var(--primary); }
+        .btn-debt { background: var(--orange); }
         .btn-login { background: var(--blue); }
         .hidden { display: none !important; }
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
         .dash-item { background: #f8f9fa; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
         .dash-item label { display: block; font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 4px; }
         .dash-item span { font-size: 13px; font-weight: bold; color: var(--primary); }
-        .history-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+        .item-list { border-bottom: 1px solid #eee; padding: 10px 0; }
+        .debt-tag { background: #fff3e0; color: #ef6c00; font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: bold; }
+        .paid-btn { background: var(--blue); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; }
         .logout-btn { padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: #fff; font-size: 12px; cursor: pointer; }
     </style>
 </head>
@@ -37,20 +40,28 @@
         </div>
 
         <div class="dash-grid">
-            <div class="dash-item"><label id="label-today">Ngày đã chọn</label><span id="sum-day">0k</span></div>
+            <div class="dash-item"><label>Ngày chọn</label><span id="sum-day">0k</span></div>
             <div class="dash-item"><label>Tháng này</label><span id="sum-month">0k</span></div>
             <div class="dash-item"><label>Năm nay</label><span id="sum-year">0k</span></div>
         </div>
 
-        <label style="font-size: 12px; color: #666;">Chọn ngày bán hàng:</label>
+        <label style="font-size: 12px; color: #666;">Ngày bán/ghi nợ:</label>
         <input type="date" id="date" onchange="updateUI()">
         
-        <input type="text" id="name" placeholder="Tên hàng (VD: Áo thun)">
+        <input type="text" id="name" placeholder="Tên hàng hoặc Tên khách nợ">
         <div style="display: flex; gap: 10px;">
             <input type="number" id="cost" placeholder="Gốc (VD: 100)">
             <input type="number" id="sale" placeholder="Bán (VD: 150)">
         </div>
-        <button class="btn btn-save" onclick="saveData()">LƯU DOANH THU</button>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-save" onclick="saveData(false)" style="flex: 2;">LƯU DOANH THU</button>
+            <button class="btn btn-debt" onclick="saveData(true)" style="flex: 1.2;">GHI NỢ</button>
+        </div>
+    </div>
+
+    <div id="debt-card" class="card hidden" style="border-left: 5px solid var(--orange);">
+        <h3 style="margin-top: 0; font-size: 16px; color: var(--orange);">⚠️ Sổ Nợ (Chưa trả)</h3>
+        <div id="debt-list" style="font-size: 14px;">Đang tải sổ nợ...</div>
     </div>
 
     <div id="history-card" class="card hidden">
@@ -60,7 +71,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, getDocs, serverTimestamp, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, getDocs, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -80,20 +91,21 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
                 document.getElementById('login-section').classList.add('hidden');
-                document.getElementById('main-section').classList.remove('hidden');
-                document.getElementById('history-card').classList.remove('hidden');
                 document.getElementById('user-display').textContent = user.email;
+                
+                // Tự động lấy ngày 18/03/2026
                 const now = new Date();
                 const offset = now.getTimezoneOffset() * 60000;
-                const localISODate = new Date(now - offset).toISOString().split('T')[0];
-                document.getElementById('date').value = localISODate;
-                // document.getElementById('date').value = now.toISOString().split('T')[0];
+                document.getElementById('date').value = new Date(now - offset).toISOString().split('T')[0];
+                
                 loadData();
             } else {
                 document.getElementById('login-section').classList.remove('hidden');
                 document.getElementById('main-section').classList.add('hidden');
                 document.getElementById('history-card').classList.add('hidden');
+                document.getElementById('debt-card').classList.add('hidden');
             }
         });
 
@@ -105,113 +117,97 @@
 
         window.handleLogout = () => signOut(auth);
 
-        window.toggleDetail = (id) => {
-            const el = document.getElementById('detail-' + id);
-            if(el) el.classList.toggle('hidden');
-        };
-
-        window.deleteItem = async (id) => {
-            if (!confirm("Xóa đơn này?")) return;
-            try {
-                await deleteDoc(doc(db, "revenues", id));
-                allData = allData.filter(item => item.id !== id);
-                updateUI();
-            } catch (e) { alert("Lỗi xóa: " + e.message); }
-        };
-
-        window.saveData = async () => {
+        window.saveData = async (isDebt) => {
             const s = document.getElementById('sale').value;
             const c = document.getElementById('cost').value;
-            const n = document.getElementById('name').value || "Hàng mới";
+            const n = document.getElementById('name').value || (isDebt ? "Khách nợ" : "Hàng mới");
             const d = document.getElementById('date').value;
-            if (!s || !d) { alert("Vui lòng chọn ngày và nhập giá bán!"); return; }
-            const profit = (Number(s) - Number(c)) * 1000;
-            const tempId = "temp-" + Date.now();
-            allData.unshift({ id: tempId, date: d, name: n, profit: profit, cost: Number(c)*1000, sale: Number(s)*1000 });
-            updateUI();
-            document.getElementById('name').value = "";
-            document.getElementById('cost').value = "";
-            document.getElementById('sale').value = "";
+
+            if (!s || !d) { alert("Thiếu thông tin!"); return; }
+
             try {
-                const docRef = await addDoc(collection(db, "revenues"), {
-                    date: d, name: n, cost: Number(c) * 1000, sale: Number(s) * 1000, profit: profit, timestamp: serverTimestamp()
+                await addDoc(collection(db, "revenues"), {
+                    date: d, name: n, cost: Number(c) * 1000, sale: Number(s) * 1000, 
+                    profit: (Number(s) - Number(c)) * 1000, isDebt: isDebt, timestamp: serverTimestamp()
                 });
-                const index = allData.findIndex(item => item.id === tempId);
-                if (index !== -1) allData[index].id = docRef.id;
-                updateUI();
+                document.getElementById('name').value = "";
+                document.getElementById('cost').value = "";
+                document.getElementById('sale').value = "";
+                loadData();
             } catch (e) { alert("Lỗi: " + e.message); }
         };
 
-        // async function loadData() {
-        //     try {
-        //         const q = query(collection(db, "revenues"), orderBy("timestamp", "desc"));
-        //         const snap = await getDocs(q);
-        //         allData = [];
-        //         snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
-        //         updateUI();
-        //     } catch (e) { console.error(e); }
-        // }
+        window.markAsPaid = async (id) => {
+            if(!confirm("Xác nhận khách đã trả tiền?")) return;
+            try {
+                await updateDoc(doc(db, "revenues", id), { isDebt: false });
+                loadData();
+            } catch (e) { alert("Lỗi: " + e.message); }
+        };
+
+        window.deleteItem = async (id) => {
+            if (!confirm("Xóa vĩnh viễn đơn này?")) return;
+            try {
+                await deleteDoc(doc(db, "revenues", id));
+                loadData();
+            } catch (e) { alert("Lỗi xóa: " + e.message); }
+        };
 
         async function loadData() {
-            try {
-                const q = query(collection(db, "revenues"), orderBy("timestamp", "desc"));
-                const snap = await getDocs(q);
-                allData = [];
-                snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
-                
-                // Đảm bảo tính toán lại theo ngày đang hiển thị (ngày hôm nay vừa set ở trên)
-                updateUI(); 
-            } catch (e) { console.error(e); }
-        }
-
-        function formatVN(dateStr) {
-            const p = dateStr.split('-');
-            return `${p[2]}/${p[1]}/${p[0]}`;
+            const q = query(collection(db, "revenues"), orderBy("timestamp", "desc"));
+            const snap = await getDocs(q);
+            allData = [];
+            snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
+            updateUI();
         }
 
         window.updateUI = () => {
-            // LẤY NGÀY ĐANG CHỌN TRÊN Ô LỊCH
-            const selectedDate = document.getElementById('date').value; 
-            
+            const selectedDate = document.getElementById('date').value;
             const now = new Date();
-            const currentMonth = now.getMonth(); 
+            const currentMonth = now.getMonth();
             const currentYear = now.getFullYear();
 
             let dSum = 0, mSum = 0, ySum = 0;
+            let debtHtml = "", histHtml = "";
 
             allData.forEach(item => {
                 const p = item.profit || 0;
-                
-                // 1. So sánh với ngày đang chọn ở ô lịch (Ô đầu tiên)
-                if (item.date === selectedDate) dSum += p;
-                
-                // 2. Tính tổng Tháng/Năm dựa trên ngày thực tế
                 const itemDate = new Date(item.date);
-                if (itemDate.getFullYear() === currentYear) {
-                    ySum += p;
-                    if (itemDate.getMonth() === currentMonth) mSum += p;
+                
+                // Chỉ cộng vào doanh thu nếu KHÔNG nợ
+                if (!item.isDebt) {
+                    if (item.date === selectedDate) dSum += p;
+                    if (itemDate.getFullYear() === currentYear) {
+                        ySum += p;
+                        if (itemDate.getMonth() === currentMonth) mSum += p;
+                    }
                 }
+
+                // Phân loại hiển thị
+                const displayItem = `
+                    <div class="item-list">
+                        <div style="display:flex; justify-content:space-between;">
+                            <div>
+                                <b>${item.name}</b> ${item.isDebt ? '<span class="debt-tag">CHƯA TRẢ</span>' : ''}
+                                <div style="font-size:11px; color:#888;">${item.date.split('-').reverse().join('/')}</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-weight:bold; color:${item.isDebt?'#ef6c00':'#2e7d32'}">+${p.toLocaleString()}đ</div>
+                                ${item.isDebt ? `<button class="paid-btn" onclick="markAsPaid('${item.id}')">Đã trả</button>` : `<span style="font-size:10px; color:red; cursor:pointer;" onclick="deleteItem('${item.id}')">[Xóa]</span>`}
+                            </div>
+                        </div>
+                    </div>`;
+
+                if (item.isDebt) debtHtml += displayItem;
+                else histHtml += displayItem;
             });
 
             document.getElementById('sum-day').textContent = (dSum/1000).toLocaleString() + 'k';
             document.getElementById('sum-month').textContent = (mSum/1000).toLocaleString() + 'k';
             document.getElementById('sum-year').textContent = (ySum/1000).toLocaleString() + 'k';
-
-            document.getElementById('history-list').innerHTML = allData.slice(0, 30).map(item => `
-                <div class="history-item">
-                    <div onclick="toggleDetail('${item.id}')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
-                        <div>
-                            <div style="font-weight:bold;">${item.name}</div>
-                            <div style="font-size:11px; color:#888;">${formatVN(item.date)} ▾</div>
-                        </div>
-                        <div style="color:var(--primary); font-weight:bold;">+${(item.profit || 0).toLocaleString()}đ</div>
-                    </div>
-                    <div id="detail-${item.id}" class="hidden" style="background: #f9f9f9; padding: 10px; margin-top: 5px; border-radius: 5px; font-size: 13px;">
-                        <div>Gốc: ${(item.cost || 0).toLocaleString()}đ | Bán: ${(item.sale || 0).toLocaleString()}đ</div>
-                        <div style="color:red; text-align: right; margin-top: 8px; cursor: pointer;" onclick="deleteItem('${item.id}')">[Xóa đơn]</div>
-                    </div>
-                </div>`).join('');
-        }
+            document.getElementById('debt-list').innerHTML = debtHtml || "Không có ai nợ 🎉";
+            document.getElementById('history-list').innerHTML = histHtml || "Chưa có đơn hàng.";
+        };
     </script>
 </body>
 </html>
