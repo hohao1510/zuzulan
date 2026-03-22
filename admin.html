@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zuzu Lan - Quản Lý Chuyên Nghiệp</title>
+    <title>Zuzu Lan - Quản Lý Thông Minh</title>
     <style>
         :root { --primary: #2e7d32; --bg: #f0f2f5; --blue: #1565c0; --orange: #ef6c00; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 10px; margin: 0; display: flex; flex-direction: column; align-items: center; }
         .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 450px; margin-bottom: 15px; box-sizing: border-box; }
-        input, select { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        input { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; margin-top: 5px; font-size: 16px; }
         .btn-save { background: var(--primary); }
         .btn-debt { background: var(--orange); }
         .btn-login { background: var(--blue); }
         .hidden { display: none !important; }
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 10px; }
-        .dash-item { background: #f8f9fa; padding: 8px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
-        .dash-item label { display: block; font-size: 9px; color: #666; text-transform: uppercase; }
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .dash-item { background: #f8f9fa; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
+        .dash-item label { display: block; font-size: 10px; color: #666; margin-bottom: 4px; font-weight: bold; }
         .dash-item span { font-size: 13px; font-weight: bold; color: var(--primary); }
         .item-list { border-bottom: 1px solid #eee; padding: 10px 0; }
-        .search-box { background: #e3f2fd; border: 1px solid #bbdefb; margin-bottom: 10px; }
+        .search-box { background: #e3f2fd; border: 1px solid #bbdefb; margin-top: 10px; }
         .logout-btn { padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: #fff; font-size: 12px; }
     </style>
 </head>
@@ -33,38 +33,28 @@
     </div>
 
     <div id="main-section" class="card hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <span id="user-display" style="font-weight: bold; font-size: 14px;"></span>
             <button class="logout-btn" onclick="handleLogout()">Thoát</button>
         </div>
 
-        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-            <select id="filter-month" onchange="updateUI()">
-                <option value="0">Tháng 1</option><option value="1">Tháng 2</option><option value="2">Tháng 3</option>
-                <option value="3">Tháng 4</option><option value="4">Tháng 5</option><option value="5">Tháng 6</option>
-                <option value="6">Tháng 7</option><option value="7">Tháng 8</option><option value="8">Tháng 9</option>
-                <option value="9">Tháng 10</option><option value="10">Tháng 11</option><option value="11">Tháng 12</option>
-            </select>
-            <select id="filter-year" onchange="updateUI()">
-                <option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
-            </select>
-        </div>
-
         <div class="dash-grid">
-            <div class="dash-item"><label>Ngày chọn</label><span id="sum-day">0k</span></div>
-            <div class="dash-item"><label id="month-label">Tháng này</label><span id="sum-month">0k</span></div>
-            <div class="dash-item"><label id="year-label">Năm nay</label><span id="sum-year">0k</span></div>
+            <div class="dash-item"><label id="label-day">Ngày</label><span id="sum-day">0k</span></div>
+            <div class="dash-item"><label id="label-month">Tháng</label><span id="sum-month">0k</span></div>
+            <div class="dash-item"><label id="label-year">Năm</label><span id="sum-year">0k</span></div>
         </div>
 
+        <label style="font-size: 12px; color: #666; font-weight: bold;">Chọn ngày xem doanh thu:</label>
         <input type="date" id="date" onchange="updateUI()">
+        
         <input type="text" id="name" placeholder="Tên hàng / Khách nợ">
-        <div style="display: flex; gap: 5px;">
+        <div style="display: flex; gap: 8px;">
             <input type="number" id="cost" placeholder="Gốc">
             <input type="number" id="sale" placeholder="Bán">
         </div>
-        <div style="display: flex; gap: 5px;">
+        <div style="display: flex; gap: 8px;">
             <button class="btn btn-save" onclick="saveData(false)" style="flex:2">LƯU BÁN</button>
-            <button class="btn btn-debt" onclick="saveData(true)" style="flex:1">NỢ</button>
+            <button class="btn btn-debt" onclick="saveData(true)" style="flex:1.2">GHI NỢ</button>
         </div>
     </div>
 
@@ -104,12 +94,8 @@
                 document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('user-display').textContent = user.email;
-                
                 const now = new Date();
                 document.getElementById('date').value = now.toISOString().split('T')[0];
-                document.getElementById('filter-month').value = now.getMonth();
-                document.getElementById('filter-year').value = now.getFullYear();
-                
                 loadData();
             } else {
                 document.getElementById('login-section').classList.remove('hidden');
@@ -130,7 +116,7 @@
         window.saveData = async (isDebt) => {
             const s = document.getElementById('sale').value, c = document.getElementById('cost').value;
             const n = document.getElementById('name').value || (isDebt?"Khách nợ":"Hàng mới"), d = document.getElementById('date').value;
-            if (!s || !d) return alert("Điền đủ giá bán và ngày!");
+            if (!s || !d) return alert("Thiếu ngày hoặc giá bán!");
             try {
                 await addDoc(collection(db, "revenues"), {
                     date: d, name: n, cost: Number(c)*1000, sale: Number(s)*1000, 
@@ -155,18 +141,26 @@
             }
         };
 
-        window.toggleDetail = (id) => document.getElementById('dt-'+id).classList.toggle('hidden');
+        window.toggleDetail = (id) => {
+            const el = document.getElementById('dt-'+id);
+            if(el) el.classList.toggle('hidden');
+        };
 
         async function loadData() {
-            const snap = await getDocs(query(collection(db, "revenues"), orderBy("timestamp", "desc")));
+            const q = query(collection(db, "revenues"), orderBy("timestamp", "desc"));
+            const snap = await getDocs(q);
             allData = []; snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
             updateUI();
         }
 
         window.updateUI = () => {
-            const selDate = document.getElementById('date').value;
-            const fMonth = parseInt(document.getElementById('filter-month').value);
-            const fYear = parseInt(document.getElementById('filter-year').value);
+            const selectedStr = document.getElementById('date').value;
+            if (!selectedStr) return;
+
+            const selDate = new Date(selectedStr);
+            const selDay = selectedStr; // yyyy-mm-dd
+            const selMonth = selDate.getMonth();
+            const selYear = selDate.getFullYear();
             const search = document.getElementById('search-input').value.toLowerCase();
 
             let dSum = 0, mSum = 0, ySum = 0;
@@ -175,18 +169,17 @@
             allData.forEach(item => {
                 const p = item.profit || 0;
                 const iDate = new Date(item.date);
-                const vnDate = item.date.split('-').reverse().join('/'); // dd/mm/yyyy
+                const vnDate = item.date.split('-').reverse().join('/');
 
-                // 1. Tính toán doanh thu
+                // LOGIC QUAN TRỌNG: Tính dựa trên ngày bạn CHỌN ở lịch
                 if (!item.isDebt) {
-                    if (item.date === selDate) dSum += p;
-                    if (iDate.getFullYear() === fYear) {
+                    if (item.date === selDay) dSum += p;
+                    if (iDate.getFullYear() === selYear) {
                         ySum += p;
-                        if (iDate.getMonth() === fMonth) mSum += p;
+                        if (iDate.getMonth() === selMonth) mSum += p;
                     }
                 }
 
-                // 2. Giao diện đơn hàng
                 const html = `
                     <div class="item-list">
                         <div onclick="toggleDetail('${item.id}')" style="display:flex; justify-content:space-between; cursor:pointer;">
@@ -209,8 +202,11 @@
             document.getElementById('sum-day').textContent = (dSum/1000).toLocaleString() + 'k';
             document.getElementById('sum-month').textContent = (mSum/1000).toLocaleString() + 'k';
             document.getElementById('sum-year').textContent = (ySum/1000).toLocaleString() + 'k';
-            document.getElementById('month-label').textContent = "Tháng " + (fMonth + 1);
-            document.getElementById('year-label').textContent = "Năm " + fYear;
+            
+            // Cập nhật tên nhãn cho dễ hiểu
+            document.getElementById('label-month').textContent = "Tháng " + (selMonth + 1) + "/" + selYear;
+            document.getElementById('label-year').textContent = "Cả năm " + selYear;
+
             document.getElementById('debt-list').innerHTML = debtHtml || "Không có nợ.";
             document.getElementById('history-list').innerHTML = histHtml || "Không tìm thấy.";
         };
