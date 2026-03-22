@@ -3,70 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zuzu Lan - Quản Lý Bán Hàng & Nợ</title>
+    <title>Zuzu Lan - Quản Lý Chuyên Nghiệp</title>
     <style>
-        :root { --primary: #2e7d32; --bg: #f0f2f5; --blue: #1565c0; --orange: #ef6c00; --red: #d32f2f; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 15px; margin: 0; display: flex; flex-direction: column; align-items: center; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 450px; margin-bottom: 15px; box-sizing: border-box; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
+        :root { --primary: #2e7d32; --bg: #f0f2f5; --blue: #1565c0; --orange: #ef6c00; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 10px; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 450px; margin-bottom: 15px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; margin-top: 5px; font-size: 16px; }
         .btn-save { background: var(--primary); }
         .btn-debt { background: var(--orange); }
         .btn-login { background: var(--blue); }
         .hidden { display: none !important; }
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .dash-item { background: #f8f9fa; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
-        .dash-item label { display: block; font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 4px; }
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 10px; }
+        .dash-item { background: #f8f9fa; padding: 8px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
+        .dash-item label { display: block; font-size: 9px; color: #666; text-transform: uppercase; }
         .dash-item span { font-size: 13px; font-weight: bold; color: var(--primary); }
         .item-list { border-bottom: 1px solid #eee; padding: 10px 0; }
-        .debt-tag { background: #fff3e0; color: #ef6c00; font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: bold; }
-        .paid-btn { background: var(--blue); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; }
-        .logout-btn { padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: #fff; font-size: 12px; cursor: pointer; }
+        .search-box { background: #e3f2fd; border: 1px solid #bbdefb; margin-bottom: 10px; }
+        .logout-btn { padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: #fff; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div id="login-section" class="card">
-        <h2 style="text-align: center; margin-top: 0;">Zuzu Lan Login</h2>
+        <h2 style="text-align: center;">Zuzu Lan Login</h2>
         <input type="email" id="login-email" placeholder="Email">
         <input type="password" id="login-password" placeholder="Mật khẩu">
         <button class="btn btn-login" onclick="handleLogin()">ĐĂNG NHẬP</button>
     </div>
 
     <div id="main-section" class="card hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <span id="user-display" style="font-weight: bold; font-size: 14px;"></span>
             <button class="logout-btn" onclick="handleLogout()">Thoát</button>
         </div>
 
-        <div class="dash-grid">
-            <div class="dash-item"><label>Ngày chọn</label><span id="sum-day">0k</span></div>
-            <div class="dash-item"><label>Tháng này</label><span id="sum-month">0k</span></div>
-            <div class="dash-item"><label>Năm nay</label><span id="sum-year">0k</span></div>
+        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+            <select id="filter-month" onchange="updateUI()">
+                <option value="0">Tháng 1</option><option value="1">Tháng 2</option><option value="2">Tháng 3</option>
+                <option value="3">Tháng 4</option><option value="4">Tháng 5</option><option value="5">Tháng 6</option>
+                <option value="6">Tháng 7</option><option value="7">Tháng 8</option><option value="8">Tháng 9</option>
+                <option value="9">Tháng 10</option><option value="10">Tháng 11</option><option value="11">Tháng 12</option>
+            </select>
+            <select id="filter-year" onchange="updateUI()">
+                <option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
+            </select>
         </div>
 
-        <label style="font-size: 12px; color: #666;">Ngày bán/ghi nợ:</label>
-        <input type="date" id="date" onchange="updateUI()">
-        
-        <input type="text" id="name" placeholder="Tên hàng hoặc Tên khách nợ">
-        <div style="display: flex; gap: 10px;">
-            <input type="number" id="cost" placeholder="Gốc (VD: 100)">
-            <input type="number" id="sale" placeholder="Bán (VD: 150)">
+        <div class="dash-grid">
+            <div class="dash-item"><label>Ngày chọn</label><span id="sum-day">0k</span></div>
+            <div class="dash-item"><label id="month-label">Tháng này</label><span id="sum-month">0k</span></div>
+            <div class="dash-item"><label id="year-label">Năm nay</label><span id="sum-year">0k</span></div>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn btn-save" onclick="saveData(false)" style="flex: 2;">LƯU DOANH THU</button>
-            <button class="btn btn-debt" onclick="saveData(true)" style="flex: 1.2;">GHI NỢ</button>
+
+        <input type="date" id="date" onchange="updateUI()">
+        <input type="text" id="name" placeholder="Tên hàng / Khách nợ">
+        <div style="display: flex; gap: 5px;">
+            <input type="number" id="cost" placeholder="Gốc">
+            <input type="number" id="sale" placeholder="Bán">
+        </div>
+        <div style="display: flex; gap: 5px;">
+            <button class="btn btn-save" onclick="saveData(false)" style="flex:2">LƯU BÁN</button>
+            <button class="btn btn-debt" onclick="saveData(true)" style="flex:1">NỢ</button>
         </div>
     </div>
 
     <div id="debt-card" class="card hidden" style="border-left: 5px solid var(--orange);">
-        <h3 style="margin-top: 0; font-size: 16px; color: var(--orange);">⚠️ Sổ Nợ (Chưa trả)</h3>
-        <div id="debt-list" style="font-size: 14px;">Đang tải sổ nợ...</div>
+        <h3 style="margin: 0 0 10px 0; font-size: 16px; color: var(--orange);">⚠️ Sổ Nợ</h3>
+        <div id="debt-list"></div>
     </div>
 
     <div id="history-card" class="card hidden">
-        <h3 style="margin-top: 0; font-size: 16px;">Lịch sử đơn hàng</h3>
-        <div id="history-list">Đang tải...</div>
+        <h3 style="margin: 0 0 10px 0; font-size: 16px;">Lịch sử đơn hàng</h3>
+        <input type="text" id="search-input" class="search-box" placeholder="🔍 Tìm ngày (VD: 17/03) hoặc tên hàng..." oninput="updateUI()">
+        <div id="history-list"></div>
     </div>
 
     <script type="module">
@@ -95,10 +105,10 @@
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('user-display').textContent = user.email;
                 
-                // Tự động lấy ngày 18/03/2026
                 const now = new Date();
-                const offset = now.getTimezoneOffset() * 60000;
-                document.getElementById('date').value = new Date(now - offset).toISOString().split('T')[0];
+                document.getElementById('date').value = now.toISOString().split('T')[0];
+                document.getElementById('filter-month').value = now.getMonth();
+                document.getElementById('filter-year').value = now.getFullYear();
                 
                 loadData();
             } else {
@@ -118,120 +128,91 @@
         window.handleLogout = () => signOut(auth);
 
         window.saveData = async (isDebt) => {
-            const s = document.getElementById('sale').value;
-            const c = document.getElementById('cost').value;
-            const n = document.getElementById('name').value || (isDebt ? "Khách nợ" : "Hàng mới");
-            const d = document.getElementById('date').value;
-
-            if (!s || !d) { alert("Thiếu thông tin!"); return; }
-
+            const s = document.getElementById('sale').value, c = document.getElementById('cost').value;
+            const n = document.getElementById('name').value || (isDebt?"Khách nợ":"Hàng mới"), d = document.getElementById('date').value;
+            if (!s || !d) return alert("Điền đủ giá bán và ngày!");
             try {
                 await addDoc(collection(db, "revenues"), {
-                    date: d, name: n, cost: Number(c) * 1000, sale: Number(s) * 1000, 
-                    profit: (Number(s) - Number(c)) * 1000, isDebt: isDebt, timestamp: serverTimestamp()
+                    date: d, name: n, cost: Number(c)*1000, sale: Number(s)*1000, 
+                    profit: (Number(s)-Number(c))*1000, isDebt: isDebt, timestamp: serverTimestamp()
                 });
-                document.getElementById('name').value = "";
-                document.getElementById('cost').value = "";
-                document.getElementById('sale').value = "";
+                document.getElementById('name').value = ""; document.getElementById('cost').value = ""; document.getElementById('sale').value = "";
                 loadData();
-            } catch (e) { alert("Lỗi: " + e.message); }
+            } catch (e) { alert(e.message); }
         };
 
         window.markAsPaid = async (id) => {
-            if(!confirm("Xác nhận khách đã trả tiền?")) return;
-            try {
+            if(confirm("Xác nhận đã thu tiền?")) {
                 await updateDoc(doc(db, "revenues", id), { isDebt: false });
                 loadData();
-            } catch (e) { alert("Lỗi: " + e.message); }
+            }
         };
 
         window.deleteItem = async (id) => {
-            if (!confirm("Xóa vĩnh viễn đơn này?")) return;
-            try {
+            if(confirm("Xóa đơn này?")) {
                 await deleteDoc(doc(db, "revenues", id));
                 loadData();
-            } catch (e) { alert("Lỗi xóa: " + e.message); }
+            }
         };
 
-
+        window.toggleDetail = (id) => document.getElementById('dt-'+id).classList.toggle('hidden');
 
         async function loadData() {
-            try {
-                const q = query(collection(db, "revenues"), orderBy("timestamp", "desc"));
-                const snap = await getDocs(q);
-                allData = [];
-                snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
-                updateUI();
-            } catch (e) { console.error(e); }
+            const snap = await getDocs(query(collection(db, "revenues"), orderBy("timestamp", "desc")));
+            allData = []; snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
+            updateUI();
         }
-
-        function formatVN(dateStr) {
-            const p = dateStr.split('-');
-            return `${p[2]}/${p[1]}/${p[0]}`;
-        }
-
-        window.toggleDetail = (id) => {
-            const el = document.getElementById('detail-' + id);
-            if (el) el.classList.toggle('hidden');
-        };
 
         window.updateUI = () => {
-            const selectedDate = document.getElementById('date').value;
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
+            const selDate = document.getElementById('date').value;
+            const fMonth = parseInt(document.getElementById('filter-month').value);
+            const fYear = parseInt(document.getElementById('filter-year').value);
+            const search = document.getElementById('search-input').value.toLowerCase();
 
             let dSum = 0, mSum = 0, ySum = 0;
             let debtHtml = "", histHtml = "";
 
             allData.forEach(item => {
                 const p = item.profit || 0;
-                const cost = item.cost || 0;
-                const sale = item.sale || 0;
-                const itemDate = new Date(item.date);
-                
+                const iDate = new Date(item.date);
+                const vnDate = item.date.split('-').reverse().join('/'); // dd/mm/yyyy
+
+                // 1. Tính toán doanh thu
                 if (!item.isDebt) {
-                    if (item.date === selectedDate) dSum += p;
-                    if (itemDate.getFullYear() === currentYear) {
+                    if (item.date === selDate) dSum += p;
+                    if (iDate.getFullYear() === fYear) {
                         ySum += p;
-                        if (itemDate.getMonth() === currentMonth) mSum += p;
+                        if (iDate.getMonth() === fMonth) mSum += p;
                     }
                 }
 
-                const displayItem = `
-                    <div class="item-list" style="border-bottom: 1px solid #eee; padding: 10px 0;">
-                        <div onclick="toggleDetail('${item.id}')" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
-                            <div>
-                                <b style="font-size:15px;">${item.name}</b> ${item.isDebt ? '<span style="background:#fff3e0; color:#ef6c00; font-size:10px; padding:2px 5px; border-radius:4px; margin-left:5px;">NỢ</span>' : ''}
-                                <div style="font-size:11px; color:#888;">${item.date.split('-').reverse().join('/')} ▾</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-weight:bold; color:${item.isDebt ? '#ef6c00' : '#2e7d32'};">+${p.toLocaleString()}đ</div>
-                            </div>
+                // 2. Giao diện đơn hàng
+                const html = `
+                    <div class="item-list">
+                        <div onclick="toggleDetail('${item.id}')" style="display:flex; justify-content:space-between; cursor:pointer;">
+                            <div><b>${item.name}</b><div style="font-size:11px; color:#888;">${vnDate} ▾</div></div>
+                            <div style="font-weight:bold; color:${item.isDebt?'#ef6c00':'#2e7d32'};">+${p.toLocaleString()}đ</div>
                         </div>
-                        
-                        <div id="detail-${item.id}" class="hidden" style="background: #f9f9f9; padding: 10px; margin-top: 8px; border-radius: 8px; font-size: 13px;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                                <span>Gốc: ${cost.toLocaleString()}đ</span>
-                                <span>Bán: ${sale.toLocaleString()}đ</span>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-                                <span style="color:red; cursor:pointer; font-size:11px; text-decoration:underline;" onclick="deleteItem('${item.id}')">Xóa đơn</span>
-                                ${item.isDebt ? `<button style="background:#1565c0; color:white; border:none; padding:6px 12px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="markAsPaid('${item.id}')">Khách đã trả tiền</button>` : ''}
+                        <div id="dt-${item.id}" class="hidden" style="background:#f9f9f9; padding:10px; margin-top:5px; border-radius:8px; font-size:13px;">
+                            Gốc: ${(item.cost||0).toLocaleString()}đ | Bán: ${(item.sale||0).toLocaleString()}đ
+                            <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                                <span style="color:red; text-decoration:underline;" onclick="deleteItem('${item.id}')">Xóa</span>
+                                ${item.isDebt?`<button class="logout-btn" style="background:var(--blue); color:white; border:none;" onclick="markAsPaid('${item.id}')">Đã trả nợ</button>`:''}
                             </div>
                         </div>
                     </div>`;
 
-                if (item.isDebt) debtHtml += displayItem;
-                else histHtml += displayItem;
+                if (item.isDebt) debtHtml += html;
+                else if (vnDate.includes(search) || item.name.toLowerCase().includes(search)) histHtml += html;
             });
 
             document.getElementById('sum-day').textContent = (dSum/1000).toLocaleString() + 'k';
             document.getElementById('sum-month').textContent = (mSum/1000).toLocaleString() + 'k';
             document.getElementById('sum-year').textContent = (ySum/1000).toLocaleString() + 'k';
-            
-            document.getElementById('debt-list').innerHTML = debtHtml || '<div style="color:#888; padding:10px 0;">Không có ai nợ 🎉</div>';
-            document.getElementById('history-list').innerHTML = histHtml || '<div style="color:#888; padding:10px 0;">Chưa có đơn hàng nào.</div>';
+            document.getElementById('month-label').textContent = "Tháng " + (fMonth + 1);
+            document.getElementById('year-label').textContent = "Năm " + fYear;
+            document.getElementById('debt-list').innerHTML = debtHtml || "Không có nợ.";
+            document.getElementById('history-list').innerHTML = histHtml || "Không tìm thấy.";
         };
     </script>
 </body>
