@@ -157,6 +157,7 @@
             // CHỈ TẢI DỮ LIỆU CỦA NGƯỜI ĐANG ĐĂNG NHẬP (TỰ ĐỘNG LỌC)
             const q = query(
                 collection(db, "revenues"), 
+                //tạm thời tắt phân quyền
                 //where("ownerId", "==", user.uid), 
                 orderBy("timestamp", "desc")
             );
