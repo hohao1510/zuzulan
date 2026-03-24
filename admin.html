@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zuzu Lan - Quản Lý Thông Minh</title>
+    <title>Zuzu Lan - Quản Lý Phân Quyền</title>
     <style>
         :root { --primary: #2e7d32; --bg: #f0f2f5; --blue: #1565c0; --orange: #ef6c00; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 10px; margin: 0; display: flex; flex-direction: column; align-items: center; }
@@ -44,9 +44,7 @@
             <div class="dash-item"><label id="label-year">Năm</label><span id="sum-year">0k</span></div>
         </div>
 
-        <label style="font-size: 12px; color: #666; font-weight: bold;">Chọn ngày xem doanh thu:</label>
         <input type="date" id="date" onchange="updateUI()">
-        
         <input type="text" id="name" placeholder="Tên hàng / Khách nợ">
         <div style="display: flex; gap: 8px;">
             <input type="number" id="cost" placeholder="Gốc">
@@ -65,13 +63,14 @@
 
     <div id="history-card" class="card hidden">
         <h3 style="margin: 0 0 10px 0; font-size: 16px;">Lịch sử đơn hàng</h3>
-        <input type="text" id="search-input" class="search-box" placeholder="🔍 Tìm ngày (VD: 17/03) hoặc tên hàng..." oninput="updateUI()">
+        <input type="text" id="search-input" class="search-box" placeholder="🔍 Tìm ngày hoặc tên..." oninput="updateUI()">
         <div id="history-list"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, getDocs, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // THÊM "query" VÀ "where" ĐỂ PHÂN QUYỀN
+        import { getFirestore, collection, addDoc, query, orderBy, getDocs, serverTimestamp, doc, deleteDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -114,11 +113,16 @@
         window.handleLogout = () => signOut(auth);
 
         window.saveData = async (isDebt) => {
+            const user = auth.currentUser;
+            if (!user) return alert("Vui lòng đăng nhập!");
+
             const s = document.getElementById('sale').value, c = document.getElementById('cost').value;
             const n = document.getElementById('name').value || (isDebt?"Khách nợ":"Hàng mới"), d = document.getElementById('date').value;
             if (!s || !d) return alert("Thiếu ngày hoặc giá bán!");
+            
             try {
                 await addDoc(collection(db, "revenues"), {
+                    ownerId: user.uid, // TỰ ĐỘNG GẮN ID NGƯỜI DÙNG VÀO ĐƠN HÀNG
                     date: d, name: n, cost: Number(c)*1000, sale: Number(s)*1000, 
                     profit: (Number(s)-Number(c))*1000, isDebt: isDebt, timestamp: serverTimestamp()
                 });
@@ -128,14 +132,14 @@
         };
 
         window.markAsPaid = async (id) => {
-            if(confirm("Xác nhận đã thu tiền?")) {
+            if(confirm("Xác nhận đã trả nợ?")) {
                 await updateDoc(doc(db, "revenues", id), { isDebt: false });
                 loadData();
             }
         };
 
         window.deleteItem = async (id) => {
-            if(confirm("Xóa đơn này?")) {
+            if(confirm("Xóa vĩnh viễn đơn này?")) {
                 await deleteDoc(doc(db, "revenues", id));
                 loadData();
             }
@@ -147,18 +151,31 @@
         };
 
         async function loadData() {
-            const q = query(collection(db, "revenues"), orderBy("timestamp", "desc"));
-            const snap = await getDocs(q);
-            allData = []; snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
-            updateUI();
+            const user = auth.currentUser;
+            if (!user) return;
+
+            // CHỈ TẢI DỮ LIỆU CỦA NGƯỜI ĐANG ĐĂNG NHẬP (TỰ ĐỘNG LỌC)
+            const q = query(
+                collection(db, "revenues"), 
+                where("ownerId", "==", user.uid), 
+                orderBy("timestamp", "desc")
+            );
+            
+            try {
+                const snap = await getDocs(q);
+                allData = []; snap.forEach(doc => allData.push({ ...doc.data(), id: doc.id }));
+                updateUI();
+            } catch (e) { 
+                console.error("Lỗi index: ", e);
+                // Nếu báo lỗi này, bạn cần nhấn vào link trong console của trình duyệt để tạo Index.
+            }
         }
 
         window.updateUI = () => {
             const selectedStr = document.getElementById('date').value;
             if (!selectedStr) return;
-
             const selDate = new Date(selectedStr);
-            const selDay = selectedStr; // yyyy-mm-dd
+            const selDay = selectedStr;
             const selMonth = selDate.getMonth();
             const selYear = selDate.getFullYear();
             const search = document.getElementById('search-input').value.toLowerCase();
@@ -171,7 +188,6 @@
                 const iDate = new Date(item.date);
                 const vnDate = item.date.split('-').reverse().join('/');
 
-                // LOGIC QUAN TRỌNG: Tính dựa trên ngày bạn CHỌN ở lịch
                 if (!item.isDebt) {
                     if (item.date === selDay) dSum += p;
                     if (iDate.getFullYear() === selYear) {
@@ -202,11 +218,8 @@
             document.getElementById('sum-day').textContent = (dSum/1000).toLocaleString() + 'k';
             document.getElementById('sum-month').textContent = (mSum/1000).toLocaleString() + 'k';
             document.getElementById('sum-year').textContent = (ySum/1000).toLocaleString() + 'k';
-            
-            // Cập nhật tên nhãn cho dễ hiểu
             document.getElementById('label-month').textContent = "Tháng " + (selMonth + 1) + "/" + selYear;
             document.getElementById('label-year').textContent = "Cả năm " + selYear;
-
             document.getElementById('debt-list').innerHTML = debtHtml || "Không có nợ.";
             document.getElementById('history-list').innerHTML = histHtml || "Không tìm thấy.";
         };
